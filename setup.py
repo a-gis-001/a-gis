@@ -24,7 +24,7 @@ setuptools.setup(
     packages=setuptools.find_packages(where='src'),
     classifiers=[
         # see https://pypi.org/classifiers/
-        'Development Status :: 1 - Planning'
+        'Development Status :: 1 - Planning',
         
         'Intended Audience :: Developers',
         'Topic :: Scientific/Engineering :: Image Processing',
