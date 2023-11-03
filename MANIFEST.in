@@ -1,4 +1,5 @@
 include pyproject.toml
 include *.md
 include LICENSE
+include .bump2version.cfg
 recursive-include tests test*.py
