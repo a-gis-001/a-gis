@@ -35,7 +35,7 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.9',
-    # install_requires=['Pillow'],
+    install_requires=['PIL','numpy','pytest'],
     extras_require={
         'dev': ['check-manifest'],
         # 'test': ['coverage'],
