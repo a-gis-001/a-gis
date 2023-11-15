@@ -20,8 +20,8 @@ setuptools.setup(
         # 'Funding': '',
         # 'Say Thanks!': '',
     },
-    package_dir={'': 'src'},
-    packages=setuptools.find_packages(where='src'),
+    package_dir={'': 'a_gis'},
+    packages=setuptools.find_packages(where='a_gis'),
     classifiers=[
         # see https://pypi.org/classifiers/
         'Development Status :: 1 - Planning',
@@ -43,7 +43,7 @@ setuptools.setup(
     # entry_points={
     #     'console_scripts': [  # This can provide executable scripts
     #         'run=a_gis:main',
-    # You can execute `run` in bash to run `main()` in src/a_gis/__init__.py
+    # You can execute `run` in bash to run `main()` in a_gis/__init__.py
     #     ],
     # },
 )
