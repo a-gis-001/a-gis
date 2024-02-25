@@ -28,13 +28,16 @@ def get(*, image: PIL.Image.Image) -> typing.Dict[str, str]:
         ValueError: If the image's metadata is not in the expected format.
     """
     import json
+    import sys
 
     metadata = {}
-    for key, value in image.info.items():
-        try:
-            # Deserialize the metadata value from JSON
-            metadata[key] = json.loads(value)
-        except json.JSONDecodeError:
-            raise ValueError(f"Metadata for key '{key}' is not in valid JSON format.")
+    if hasattr(image,'info'):
+        print('x',image.info,file=sys.stderr)
+        for key, value in image.info.items():
+            try:
+                # Deserialize the metadata value from JSON
+                metadata[key] = json.loads(value)
+            except json.JSONDecodeError:
+                raise ValueError(f"Metadata for key '{key}' is not in valid JSON format.")
 
     return metadata

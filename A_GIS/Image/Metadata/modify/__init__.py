@@ -34,6 +34,7 @@ def modify(
             'me'
         >>> metadata['author2']
             'you'
+
     Raises:
         ValueError: If the provided metadata is not a dictionary.
     """
