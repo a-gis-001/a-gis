@@ -1,6 +1,6 @@
 [project]
 name = "a_gis"
-version = "0.6.0"
+version = "0.6.1"
 description = "AEGIS"
 authors = [
     { name = "AEGIS 001", email = "a-gis-001@proton.me" },
