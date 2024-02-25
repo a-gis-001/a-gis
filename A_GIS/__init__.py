@@ -1,5 +1,3 @@
-__version__ = "0.6.0"
-
 # Packages
 from . import Code
 from . import Data

@@ -21,8 +21,8 @@ def get(*, image: PIL.Image.Image) -> typing.Dict[str, str]:
         >>> import A_GIS.Image
         >>> image = A_GIS.Image.new(size=(100,100), metadata={'author':'me'})
         >>> metadata = A_GIS.Image.Metadata.get(image=image)
-        >>> print(metadata['author'])
-            'me'
+        >>> metadata['author']
+        'me'
 
     Raises:
         ValueError: If the image's metadata is not in the expected format.
@@ -32,7 +32,6 @@ def get(*, image: PIL.Image.Image) -> typing.Dict[str, str]:
 
     metadata = {}
     if hasattr(image,'info'):
-        print('x',image.info,file=sys.stderr)
         for key, value in image.info.items():
             try:
                 # Deserialize the metadata value from JSON

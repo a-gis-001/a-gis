@@ -32,8 +32,14 @@ documentation = "https://a_gis.readthedocs.io"
 bug-tracker = "https://github.com/a-gis-001/a_gis/issues"
 source = "https://github.com/a-gis-001/a_gis"
 
-[project.scripts]
-olm = "A_GIS.__main__:a_gis"
+#Complains about
+# Traceback (most recent call last):
+#   File "/Users/ww5/a_gis/a_gis/venv/bin/a_gis", line 5, in <module>
+#     from A_GIS.__main__ import main
+# ModuleNotFoundError: No module named 'A_GIS.__main__'
+#Workaround just use ./a_gis.sh to reformat.
+#[project.scripts]
+#a_gis = "A_GIS.__main__:main"
 
 [tool.setuptools.packages.find]
 include = ["A_GIS.*"]

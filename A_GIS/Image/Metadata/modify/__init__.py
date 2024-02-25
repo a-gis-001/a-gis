@@ -27,31 +27,33 @@ def modify(
         >>> image = A_GIS.Image.new(size=(100,100),metadata={'author1':'me'})
         >>> metadata = A_GIS.Image.Metadata.get(image=image)
         >>> metadata['author1']
-            'me'
-        >>> image = A_GIS.Image.Metadata.modify(image=image,metadata={'author2':'you')
+        'me'
+        >>> image = A_GIS.Image.Metadata.modify(image=image,metadata={'author2':'you'})
         >>> metadata = A_GIS.Image.Metadata.get(image=image)
         >>> metadata['author1']
-            'me'
+        'me'
         >>> metadata['author2']
-            'you'
+        'you'
 
     Raises:
         ValueError: If the provided metadata is not a dictionary.
     """
     import json
     import PIL.PngImagePlugin
+    import A_GIS.File.Directory
+    import pathlib
 
     if metadata is not None and not isinstance(metadata, dict):
         raise ValueError("Metadata must be a dictionary.")
 
-    # Create a new PngInfo object for adding metadata
-    png_info = PIL.PngImagePlugin.PngInfo()
-    for key, value in (metadata or {}).items():
-        # Serialize the metadata value to JSON
-        serialized_value = json.dumps(value)
-        png_info.add_text(key, serialized_value)
-
-    # Update the image's metadata
-    image.info = png_info
-
-    return image
+    pnginfo = PIL.PngImagePlugin.PngInfo()
+    # Copy existing meta data.
+    for key, value in image.info.items():
+        pnginfo.add_text(key, value)
+    # Write/overwrite with new metadata.
+    for key, value in metadata.items():
+        pnginfo.add_text(key, json.dumps(value))
+    tempdir = A_GIS.File.Directory.make(scoped_delete=True)
+    path = pathlib.Path(tempdir.path) / 'new.png'
+    image.save(path,"PNG",pnginfo=pnginfo)
+    return PIL.Image.open(path)

@@ -1,7 +1,6 @@
 import PIL.Image
 import typing
 
-
 def new(
     *,
     mode: str = "RGBA",
@@ -31,17 +30,24 @@ def new(
     Raises:
         ImportError: If PIL modules are not available.
     """
-    import json  # Import json for metadata serialization
-    import PIL.PngImagePlugin  # Import PIL.PngImagePlugin for metadata handling in PNG images
+    import PIL.Image
 
     # Create a new image object with the specified mode and size
-    new_image = PIL.Image.new(mode, size)
+    image = PIL.Image.new(mode, size)
 
-    # Add metadata to the image if provided
+    # Add metadata to the image if provided which requires writing to disk with PIL.
     if metadata:
-        png_info = PIL.PngImagePlugin.PngInfo()
-        for key, value in metadata.items():
-            png_info.add_text(key, json.dumps(value))
-        new_image.info = png_info
+        import A_GIS.File.Directory
+        import pathlib
+        import json
+        import PIL.PngImagePlugin
 
-    return new_image
+        pnginfo = PIL.PngImagePlugin.PngInfo()
+        for key, value in metadata.items():
+            pnginfo.add_text(key, json.dumps(value))
+        tempdir = A_GIS.File.Directory.make(scoped_delete=True)
+        path = pathlib.Path(tempdir.path) / 'new.png'
+        image.save(path,"PNG",pnginfo=pnginfo)
+        image = PIL.Image.open(path)
+
+    return image
