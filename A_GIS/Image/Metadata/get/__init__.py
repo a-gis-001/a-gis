@@ -31,12 +31,14 @@ def get(*, image: PIL.Image.Image) -> typing.Dict[str, str]:
     import sys
 
     metadata = {}
-    if hasattr(image,'info'):
+    if hasattr(image, "info"):
         for key, value in image.info.items():
             try:
                 # Deserialize the metadata value from JSON
                 metadata[key] = json.loads(value)
             except json.JSONDecodeError:
-                raise ValueError(f"Metadata for key '{key}' is not in valid JSON format.")
+                raise ValueError(
+                    f"Metadata for key '{key}' is not in valid JSON format."
+                )
 
     return metadata

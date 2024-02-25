@@ -20,7 +20,7 @@ def open(*, path: str):
     import requests
 
     # Check if the source is a URL
-    if path.startswith('http://') or path.startswith('https://'):
+    if path.startswith("http://") or path.startswith("https://"):
         # Fetch the image from the URL
         response = requests.get(path)
         response.raise_for_status()  # This will raise an exception for HTTP errors
@@ -30,6 +30,3 @@ def open(*, path: str):
     else:
         # Open and return the image from a local file
         return Image.open(path)
-
-
-

@@ -1,11 +1,12 @@
 import PIL.Image
 import typing
 
+
 def new(
     *,
     mode: str = "RGBA",
     size: typing.Tuple[int, int] = (0, 0),
-    metadata: typing.Optional[typing.Dict[str, str]] = None
+    metadata: typing.Optional[typing.Dict[str, str]] = None,
 ) -> PIL.Image.Image:
     """
     Create and return a new image with the specified mode, size, and optional metadata.
@@ -46,8 +47,8 @@ def new(
         for key, value in metadata.items():
             pnginfo.add_text(key, json.dumps(value))
         tempdir = A_GIS.File.Directory.make(scoped_delete=True)
-        path = pathlib.Path(tempdir.path) / 'new.png'
-        image.save(path,"PNG",pnginfo=pnginfo)
+        path = pathlib.Path(tempdir.path) / "new.png"
+        image.save(path, "PNG", pnginfo=pnginfo)
         image = PIL.Image.open(path)
 
     return image

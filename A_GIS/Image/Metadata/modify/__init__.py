@@ -54,6 +54,6 @@ def modify(
     for key, value in metadata.items():
         pnginfo.add_text(key, json.dumps(value))
     tempdir = A_GIS.File.Directory.make(scoped_delete=True)
-    path = pathlib.Path(tempdir.path) / 'new.png'
-    image.save(path,"PNG",pnginfo=pnginfo)
+    path = pathlib.Path(tempdir.path) / "new.png"
+    image.save(path, "PNG", pnginfo=pnginfo)
     return PIL.Image.open(path)

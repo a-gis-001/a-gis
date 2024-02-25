@@ -5,7 +5,7 @@ def recurse(
     *,
     path: pathlib.Path,
     ignore_list: set[str] = {"tests"},
-    _root0: pathlib.Path = None
+    _root0: pathlib.Path = None,
 ) -> dict:
     """
     Generate a hierarchical dictionary of code structures within a directory.
