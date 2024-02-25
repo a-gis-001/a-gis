@@ -24,7 +24,7 @@ def download(
     import re
     import sys
     from pathlib import Path
-
+    import hashlib
     import requests
     import tqdm
     from requests.adapters import HTTPAdapter

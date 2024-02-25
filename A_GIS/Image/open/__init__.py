@@ -29,7 +29,7 @@ def open(*, path: str):
         return Image.open(BytesIO(response.content))
     else:
         # Open and return the image from a local file
-        return Image.open(source)
+        return Image.open(path)
 
 
 
