@@ -1,0 +1,11 @@
+autopep8==2.0.4
+black==24.2.0
+diff_match_patch==20230430
+docformatter==1.7.5
+numpy==1.26.4
+Pillow>=10.2.*
+pytest>=8.0.*
+pytest-xdist>=3.5.*
+Requests>=2.31.*
+setuptools==69.0.3
+tqdm==4.66.1

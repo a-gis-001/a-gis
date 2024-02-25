@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image as PImage
 from PIL.PngImagePlugin import PngInfo
-import a_gis
+import A_GIS
 
 def save_blank_file(path):
     img = np.zeros([100,100,3],dtype=np.uint8)
@@ -23,11 +23,11 @@ def test_remove_metadata():
         path = Path(tmpdirname)/'blank.png'    
         save_blank_file(path)
            
-        im0 = a_gis.Image.open(path=path)
+        im0 = A_GIS.Image.open(path=path)
         print(im0.info)
         assert im0.info != {}
 
-        im1 = a_gis.image.purify(image=im0)
+        im1 = A_GIS.image.purify(image=im0)
         print(im1.info)
         assert im1.info == {}
 
