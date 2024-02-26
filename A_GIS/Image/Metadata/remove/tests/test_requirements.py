@@ -1,7 +1,7 @@
 import pytest
 import A_GIS.Image
 
-def requirements_RemovesMetadata():
+def test_remove_metadata():
     """Test that metadata is removed."""
 
     im1 = A_GIS.Image.new(size=(10, 10), metadata={"hello": "world"})
