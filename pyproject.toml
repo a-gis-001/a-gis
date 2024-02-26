@@ -1,6 +1,6 @@
 [project]
 name = "A_GIS"
-version = "0.6.1"
+version = "0.7.0"
 description = "Functional python that shields users from breaking changes."
 authors = [
     { name = "AEGIS 001", email = "a-gis-001@proton.me" },
