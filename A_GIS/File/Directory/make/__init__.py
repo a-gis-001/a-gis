@@ -33,7 +33,7 @@ def make(*, path: str = None, scoped_delete: bool = False):
             if path and not os.path.exists(self.path):
                 os.makedirs(self.path)
 
-        def __enter__(self) -> "TempDir":
+        def __enter__(self) -> _TempDir:
             """Called when entering the 'with' block."""
             return self
 
