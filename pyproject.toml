@@ -1,7 +1,7 @@
 [project]
-name = "a-gis"
+name = "A_GIS"
 version = "0.6.1"
-description = "AEGIS"
+description = "Functional python that shields users from breaking changes."
 authors = [
     { name = "AEGIS 001", email = "a-gis-001@proton.me" },
 ]
@@ -25,7 +25,7 @@ dependencies = [
     "pytest-xdist",
     "pydantic",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.urls]
 documentation = "https://a-gis.readthedocs.io"
