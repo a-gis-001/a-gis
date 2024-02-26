@@ -1,7 +1,4 @@
-import typing
-
-
-def new(*, low: float, mode: float, high: float) -> "_TriDist":
+def new(*, low: float, mode: float, high: float):
     """
     Return a triangular distribution class.
 

@@ -3,7 +3,7 @@ import typing
 
 def new(
     *, size: int = 1, values: typing.Optional[typing.List[float]] = []
-) -> "_CorrMatrix":
+):
     """
     Return a correlation matrix data class from the upper triangular values.
 
