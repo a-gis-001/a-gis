@@ -1,7 +1,7 @@
-# a-gis
+# A_GIS Python Package
 
 ```python
-pip install a-gis
+pip install A_GIS
 ```
 
 Pronounced with a long "a" like AEGIS, this is a package for functional python. 
