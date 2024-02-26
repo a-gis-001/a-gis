@@ -21,10 +21,10 @@ def make(*, path: str = None, scoped_delete: bool = False):
         >>> with A_GIS.File.Directory.make(scoped_delete=True) as temp_dir:
         ...     pass
     """
+    import os
+    import tempfile
+    import shutil
     class _TempDir:
-        import os
-        import tempfile
-        import shutil
         def __init__(self, path: str = None, scoped_delete: bool = False):
             """Initializes the TempDir object."""
             self.scoped_delete = scoped_delete
