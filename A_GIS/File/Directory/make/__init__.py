@@ -33,10 +33,6 @@ def make(*, path: str = None, scoped_delete: bool = False):
             if path and not os.path.exists(self.path):
                 os.makedirs(self.path)
 
-        def __enter__(self) -> _TempDir:
-            """Called when entering the 'with' block."""
-            return self
-
         def __exit__(self, exc_type, exc_val, exc_tb) -> None:
             """Called when exiting the 'with' block."""
             if self.scoped_delete:
