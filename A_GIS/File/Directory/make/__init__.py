@@ -1,4 +1,4 @@
-def make(*, path: str = None, scoped_delete: bool = False) -> 'TempDir':
+def make(*, path: str = None, scoped_delete: bool = False) -> "TempDir":
     """
     Creates a directory object that may delete itself when it goes out of scope.
 
@@ -16,13 +16,10 @@ def make(*, path: str = None, scoped_delete: bool = False) -> 'TempDir':
     Returns:
         TempDir: An instance of the TempDir class representing the created directory.
 
-    Example:
-        # Example of using the function with a context manager
-        with make(scoped_delete=True) as temp_dir:
-            # perform operations within the temporary directory
-            pass
-
-        # The temporary directory is deleted after the above block
+    Examples:
+        >>> import A_GIS.File.Directory.make
+        >>> with A_GIS.File.Directory.make(scoped_delete=True) as temp_dir:
+        ...     pass
     """
     import os
     import tempfile
@@ -37,7 +34,7 @@ def make(*, path: str = None, scoped_delete: bool = False) -> 'TempDir':
             if path and not os.path.exists(self.path):
                 os.makedirs(self.path)
 
-        def __enter__(self) -> 'TempDir':
+        def __enter__(self) -> "TempDir":
             """Called when entering the 'with' block."""
             return self
 

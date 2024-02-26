@@ -1,6 +1,7 @@
 import pytest
 import A_GIS.Image
 
+
 def test_remove_metadata():
     """Test that metadata is removed."""
 
