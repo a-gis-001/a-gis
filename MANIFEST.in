@@ -4,4 +4,3 @@ include LICENSE
 include .bumpversion.cfg
 recursive-include tests test*.py
 recursive-include A_GIS *.py
-
