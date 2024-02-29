@@ -1,9 +1,7 @@
 import typing
 
 
-def new(
-    *, size: int = 1, values: typing.Optional[typing.List[float]] = []
-):
+def new(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
     """
     Return a correlation matrix data class from the upper triangular values.
 
@@ -34,11 +32,21 @@ def new(
         values: typing.List[float]
 
         def __post_init__(self):
+            import numpy
+            import A_GIS.Math.Statistics.CorrelationMatrix
+
             nv = len(self.values)
             nc = self.size * (self.size - 1) / 2
             if nv != nc:
                 raise ValueError(
                     f"Invalid number of values {nv} for the correlation coefficients for the matrix size={self.size}. Should be {nc}."
+                )
+
+            corr = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(upper_tri=self)
+            eigenvalues = numpy.linalg.eigvals(corr)
+            if numpy.any(eigenvalues < 0):
+                raise ValueError(
+                    f"The matrix is not positive semidefinite eigenvalues={eigenvalues}."
                 )
 
         def __repr__(self):

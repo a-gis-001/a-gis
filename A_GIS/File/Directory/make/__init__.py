@@ -24,6 +24,7 @@ def make(*, path: str = None, scoped_delete: bool = False):
     import os
     import tempfile
     import shutil
+
     class _TempDir:
         def __init__(self, path: str = None, scoped_delete: bool = False):
             """Initializes the TempDir object."""
