@@ -23,9 +23,12 @@ build==1.0.3
 bump2version==1.0.1
 bumpversion==0.6.0
 CacheControl==0.13.1
+certifi==2024.2.2
+cffi==1.16.0
 cfgv==3.4.0
 chardet==5.2.0
 charset-normalizer==3.3.2
+clarabel==0.7.0
 click==8.1.7
 click-extra==4.7.3
 cloup==3.0.4
@@ -34,6 +37,7 @@ commentjson==0.9.0
 ConfigUpdater==3.2
 contourpy==1.2.0
 cssutils==2.9.0
+cvxpy==1.4.2
 cycler==0.12.1
 debugpy==1.8.0
 decorator==5.1.1
@@ -45,7 +49,7 @@ docformatter==1.7.5
 docopt==0.6.2
 docutils==0.20.1
 domdf-python-tools==3.8.0.post2
-# Editable Git install with no remote (ensdf==0.1.0)
+ecos==2.0.13
 exceptiongroup==1.2.0
 execnet==2.0.2
 executing==2.0.1
@@ -105,6 +109,7 @@ nest-asyncio==1.5.9
 nodeenv==1.8.0
 notebook_shim==0.2.3
 numpy==1.26.4
+osqp==0.6.5
 overrides==7.4.0
 packaging==23.2
 Pallets-Sphinx-Themes==2.1.1
@@ -125,7 +130,9 @@ psutil==5.9.7
 ptyprocess==0.7.0
 PuLP==2.8.0
 pure-eval==0.2.2
+pybind11==2.11.1
 pycodestyle==2.11.1
+pycparser==2.21
 pydantic==2.5.3
 pydantic_core==2.14.6
 Pygments==2.17.2
@@ -140,9 +147,11 @@ python-json-logger==2.0.7
 pytz==2024.1
 PyYAML==6.0.1
 pyzmq==25.1.2
+qdldl==0.1.7.post0
 referencing==0.32.1
 regex==2023.12.25
 reportlab==4.1.0
+requests==2.31.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.17.1
@@ -152,6 +161,7 @@ ruamel.yaml.clib==0.2.8
 scale-olm==0.12.0
 scikit-learn==1.4.1.post1
 scipy==1.11.4
+scs==3.2.4.post1
 Send2Trash==1.8.2
 setuptools-scm==8.0.4
 six==1.16.0
