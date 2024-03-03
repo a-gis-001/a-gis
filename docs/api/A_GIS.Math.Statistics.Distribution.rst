@@ -7,7 +7,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   A_GIS.Math.Statistics.Distribution.Mixture
    A_GIS.Math.Statistics.Distribution.Triangular
+   A_GIS.Math.Statistics.Distribution.plot
    A_GIS.Math.Statistics.Distribution.sample
 
 Module contents

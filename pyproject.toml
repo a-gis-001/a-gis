@@ -34,7 +34,7 @@ source = "https://github.com/a-gis-001/a-gis"
 a-gis = "A_GIS.__main__:main"
 
 [tool.setuptools.packages.find]
-include = ["A_GIS","A_GIS.*"]
+include = ["source"]
 
 [build-system]
 requires = ["setuptools", "wheel"]

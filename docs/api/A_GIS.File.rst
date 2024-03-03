@@ -9,6 +9,7 @@ Subpackages
 
    A_GIS.File.Directory
    A_GIS.File.download
+   A_GIS.File.open
    A_GIS.File.read
    A_GIS.File.write
 
