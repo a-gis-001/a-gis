@@ -2,5 +2,4 @@ include pyproject.toml
 include *.md
 include LICENSE
 include .bumpversion.cfg
-recursive-include tests test*.py
-recursive-include A_GIS *.py
+recursive-include source/A_GIS *.py
