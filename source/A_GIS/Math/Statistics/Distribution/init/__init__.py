@@ -1,10 +1,10 @@
-def init(*, type="triangular", **kwargs):
+def init(*, name="triangular", **kwargs):
     """
-    Initialize a new distribution.
+    Initialize a new distribution by name.
     """
-    import A_GIS.Math.Statistics.Distribution._Triangular
+    import A_GIS.Math.Statistics.Distribution.triangular
 
     if type == "triangular":
-        return A_GIS.Math.Statistics.Distribution._Triangular(**kwargs)
+        return A_GIS.Math.Statistics.Distribution.triangular(**kwargs)
     else:
         raise ValueError(f"{type} unknown")
