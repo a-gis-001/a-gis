@@ -23,7 +23,11 @@ def update(*, tree: dict):
 
     if imports:
         code = ""
+        first = True
         for k, v in imports.items():
             if len(v) > 0:
+                if not first:
+                    code += "\n"
+                first = False
                 code += "# {}\n{}\n".format(k, "\n".join(sorted(v)))
         A_GIS.File.write(content=code, file=tree["_file"])

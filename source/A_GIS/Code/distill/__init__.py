@@ -1,6 +1,6 @@
 def distill(*, code: str) -> str:
-    """Purify the given Python code by removing docstrings, blanking multiline
-    string literals, and inherently removing comments.
+    """Distill the given Python code by removing docstrings, converting multiline
+    string literals, and removing comments.
 
     This function parses the provided Python code into an abstract syntax tree (AST),
     and then walks through the AST. It identifies and blanks out all docstrings and
@@ -12,7 +12,7 @@ def distill(*, code: str) -> str:
     parser and the AST handle comments, rather than an explicit action by this function.
 
     Args:
-        code (str): A string representing the Python code to be purified.
+        code (str): A string representing the Python code to be distilled.
 
     Returns:
         str: A string representing the purified Python code, with docstrings, multiline string
@@ -32,14 +32,12 @@ def distill(*, code: str) -> str:
     """
 
     # Parse the code into an abstract syntax tree (AST).
+    # Walk through all nodes in the AST to identify docstrings and multiline
+    # string literals, and replace them with standard strings.
     import ast
 
     parsed = ast.parse(code)
-
-    # Walk through all nodes in the AST.
     for node in ast.walk(parsed):
-        # Identify docstrings and multiline string literals, and replace them
-        # with empty strings.
         if isinstance(node, ast.Expr) and isinstance(node.value, ast.Str):
             node.value = ast.Constant(value="")
 
