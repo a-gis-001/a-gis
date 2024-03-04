@@ -1,7 +1,6 @@
 import PIL.Image
 import typing
 
-
 def new(
     *,
     mode: str = "RGBA",
@@ -36,7 +35,8 @@ def new(
     # Create a new image object with the specified mode and size
     image = PIL.Image.new(mode, size)
 
-    # Add metadata to the image if provided which requires writing to disk with PIL.
+    # Add metadata to the image if provided which requires writing to disk
+    # with PIL.
     if metadata:
         import A_GIS.File.Directory
         import pathlib

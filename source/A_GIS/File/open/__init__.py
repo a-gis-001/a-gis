@@ -14,8 +14,11 @@ def open(*, path, binary=False, chunk_size=1024):
             self.binary = binary
             self.decompressor = None
 
-            # Check if content is compressed and prepare decompressor if necessary
-            content_encoding = self.response.headers.get("Content-Encoding", "")
+            # Check if content is compressed and prepare decompressor if
+            # necessary
+            content_encoding = self.response.headers.get(
+                "Content-Encoding", ""
+            )
             if content_encoding == "gzip":
                 self.decompressor = zlib.decompressobj(
                     16 + zlib.MAX_WBITS

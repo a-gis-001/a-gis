@@ -1,8 +1,9 @@
 import pathlib
 import typing
 
-
-def read(*, source: typing.Union[str, pathlib.Path]) -> typing.Dict[str, typing.Any]:
+def read(
+    *, source: typing.Union[str, pathlib.Path]
+) -> typing.Dict[str, typing.Any]:
     """
     Reads JSON data from a string or file and returns its contents as a dictionary.
 

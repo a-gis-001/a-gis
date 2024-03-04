@@ -16,7 +16,9 @@ def parse_download_cli_args():
         help="Number of files to download simultaneously.",
     )
     parser.add_argument(
-        "--text-only", action="store_true", help="Only download text files (txt/json)."
+        "--text-only",
+        action="store_true",
+        help="Only download text files (txt/json).",
     )
     parser.add_argument(
         "--specific-file",
@@ -31,10 +33,14 @@ def parse_download_cli_args():
         help="The folder where the model should be saved.",
     )
     parser.add_argument(
-        "--clean", action="store_true", help="Does not resume the previous download."
+        "--clean",
+        action="store_true",
+        help="Does not resume the previous download.",
     )
     parser.add_argument(
-        "--check", action="store_true", help="Validates the checksums of model files."
+        "--check",
+        action="store_true",
+        help="Validates the checksums of model files.",
     )
     parser.add_argument(
         "--max-retries",

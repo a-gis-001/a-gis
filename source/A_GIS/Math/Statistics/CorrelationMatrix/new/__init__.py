@@ -1,6 +1,5 @@
 import typing
 
-
 def new(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
     """
     Return a correlation matrix data class from the upper triangular values.
@@ -42,7 +41,9 @@ def new(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
                     f"Invalid number of values {nv} for the correlation coefficients for the matrix size={self.size}. Should be {nc}."
                 )
 
-            corr = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(upper_tri=self)
+            corr = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(
+                upper_tri=self
+            )
             eigenvalues = numpy.linalg.eigvals(corr)
             if numpy.any(eigenvalues < 0):
                 raise ValueError(

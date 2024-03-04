@@ -10,10 +10,14 @@ def sample(*, marginals, correlation, size=1):
         )
 
     # Create the full correlation correlation
-    np_matrix = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(upper_tri=correlation)
+    np_matrix = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(
+        upper_tri=correlation
+    )
 
     # Generate correlated normal random variables
-    rvs = numpy.random.multivariate_normal(numpy.zeros(n), np_matrix, size=size)
+    rvs = numpy.random.multivariate_normal(
+        numpy.zeros(n), np_matrix, size=size
+    )
 
     # Transform to uniform and then to triangular samples
     unifs = numpy.array([scipy.stats.norm.cdf(row) for row in rvs])

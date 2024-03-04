@@ -1,8 +1,9 @@
 def update(*, tree: dict):
-    """Update the package files throughout the files listed in the tree to have the
-    correct format and content.
-    """
+    """Update the package files throughout the files listed in the tree to have
+    the correct format and content."""
     import A_GIS.File.write
+    import A_GIS.File.read
+    import A_GIS.Code.format
 
     imports = None
     if "_type" in tree:
@@ -31,3 +32,8 @@ def update(*, tree: dict):
                 first = False
                 code += "# {}\n{}\n".format(k, "\n".join(sorted(v)))
         A_GIS.File.write(content=code, file=tree["_file"])
+    elif "_file" in tree:
+        code = A_GIS.File.read(file=tree["_file"])
+        A_GIS.File.write(
+            content=A_GIS.Code.format(code=code), file=tree["_file"]
+        )

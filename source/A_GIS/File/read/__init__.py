@@ -1,6 +1,5 @@
 import pathlib
 
-
 def read(*, file: pathlib.Path, binary: bool = False):
     mode = "r"
     if binary:

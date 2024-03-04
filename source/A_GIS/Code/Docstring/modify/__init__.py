@@ -18,7 +18,7 @@ def modify(code: str, docstring: str):
     )
 
     # Format the new docstring
-    if docstring == None:
+    if docstring is None:
         formatted_docstring = ""
     else:
         formatted_docstring = f'"""{docstring.strip()}\n"""\n'
@@ -37,13 +37,15 @@ def modify(code: str, docstring: str):
             )
         else:
             # Add new docstring
-            if docstring == None:
+            if docstring is None:
                 return match.group(0)
             else:
                 return (
                     match.group(0)
                     + "\n"
-                    + re.sub("^", "    ", formatted_docstring, flags=re.MULTILINE)
+                    + re.sub(
+                        "^", "    ", formatted_docstring, flags=re.MULTILINE
+                    )
                 )
 
     # Replace or add the docstring in the first class or function definition

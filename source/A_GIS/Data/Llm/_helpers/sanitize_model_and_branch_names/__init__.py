@@ -1,7 +1,8 @@
 import re
 
-
-def sanitize_model_and_branch_names(model: str, branch: str = "main") -> (str, str):
+def sanitize_model_and_branch_names(
+    model: str, branch: str = "main"
+) -> (str, str):
     """
     Sanitizes and validates the model and branch names for downloading models.
 

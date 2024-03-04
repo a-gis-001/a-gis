@@ -1,6 +1,5 @@
 import pathlib
 
-
 def recurse(
     *,
     path: pathlib.Path,
@@ -38,7 +37,8 @@ def recurse(
         _root0 = path
         entries = [_root0]
     else:
-        # If we are here from recursion, then we look at everything at this path.
+        # If we are here from recursion, then we look at everything at this
+        # path.
         entries = list(path.iterdir())
 
     pkg_tree = {}

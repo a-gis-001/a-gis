@@ -6,24 +6,12 @@ def format(code: str) -> str:
         code, options={"aggressive": True, "aggressive": True}
     )
 
-    # Format with docformatter.
-    from docformatter import __main__ as main
-    import io
-
-    stdout = io.StringIO()
-    stdin = io.StringIO(formatted_code)
-    main._main(
-        argv=["/path/to/docformatter", "--force-wrap", "-"],
-        standard_out=stdout,
-        standard_error=None,
-        standard_in=stdin,
-    )
-    formatted_code = stdout.getvalue()
-
     # Format with black.
     import black
 
-    BLACK_MODE = black.Mode(target_versions={black.TargetVersion.PY311}, line_length=79)
+    BLACK_MODE = black.Mode(
+        target_versions={black.TargetVersion.PY311}, line_length=79
+    )
     try:
         formatted_code = black.format_file_contents(
             formatted_code, fast=False, mode=BLACK_MODE

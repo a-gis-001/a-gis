@@ -40,16 +40,25 @@ def download(
                     HTTPAdapter(max_retries=max_retries),
                 )
                 self.session.mount(
-                    "https://huggingface.co", HTTPAdapter(max_retries=max_retries)
+                    "https://huggingface.co",
+                    HTTPAdapter(max_retries=max_retries),
                 )
-            if os.getenv("HF_USER") is not None and os.getenv("HF_PASS") is not None:
-                self.session.auth = (os.getenv("HF_USER"), os.getenv("HF_PASS"))
+            if (
+                os.getenv("HF_USER") is not None
+                and os.getenv("HF_PASS") is not None
+            ):
+                self.session.auth = (
+                    os.getenv("HF_USER"),
+                    os.getenv("HF_PASS"),
+                )
             if os.getenv("HF_TOKEN") is not None:
                 self.session.headers = {
                     "authorization": f'Bearer {os.getenv("HF_TOKEN")}'
                 }
 
-        def check_model_files(self, model, branch, links, sha256, output_folder):
+        def check_model_files(
+            self, model, branch, links, sha256, output_folder
+        ):
             # Validate the checksums
             validated = True
             for i in range(len(sha256)):
@@ -63,10 +72,14 @@ def download(
                 with open(output_folder / sha256[i][0], "rb") as f:
                     file_hash = hashlib.file_digest(f, "sha256").hexdigest()
                     if file_hash != sha256[i][1]:
-                        print(f"Checksum failed: {sha256[i][0]}  {sha256[i][1]}")
+                        print(
+                            f"Checksum failed: {sha256[i][0]}  {sha256[i][1]}"
+                        )
                         validated = False
                     else:
-                        print(f"Checksum validated: {sha256[i][0]}  {sha256[i][1]}")
+                        print(
+                            f"Checksum validated: {sha256[i][0]}  {sha256[i][1]}"
+                        )
 
             if validated:
                 print("[+] Validated checksums of all model files!")
@@ -111,7 +124,9 @@ def download(
 
     if check:
         # Check previously downloaded files
-        downloader.check_model_files(model, branch, links, sha256, output_folder)
+        downloader.check_model_files(
+            model, branch, links, sha256, output_folder
+        )
     else:
         # Download files
         A_GIS.Data.Llm._helpers.download_model_files(
@@ -127,7 +142,6 @@ def download(
         )
 
     return output_folder
-
 
 if __name__ == "__main__":
     import A_GIS.Data.Llm._helpers.parse_download_cli_args

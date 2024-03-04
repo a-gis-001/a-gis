@@ -1,7 +1,6 @@
 import PIL.Image
 import typing
 
-
 def get(*, image: PIL.Image.Image) -> typing.Dict[str, str]:
     """
     Retrieve the metadata of an in-memory image object as a dictionary.

@@ -21,7 +21,7 @@ def get(*, code: str, clean: bool = True) -> str | None:
     for x in tree.body:
         try:
             return ast.get_docstring(x, clean=clean)
-        except:
+        except BaseException:
             pass
 
     return None

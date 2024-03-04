@@ -1,6 +1,5 @@
 import PIL.Image
 
-
 def remove(*, image: PIL.Image.Image) -> PIL.Image.Image:
     """
     Generate a purified copy of a given image for consistent hashing.

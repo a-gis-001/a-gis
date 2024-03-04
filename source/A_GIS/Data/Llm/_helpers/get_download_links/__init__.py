@@ -1,6 +1,5 @@
 import requests
 
-
 def get_download_links(
     session: requests.Session,
     model: str,
@@ -40,7 +39,9 @@ def get_download_links(
     is_lora = False
 
     while True:
-        url = f"{base_url}{page}" + (f"?cursor={cursor.decode()}" if cursor else "")
+        url = f"{base_url}{page}" + (
+            f"?cursor={cursor.decode()}" if cursor else ""
+        )
         response = session.get(url, timeout=10)
         response.raise_for_status()
         content = response.content
@@ -59,17 +60,29 @@ def get_download_links(
             ):
                 is_lora = True
 
-            is_pytorch = re.match(r"(pytorch|adapter|gptq)_model.*\.bin", fname)
+            is_pytorch = re.match(
+                r"(pytorch|adapter|gptq)_model.*\.bin", fname
+            )
             is_safetensors = re.match(r".*\.safetensors", fname)
             is_pt = re.match(r".*\.pt", fname)
             is_gguf = re.match(r".*\.gguf", fname)
             is_tiktoken = re.match(r".*\.tiktoken", fname)
             is_tokenizer = (
-                re.match(r"(tokenizer|ice|spiece).*\.model", fname) or is_tiktoken
+                re.match(r"(tokenizer|ice|spiece).*\.model", fname)
+                or is_tiktoken
             )
             is_text = re.match(r".*\.(txt|json|py|md)", fname) or is_tokenizer
 
-            if any((is_pytorch, is_safetensors, is_pt, is_gguf, is_tokenizer, is_text)):
+            if any(
+                (
+                    is_pytorch,
+                    is_safetensors,
+                    is_pt,
+                    is_gguf,
+                    is_tokenizer,
+                    is_text,
+                )
+            ):
                 if "lfs" in item:
                     sha256.append([fname, item["lfs"]["oid"]])
 
@@ -98,7 +111,8 @@ def get_download_links(
                         classifications.append("gguf")
 
         cursor = (
-            base64.b64encode(f'{{"file_name":"{data[-1]["path"]}"}}'.encode()) + b":50"
+            base64.b64encode(f'{{"file_name":"{data[-1]["path"]}"}}'.encode())
+            + b":50"
         )
         cursor = base64.b64encode(cursor)
         cursor = cursor.replace(b"=", b"%3D")
@@ -120,7 +134,11 @@ def get_download_links(
                     "gguf" for link in links if "q4_k_m" in link.lower()
                 ]
             else:
-                return [link for link in links if not link.lower().endswith(".gguf")], [
+                return [
+                    link
+                    for link in links
+                    if not link.lower().endswith(".gguf")
+                ], [
                     classification
                     for link, classification in zip(links, classifications)
                     if not link.lower().endswith(".gguf")
@@ -129,7 +147,9 @@ def get_download_links(
 
     # Additional processing based on file types
     if (has_pytorch or has_pt) and has_safetensors:
-        links, classifications = remove_pytorch_pt_links(links, classifications)
+        links, classifications = remove_pytorch_pt_links(
+            links, classifications
+        )
 
     if has_gguf:
         links, classifications = process_gguf_links(

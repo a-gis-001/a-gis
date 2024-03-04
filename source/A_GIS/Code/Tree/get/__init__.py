@@ -1,13 +1,15 @@
 import re
 
-
 def get(
-    *, code: str, ignore_class=re.compile("^_"), ignore_function=re.compile("^_")
+    *,
+    code: str,
+    ignore_class=re.compile("^__"),
+    ignore_function=re.compile("^__"),
 ) -> dict:
     """Get a code tree from a code string."""
     import ast
 
-    class _HierarchyVisitor(ast.NodeVisitor):
+    class __HierarchyVisitor(ast.NodeVisitor):
         def __init__(self):
             self.hierarchy = {}
             self.current_scope = self.hierarchy
@@ -36,7 +38,7 @@ def get(
             self.current_scope = previous_scope
 
     nodes = ast.parse(code)
-    hierarchy_visitor = _HierarchyVisitor()
+    hierarchy_visitor = __HierarchyVisitor()
     hierarchy_visitor.visit(nodes)
 
     return hierarchy_visitor.hierarchy

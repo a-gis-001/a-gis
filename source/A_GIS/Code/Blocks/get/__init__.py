@@ -28,5 +28,4 @@ def get(*, code=""):
             y = []
         else:
             y.append(x)
-
     return blocks

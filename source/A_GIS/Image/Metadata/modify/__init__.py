@@ -1,9 +1,10 @@
 import PIL.Image
 import typing
 
-
 def modify(
-    *, image: PIL.Image.Image, metadata: typing.Optional[typing.Dict[str, str]] = None
+    *,
+    image: PIL.Image.Image,
+    metadata: typing.Optional[typing.Dict[str, str]] = None,
 ) -> PIL.Image.Image:
     """
     Modify the metadata of an in-memory image object.

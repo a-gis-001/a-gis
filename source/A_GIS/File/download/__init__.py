@@ -1,7 +1,6 @@
 import requests
 from pathlib import Path
 
-
 def download(
     session: requests.Session,
     url: str,
