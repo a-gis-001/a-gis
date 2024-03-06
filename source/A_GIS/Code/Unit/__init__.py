@@ -6,6 +6,7 @@ from ._parse_first_pass import _parse_first_pass
 from ._wrap_single_block import _wrap_single_block
 from .check import check
 from .get import get
+from .rename import rename
 from .to_string import to_string
 
 # Classes
