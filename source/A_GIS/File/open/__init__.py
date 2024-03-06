@@ -1,7 +1,8 @@
-def open(*, path, binary=False, chunk_size=1024):
+def open(*, path: type["pathlib.Path"], binary=False, chunk_size=1024):
     import requests
     import builtins
     import zlib
+    import A_GIS.File.is_url
 
     class _HttpFile:
         # Assuming other parts of your class remain the same
@@ -25,7 +26,6 @@ def open(*, path, binary=False, chunk_size=1024):
                 )  # gzip decompression
 
         def readline0(self):
-            print(self.binary)
             if self.binary:
                 raise NotImplementedError(
                     "readline is not implemented for binary mode."
@@ -98,22 +98,11 @@ def open(*, path, binary=False, chunk_size=1024):
             else:
                 raise StopIteration
 
-    from urllib.parse import urlparse
-
-    def is_url(path):
-        parsed_path = urlparse(path)
-        return bool(parsed_path.scheme) and parsed_path.scheme in [
-            "http",
-            "https",
-            "ftp",
-            "ftps",
-        ]
-
     mode = "r"
     if binary:
         mode += "b"
 
-    if is_url(path):
+    if A_GIS.File.is_url(path):
         return _HttpFile(path, chunk_size=chunk_size, binary=binary)
     else:
         return builtins.open(path, mode)

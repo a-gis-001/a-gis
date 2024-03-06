@@ -1,6 +1,4 @@
-import pathlib
-
-def read(*, file: pathlib.Path, binary: bool = False):
+def read(*, file: type["pathlib.Path"], binary: bool = False):
     mode = "r"
     if binary:
         mode += "b"

@@ -14,8 +14,8 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
         A list of error messages highlighting issues with the block's formatting
         or content.
     """
-    import A_GIS.Code.Blocks.to_string
-    import A_GIS.Code.Blocks._has_imports
+    import A_GIS.Code.Unit.to_string
+    import A_GIS.Code.Unit._has_imports
 
     # Iterate through each line of the block
     msg = []
@@ -26,8 +26,9 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
         if line_number == 0 and not line_content.lstrip().startswith("#"):
             msg.append(
                 "The following block must start with a comment!\n"
-                + A_GIS.Code.Blocks.to_string(
-                    blocks=[block], start_index=start_index
+                + A_GIS.Code.Unit.to_string(
+                    unit=A_GIS.Code.Unit._wrap_single_block(code_body=block),
+                    start_index=start_index,
                 )
             )
 
@@ -39,11 +40,12 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
                 has_internal_comments = True
 
         # Check for import statements outside the allowed first block
-        if A_GIS.Code.Blocks._has_imports(block=block):
+        if A_GIS.Code.Unit._has_imports(block=block):
             msg.append(
                 "Imports are only allowed in the first block!\n"
-                + A_GIS.Code.Blocks.to_string(
-                    blocks=[block], start_index=start_index
+                + A_GIS.Code.Unit.to_string(
+                    unit=A_GIS.Code.Unit._wrap_single_block(code_body=block),
+                    start_index=start_index,
                 )
             )
 
@@ -52,8 +54,9 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
         msg.append(
             "The following block should not have internal comments!\n"
             + "All comments should be at the start of the block.\n"
-            + A_GIS.Code.Blocks.to_string(
-                blocks=[block], start_index=start_index
+            + A_GIS.Code.Unit.to_string(
+                unit=A_GIS.Code.Unit._wrap_single_block(code_body=block),
+                start_index=start_index,
             )
         )
 

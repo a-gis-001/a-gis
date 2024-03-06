@@ -1,14 +1,14 @@
 def format(code: str) -> str:
-    # Format with autopep8.
     import autopep8
+    import black
+    import re
 
+    # Format with autopep8.
     formatted_code = autopep8.fix_code(
         code, options={"aggressive": True, "aggressive": True}
     )
 
     # Format with black.
-    import black
-
     BLACK_MODE = black.Mode(
         target_versions={black.TargetVersion.PY311}, line_length=79
     )
@@ -24,8 +24,10 @@ def format(code: str) -> str:
             formatted_code += "\n"
 
     # Remove multiple new lines.
-    import re
-
     formatted_code = re.sub(r"\n\s*\n", "\n\n", formatted_code)
 
+    # Remove tabs.
+    formatted_code = formatted_code.expandtabs(4)
+
+    # Return formatted code.
     return formatted_code
