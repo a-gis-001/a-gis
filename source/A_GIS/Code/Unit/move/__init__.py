@@ -1,4 +1,4 @@
-def rename(
+def move(
     *,
     root: type["pathlib.Path"],
     old: type["pathlib.Path"],
