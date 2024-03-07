@@ -6,5 +6,8 @@ from .read import read
 from .touch import touch
 from .write import write
 
+# Classes
+from ._Url import _Url
+
 # Packages
 from . import Directory

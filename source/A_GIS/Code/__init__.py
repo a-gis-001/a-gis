@@ -1,6 +1,7 @@
 # Functions
 from .distill import distill
 from .format import format
+from .highlight import highlight
 from .touch import touch
 
 # Packages

@@ -1,4 +1,9 @@
-def rename(*, root: type["pathlib.Path"], old: type["pathlib.Path"], new: type["pathlib.Path"]):
+def rename(
+    *,
+    root: type["pathlib.Path"],
+    old: type["pathlib.Path"],
+    new: type["pathlib.Path"],
+):
 
     import pathlib
     import A_GIS.File.read
@@ -27,7 +32,7 @@ def rename(*, root: type["pathlib.Path"], old: type["pathlib.Path"], new: type["
     # Replace name in actual.
     actual = old / "__init__.py"
     code = A_GIS.File.read(file=actual)
-    code = code.replace('def '+old_name, 'def '+new_name)
+    code = code.replace("def " + old_name, "def " + new_name)
     A_GIS.File.write(content=code, file=actual)
-    
-    shutil.move(old,new)
+
+    shutil.move(old, new)
