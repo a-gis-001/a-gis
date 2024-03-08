@@ -1,4 +1,4 @@
-def highlight(*, code: str) -> str:
+def highlight(*, code: str, force: bool = False) -> str:
     """
     Highlights Python code syntax for terminal or non-terminal environments.
 
@@ -19,7 +19,7 @@ def highlight(*, code: str) -> str:
     import sys
 
     # Determine the appropriate formatter based on the execution environment
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() or force:
         formatter = pygments.formatters.TerminalFormatter()
     else:
         formatter = pygments.formatters.NullFormatter()

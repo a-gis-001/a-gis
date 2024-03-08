@@ -1,10 +1,8 @@
-import pathlib
-
 def recurse(
     *,
-    path: pathlib.Path,
+    path: type["pathlib.Path"],
     ignore_list: set[str] = {"tests"},
-    _root0: pathlib.Path = None,
+    _root0: type["pathlib.Path"] = None,
 ) -> dict:
     """
     Generate a hierarchical dictionary of code structures within a directory.
@@ -26,6 +24,7 @@ def recurse(
     """
     import A_GIS.File.read
     import A_GIS.Code.Tree.get
+    import pathlib
 
     # Quick return if we have asked for a file instead.
     if path.is_file():
