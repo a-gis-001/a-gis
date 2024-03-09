@@ -46,7 +46,7 @@ def new(
         pnginfo = PIL.PngImagePlugin.PngInfo()
         for key, value in metadata.items():
             pnginfo.add_text(key, json.dumps(value))
-        tempdir = A_GIS.File.Directory.make(scoped_delete=True)
+        tempdir = A_GIS.File.Directory.init(scoped_delete=True)
         path = pathlib.Path(tempdir.path) / "new.png"
         image.save(path, "PNG", pnginfo=pnginfo)
         image = PIL.Image.open(path)

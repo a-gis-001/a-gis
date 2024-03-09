@@ -1,4 +1,6 @@
-def get(*, code: str, clean: bool = True) -> str | None:
+def get(
+    *, code: str, clean: bool = True, only_description: bool = False
+) -> str | None:
     """
     Extracts the docstring from a string of Python code.
 
@@ -18,10 +20,14 @@ def get(*, code: str, clean: bool = True) -> str | None:
     tree = ast.parse(code)
 
     # Get the docstring of the first module-level entity
+    docstring = None
     for x in tree.body:
         try:
-            return ast.get_docstring(x, clean=clean)
+            docstring = ast.get_docstring(x, clean=clean)
         except BaseException:
             pass
 
-    return None
+    if docstring is not None and only_description:
+        docstring = docstring.lstrip().split("\n")[0]
+
+    return docstring

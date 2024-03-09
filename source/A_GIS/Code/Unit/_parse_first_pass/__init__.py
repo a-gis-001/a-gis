@@ -24,5 +24,8 @@ def _parse_first_pass(*, code: str):
             function_definition += line + "\n"
         if start_fun and line.endswith(":"):
             end_fun = True
+    function_definition = function_definition.rstrip()
+    if function_definition.endswith(":"):
+        function_definition = function_definition[:-1]
 
     return type_imports, function_definition, docstring, code_body

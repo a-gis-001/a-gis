@@ -1,3 +1,6 @@
+# Functions
+from .catalog import catalog
+
 # Packages
 from . import Code
 from . import Data

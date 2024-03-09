@@ -1,5 +1,6 @@
 # Functions
 from .download import download
+from .hash import hash
 from .is_url import is_url
 from .open import open
 from .read import read
@@ -11,3 +12,4 @@ from ._Url import _Url
 
 # Packages
 from . import Directory
+from . import Duplicates

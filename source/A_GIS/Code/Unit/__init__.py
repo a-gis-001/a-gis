@@ -12,3 +12,6 @@ from .to_string import to_string
 
 # Classes
 from ._Unit import _Unit
+
+# Packages
+from . import Name

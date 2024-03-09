@@ -1,2 +1,2 @@
 # Functions
-from .make import make
+from .init import init

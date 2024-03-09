@@ -8,7 +8,7 @@ from .is_class import is_class
 from .is_function import is_function
 from .is_package import is_package
 from .is_program import is_program
-from .name import name
+from .list import list
 from .to_path import to_path
 from .touch import touch
 
