@@ -7,6 +7,7 @@ class _Tree:
     name: str
     full_name: str
     body: str
+    hash: str
     children: dict[str, type["_Tree"]]
 
     def __repr__(self):

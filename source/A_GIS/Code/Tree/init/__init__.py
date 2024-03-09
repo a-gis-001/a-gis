@@ -1,6 +1,7 @@
 def init(*, code: str, _type="", file="", name="", full_name="", root=""):
     import A_GIS.Code.Tree._Tree
     import A_GIS.Code.Tree._Visitor
+    import A_GIS.Text.hash
     import libcst
 
     # Do the work.
@@ -16,5 +17,6 @@ def init(*, code: str, _type="", file="", name="", full_name="", root=""):
         name=name,
         full_name=full_name,
         body=code,
+        hash=A_GIS.Text.hash(text=code),
         children=visitor.structure,
     )

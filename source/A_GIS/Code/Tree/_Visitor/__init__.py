@@ -10,19 +10,22 @@ class _Visitor(libcst.CSTVisitor):
 
     def visit_Any(self, type, node):
         import A_GIS.Code.Tree._Tree
+        import A_GIS.Text.hash
 
         name = node.name.value
         self.stack.append(name)
 
         original_structure = self.current_structure
 
+        code = libcst.Module([node]).code
         self.current_structure[name] = A_GIS.Code.Tree._Tree(
             **{
                 "_type": type,
                 "file": self.current_file,
                 "name": name,
                 "full_name": ".".join(self.stack),
-                "body": libcst.Module([node]).code,
+                "body": code,
+                "hash": A_GIS.Text.hash(text=code),
                 "children": {},
             }
         )

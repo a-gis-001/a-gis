@@ -9,6 +9,7 @@ from .is_function import is_function
 from .is_package import is_package
 from .is_program import is_program
 from .name import name
+from .to_path import to_path
 from .touch import touch
 
 # Packages

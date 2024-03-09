@@ -1,9 +1,12 @@
-import A_GIS.Code.Unit.rename
+import A_GIS.Code.Unit.move
+import A_GIS.Code.Unit.find_root
 import sys
 import pathlib
 
-A_GIS.Code.Unit.rename(
-    root=pathlib.Path(sys.argv[1]),
-    old=pathlib.Path(sys.argv[2]),
-    new=pathlib.Path(sys.argv[3])
+old = pathlib.Path(sys.argv[1])
+new = pathlib.Path(sys.argv[2])
+A_GIS.Code.Unit.move(
+    root=A_GIS.Code.Unit.find_root(path=old),
+    old=old,
+    new=new
 )
