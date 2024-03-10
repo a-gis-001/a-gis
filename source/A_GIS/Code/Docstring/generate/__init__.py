@@ -21,6 +21,8 @@ def generate(
 
     # Create the system prompt.
     system = f"""
+## DIRECTIVE:
+
 Given a Python function, generate and return a high-quality docstring
 with the following elements
 
@@ -31,7 +33,9 @@ with the following elements
     5. List what the function raises.
     6. List the return value.
 
-For example, I give you
+## EXAMPLE:
+
+### Instruction:
 
 name:
     A_GIS.File.Directory.init
@@ -63,9 +67,9 @@ code:
 
         return _TempDir(path, scoped_delete)
 
-And you reply with:
-
 docstring:
+
+### Response:
 
     Creates a directory object that may delete itself when it goes out of scope.
 
@@ -90,6 +94,8 @@ docstring:
     indented_code = A_GIS.Text.add_indent(text=code)
     user = f"name:\n    {name}code:\n{indented_code}\ndocstring:\n"
 
+    # Set up the messages with system and user content. Assistant content does
+    # not seem to work so well.
     messages = [
         {
             "role": "system",
@@ -100,6 +106,7 @@ docstring:
             "content": user,
         },
     ]
+
     # Retrieve the response.
     response = ollama.chat(
         model=model,
@@ -111,11 +118,17 @@ docstring:
             mirostat=mirostat,
         ),
     )
+    docstring = response["message"]["content"]
+
+    # Fix up the reply including the docstring:
+    tag = "docstring:"
+    t = docstring.find(tag)
+    if t >= 0:
+        docstring = docstring[t + len(tag) :]
 
     # Return the content after cleaning the docstring. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
     # original.
-    docstring = response["message"]["content"]
     clean_docstring = A_GIS.Code.Docstring.clean(docstring=docstring)
     if float(len(clean_docstring)) / float(len(docstring)) >= 0.8:
         docstring = clean_docstring
