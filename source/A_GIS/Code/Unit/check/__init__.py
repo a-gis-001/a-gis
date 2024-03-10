@@ -4,6 +4,7 @@ def check(*, unit: type["A_GIS.Code.Unit._Unit"]) -> list[str]:
     requirements regarding import statements and comment usage.
 
     The function validates that:
+
     - The first code block may optionally contain absolute imports.
     - All subsequent code unit must start with one or more comment
       lines, followed by code, and optionally end with a blank line.
