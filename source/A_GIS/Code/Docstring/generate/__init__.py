@@ -21,7 +21,6 @@ def generate(
 
     # Create the system prompt.
     system = f"""
-
 Given a Python function, generate and return a high-quality docstring
 with the following elements
 
@@ -66,9 +65,9 @@ code:
 
         return _TempDir(path, scoped_delete)
 
-docstring:
-
 ### Response:
+
+docstring:
 
     Creates a directory object that may delete itself when it goes out of scope.
 
@@ -88,10 +87,15 @@ docstring:
     Returns:
         TempDir: An instance of the TempDir class representing the created directory.
 
+REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
+
 """
 
     indented_code = A_GIS.Text.add_indent(text=code)
-    user = f"name:\n    {name}code:\n{indented_code}\ndocstring:\n"
+    user = f"name:\n    {name}code:\n{indented_code}\n"
+
+    import logging
+    logging.info('raw_input=',user)
 
     # Set up the messages with system and user content. Assistant content does
     # not seem to work so well.
@@ -118,6 +122,7 @@ docstring:
         ),
     )
     docstring = response["message"]["content"]
+    logging.info('raw_output=',user)
 
     # Fix up the reply including the docstring:
     tag = "docstring:"
