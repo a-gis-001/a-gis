@@ -1,13 +1,16 @@
 def clean(*, docstring: str):
     import re
 
+    # Clean preceding blank whitespace.
+    docstring = re.sub(r"^\s*$", "", docstring, flags=re.M)
+
     # Pattern to match outer triple quotes and optional ```python``` markers
     pattern = r'^\s*("""|```python\n?)([\s\S]*?)(\1|```)\s*$'
     match = re.match(pattern, docstring)
-
     if match:
         docstring = match.group(2)
 
+    # Remove more complex nested stuff.
     def __maybe_block(line):
         return (
             line.lstrip().startswith("```")
