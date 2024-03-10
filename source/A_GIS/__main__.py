@@ -137,8 +137,13 @@ def docstring(name: "unit name"):
     )
     console.print(panel)
 
+    console.print(f"Writing new docstring to {path}...")
     code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)
+
+    console.print(f"updating A_GIS at root={root}...")
+    tree = A_GIS.Code.Tree.recurse(path=root)
+    A_GIS.Code.Tree.update(tree=tree)
 
     # Use the console to render the output inside a box, capturing the result
     root = A_GIS.Code.find_root(path=path)
