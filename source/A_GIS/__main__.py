@@ -84,20 +84,19 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
 cli.add_command(update)
 
 
-# Define the name command.
+# Define the move command.
 @click.command()
 @A_GIS.Cli.register
-def name(path: "path to code to determine name"):
-    import A_GIS.Code.Unit.Name.init_from_path
-    import pathlib
+def move(old: "old unit name",new:"new unit name"):
+    """Move an A_GIS functional unit from one name/location to another"""
+    import A_GIS.Code.Unit.move
 
-    path = pathlib.Path(path).resolve()
-    name = A_GIS.Code.Unit.Name.init_from_path(path=path)
     console = rich.console.Console(width=WIDTH)
-    console.print(name)
+    console.print(f'Moving old={old} to new={new}')
+    old_path,new_path = A_GIS.Code.Unit.move(old=old, new=new)
+    console.print(f'Finished with old_path={old_path} to new_path={new_path}')
 
-
-cli.add_command(name)
+cli.add_command(move)
 
 # This is always a main.
 cli()

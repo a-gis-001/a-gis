@@ -31,7 +31,6 @@ def move(
 
     # Get the old path and the root.
     old_path = A_GIS.Code.Unit.Name.to_path(name=old)
-    print("old_path", old_path)
     if not old_path.exists():
         raise ValueError(f"Could not find file {old_path} for {old}!")
     root = A_GIS.Code.find_root(path=old_path)
@@ -81,3 +80,4 @@ def move(
 
     # Finally move the old path.
     shutil.move(old_path, new_path)
+    return old_path,new_path
