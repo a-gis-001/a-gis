@@ -108,7 +108,8 @@ cli.add_command(catalog)
 # Define the docstring command.
 @click.command()
 @A_GIS.Cli.register
-def docstring(name: "unit name to replace docstring"):
+def docstring(name: "unit name"):
+    """Use AI to replace a docstring"""
     import A_GIS.Code.Unit.Name.init_from_path
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.File.read
