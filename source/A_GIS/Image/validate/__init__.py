@@ -1,4 +1,4 @@
-def validate(image: type['PIL.Image.Image']):
+def validate(image: type["PIL.Image.Image"]):
     """Checks the provided image for A_GIS standards
 
     This function checks whether an image object has any associated metadata.

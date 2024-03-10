@@ -1,11 +1,16 @@
 def function(func):
+    """Decorator to enable logging
+    
+    Use this to enable an AI-enabled timing capability.
+    """
+
     import functools
     import A_GIS.Log.init
 
     A_GIS.Log.init()
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def __wrapper(*args, **kwargs):
         import logging
         import A_GIS.Text.hash
         import json
@@ -28,4 +33,4 @@ def function(func):
 
         return result
 
-    return wrapper
+    return __wrapper
