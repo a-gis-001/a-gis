@@ -1,6 +1,6 @@
 def function(func):
     """Decorator to enable logging
-    
+
     This decorator logs the signature of the input arguments and output result of
     the decorated function. It also hashes the signature using `A_GIS.Text.hash`
     for unique identification. The logger is initialized with `A_GIS.Log.init()`.

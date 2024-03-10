@@ -31,6 +31,8 @@ with the following elements
     5. List what the function raises.
     6. List the return value.
 
+REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
+
 Here is an example.
 
 ### Instruction:
@@ -86,8 +88,6 @@ docstring:
 
     Returns:
         TempDir: An instance of the TempDir class representing the created directory.
-
-REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
 
 """
 
