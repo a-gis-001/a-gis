@@ -1,3 +1,6 @@
+import A_GIS.Log.function
+
+@A_GIS.Log.function
 def get(
     *, code: str, clean: bool = True, only_description: bool = False
 ) -> str | None:

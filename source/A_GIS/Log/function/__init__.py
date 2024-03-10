@@ -1,8 +1,10 @@
 def function(func):
+    import functools
     import A_GIS.Log.init
 
     A_GIS.Log.init()
 
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         import logging
         import A_GIS.Text.hash

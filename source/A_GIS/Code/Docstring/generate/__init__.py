@@ -10,8 +10,11 @@ def generate(
     num_ctx=10000,
     num_predict=1000,
     mirostat=2,
-):
-    """Generate a docstring for code using AI."""
+) -> str:
+    """Generate a docstring for code using AI
+
+    Details
+    """
     import ollama
     import A_GIS.Text.add_indent
     import A_GIS.Code.Docstring.clean
