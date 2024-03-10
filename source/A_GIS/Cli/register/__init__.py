@@ -3,14 +3,14 @@ def register(func):
 
     Example usage:
 
-	@click.command()
-	@A_GIS.Cli.register
-	def main(module_name: str, *, methods: "show methods" = True, more: "show more including full docstring" = False):
-		import importlib
-		import rich
-		module = importlib.import_module(module_name)
-		rich.inspect(module, methods=methods, help=more)
-	main()
+        @click.command()
+        @A_GIS.Cli.register
+        def main(module_name: str, *, methods: "show methods" = True, more: "show more including full docstring" = False):
+                import importlib
+                import rich
+                module = importlib.import_module(module_name)
+                rich.inspect(module, methods=methods, help=more)
+        main()
 
     """
     import rich_click as click
