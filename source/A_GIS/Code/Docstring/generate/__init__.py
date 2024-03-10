@@ -95,7 +95,8 @@ REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
     user = f"name:\n    {name}code:\n{indented_code}\n"
 
     import logging
-    logging.info('raw_input=',user)
+
+    logging.info("raw_input={user}")
 
     # Set up the messages with system and user content. Assistant content does
     # not seem to work so well.
@@ -122,7 +123,7 @@ REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
         ),
     )
     docstring = response["message"]["content"]
-    logging.info('raw_output=',user)
+    logging.info(f"raw_output={docstring}")
 
     # Fix up the reply including the docstring:
     tag = "docstring:"
