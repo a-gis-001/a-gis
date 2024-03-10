@@ -1,5 +1,5 @@
-A\_GIS.File.Directory package
-=============================
+A\_GIS.Text.add\_indent package
+===============================
 
 Subpackages
 -----------
@@ -7,12 +7,12 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   A_GIS.File.Directory.init
+   A_GIS.Text.add_indent.tests
 
 Module contents
 ---------------
 
-.. automodule:: A_GIS.File.Directory
+.. automodule:: A_GIS.Text.add_indent
    :members:
    :undoc-members:
    :show-inheritance:

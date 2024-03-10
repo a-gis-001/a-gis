@@ -8,9 +8,10 @@ Subpackages
    :maxdepth: 4
 
    A_GIS.Math.Statistics.Distribution.Mixture
-   A_GIS.Math.Statistics.Distribution.Triangular
+   A_GIS.Math.Statistics.Distribution.init
    A_GIS.Math.Statistics.Distribution.plot
    A_GIS.Math.Statistics.Distribution.sample
+   A_GIS.Math.Statistics.Distribution.triangular
 
 Module contents
 ---------------

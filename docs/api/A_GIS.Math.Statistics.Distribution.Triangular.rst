@@ -1,18 +1,10 @@
-A\_GIS.Math.Statistics.Distribution.Triangular package
+A\_GIS.Math.Statistics.Distribution.triangular package
 ======================================================
-
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   A_GIS.Math.Statistics.Distribution.Triangular.new
 
 Module contents
 ---------------
 
-.. automodule:: A_GIS.Math.Statistics.Distribution.Triangular
+.. automodule:: A_GIS.Math.Statistics.Distribution.triangular
    :members:
    :undoc-members:
    :show-inheritance:

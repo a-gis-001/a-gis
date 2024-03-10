@@ -1,5 +1,5 @@
-A\_GIS.File.Directory package
-=============================
+A\_GIS.Code.Unit.Name.fix package
+=================================
 
 Subpackages
 -----------
@@ -7,12 +7,12 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   A_GIS.File.Directory.init
+   A_GIS.Code.Unit.Name.fix.tests
 
 Module contents
 ---------------
 
-.. automodule:: A_GIS.File.Directory
+.. automodule:: A_GIS.Code.Unit.Name.fix
    :members:
    :undoc-members:
    :show-inheritance:

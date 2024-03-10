@@ -1,5 +1,5 @@
-A\_GIS.File.Directory package
-=============================
+A\_GIS.Log package
+==================
 
 Subpackages
 -----------
@@ -7,12 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   A_GIS.File.Directory.init
+   A_GIS.Log.function
+   A_GIS.Log.init
 
 Module contents
 ---------------
 
-.. automodule:: A_GIS.File.Directory
+.. automodule:: A_GIS.Log
    :members:
    :undoc-members:
    :show-inheritance:

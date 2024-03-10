@@ -7,6 +7,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   A_GIS.Code.Docstring.clean
+   A_GIS.Code.Docstring.generate
    A_GIS.Code.Docstring.get
    A_GIS.Code.Docstring.modify
 

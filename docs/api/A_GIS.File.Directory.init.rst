@@ -1,4 +1,4 @@
-A\_GIS.File.Directory.make package
+A\_GIS.File.Directory.init package
 ==================================
 
 Subpackages
@@ -7,12 +7,12 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   A_GIS.File.Directory.make.tests
+   A_GIS.File.Directory.init.tests
 
 Module contents
 ---------------
 
-.. automodule:: A_GIS.File.Directory.make
+.. automodule:: A_GIS.File.Directory.init
    :members:
    :undoc-members:
    :show-inheritance:
