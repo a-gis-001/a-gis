@@ -56,7 +56,7 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     console = rich.console.Console(width=WIDTH)
     root = A_GIS.Code.find_root(path=pathlib.Path(root))
 
-    console.print(f"updating A_GIS at root={root}...")
+    console.print(f"updating A_GIS at root={root} ...")
     tree = A_GIS.Code.Tree.recurse(path=root)
     A_GIS.Code.Tree.update(tree=tree)
 
@@ -114,6 +114,7 @@ def docstring(name: "unit name"):
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.File.read
     import sys
+    import A_GIS.Code.find_root
     import A_GIS.Code.Docstring.generate
     import A_GIS.Code.Docstring.modify
     import pathlib
@@ -128,7 +129,7 @@ def docstring(name: "unit name"):
         if path.is_dir():
             path /= "__init__.py"
     console = rich.console.Console(width=WIDTH)
-    console.print(f"Replacing docstring for unit name={name} at path={path}...")
+    console.print(f"Replacing docstring for unit name={name} at path={path} ...")
 
     code = A_GIS.File.read(file=path)
     docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
@@ -137,11 +138,12 @@ def docstring(name: "unit name"):
     )
     console.print(panel)
 
-    console.print(f"Writing new docstring to {path}...")
+    console.print(f"Writing new docstring to {path} ...")
     code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)
 
-    console.print(f"updating A_GIS at root={root}...")
+    root = A_GIS.Code.find_root(path=path)
+    console.print(f"updating A_GIS at root={root} ...")
     tree = A_GIS.Code.Tree.recurse(path=root)
     A_GIS.Code.Tree.update(tree=tree)
 

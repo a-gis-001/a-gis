@@ -21,7 +21,6 @@ def generate(
 
     # Create the system prompt.
     system = f"""
-## DIRECTIVE:
 
 Given a Python function, generate and return a high-quality docstring
 with the following elements
@@ -33,7 +32,7 @@ with the following elements
     5. List what the function raises.
     6. List the return value.
 
-## EXAMPLE:
+Here is an example.
 
 ### Instruction:
 
