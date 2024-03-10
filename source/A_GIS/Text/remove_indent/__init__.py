@@ -1,4 +1,4 @@
-def remove_indent(*, text:str):
+def remove_indent(*, text: str):
     """Remove leading whitespace indentation from a block of text
 
     This function takes a multi-line string as input and removes any common leading whitespace
