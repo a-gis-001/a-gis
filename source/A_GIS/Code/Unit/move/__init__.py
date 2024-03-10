@@ -1,38 +1,83 @@
 def move(
     *,
-    root: type["pathlib.Path"],
-    old: type["pathlib.Path"],
-    new: type["pathlib.Path"],
+    old: str,
+    new: str,
 ):
+    """Move and rename an A_GIS code functional unit
 
+    This function requires the input old and new to be valid full
+    names, e.g. A_GIS.X.Y.z.
+
+    The old one must exist.
+
+    """
     import pathlib
     import A_GIS.File.read
     import A_GIS.File.write
     import shutil
+    import A_GIS.Code.find_root
+    import A_GIS.Code.Unit.Name.to_path
+    import A_GIS.Code.Unit.Name.check
 
-    if not old.is_dir():
-        raise ValueError(f"{old} must be a directory")
+    # Check the input.
+    if not A_GIS.Code.Unit.Name.check(name=old):
+        raise ValueError(
+            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {old} must be a proper functional unit name."
+        )
+    if not A_GIS.Code.Unit.Name.check(name=new):
+        raise ValueError(
+            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name be a proper functional unit name."
+        )
 
-    # Recursively find all Python files and replace.
-    old2 = ".".join(old.with_suffix("").parts)
-    new2 = ".".join(new.with_suffix("").parts)
+    # Get the old path and the root.
+    old_path = A_GIS.Code.Unit.Name.to_path(name=old)
+    print("old_path", old_path)
+    if not old_path.exists():
+        raise ValueError(f"Could not find file {old_path} for {old}!")
+    root = A_GIS.Code.find_root(path=old_path)
+
+    # Replace name in old.
+    old_name = old.split(".")[-1]
+    new_name = new.split(".")[-1]
+    old_file = old_path / "__init__.py"
+    code = A_GIS.File.read(file=old_file)
+    code = code.replace("def " + old_name, "def " + new_name, 1)
+    A_GIS.File.write(content=code, file=old_file)
+
+    # Replace fully qualified names: old to new.
     for file in root.rglob("*.py"):
         code = A_GIS.File.read(file=file)
-        code = code.replace(old2, new2)
+        code = code.replace(old, new)
         A_GIS.File.write(content=code, file=file)
 
-    # Replace name in parent.
-    parent = old.parent / "__init__.py"
-    old_name = old.with_suffix("").name
-    new_name = new.with_suffix("").name
-    code = A_GIS.File.read(file=parent)
-    code = code.replace(old_name, new_name)
-    A_GIS.File.write(content=code, file=parent)
+    # Remove the old name from the old package.
+    old_package = old_path.parent / "__init__.py"
+    code = A_GIS.File.read(file=old_package)
+    code = code.replace("from ." + old_name + " import " + old_name, "")
+    A_GIS.File.write(content=code, file=old_package)
 
-    # Replace name in actual.
-    actual = old / "__init__.py"
-    code = A_GIS.File.read(file=actual)
-    code = code.replace("def " + old_name, "def " + new_name)
-    A_GIS.File.write(content=code, file=actual)
+    # Get the new path.
+    new_path = A_GIS.Code.Unit.Name.to_path(name=new)
+    if new_path.exists():
+        raise ValueError("Cannot move {old} to existing path {new_path}")
 
-    shutil.move(old, new)
+    # Traverse through the new package hierarchy and make sure everything
+    # exists.
+    package_path = new_path.parent
+    while package_path.parent != root:
+        package_file = package_path / "__init__.py"
+        if not package_file.exists():
+            A_GIS.File.touch(file=package_file)
+            code = A_GIS.File.read(file=package_file)
+            code += (
+                "\n"
+                + "from ."
+                + package_path.name
+                + " import "
+                + package_path.name
+            )
+            A_GIS.File.write(content=code, file=package_file)
+        package_path = package_path.parent
+
+    # Finally move the old path.
+    shutil.move(old_path, new_path)

@@ -5,10 +5,10 @@ from ._has_imports import _has_imports
 from ._parse_first_pass import _parse_first_pass
 from ._wrap_single_block import _wrap_single_block
 from .check import check
-from .find_root import find_root
 from .get import get
 from .move import move
 from .to_string import to_string
+from .touch import touch
 
 # Classes
 from ._Unit import _Unit
