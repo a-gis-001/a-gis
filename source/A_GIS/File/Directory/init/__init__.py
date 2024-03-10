@@ -1,6 +1,5 @@
 def init(*, path: str = None, scoped_delete: bool = False):
-    """
-    Creates a directory object that may delete itself when it goes out of scope.
+    """Creates a directory object that may delete itself when it goes out of scope.
 
     This function returns an instance of the nested class `TempDir`. This class
     provides functionality to create a temporary directory that can be set to

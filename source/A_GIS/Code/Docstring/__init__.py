@@ -1,6 +1,5 @@
 # Functions
+from .clean import clean
+from .generate import generate
 from .get import get
 from .modify import modify
-
-# Packages
-from . import generate

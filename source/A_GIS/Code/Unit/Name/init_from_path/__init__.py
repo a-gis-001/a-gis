@@ -1,14 +1,12 @@
 def init_from_path(*, path: type["pathlib.Path"]):
-    """Initialize an A_GIS functional code unit from a path
+    """Initialize an A_GIS functional code unit from a path"""
+    import A_GIS.Code.guess_name
+    import A_GIS.Code.Unit.Name.check
 
-    Requirements:
-       - Path must exist.
+    name = A_GIS.Code.guess_name(path=path)
+    if not A_GIS.Code.Unit.Name.check(name=name):
+        raise ValueError(
+            f"Name {name} derived from {path} does not satisfy A_GIS standard!"
+        )
 
-    """
-    import A_GIS.Code.find_root
-
-    root = A_GIS.Code.find_root(path=path)
-    parts = list(path.resolve().relative_to(root.resolve().parent).parts)
-    if parts[-1].startswith("__"):
-        parts.pop()
-    return ".".join(parts)
+    return name
