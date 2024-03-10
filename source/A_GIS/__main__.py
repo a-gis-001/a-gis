@@ -50,6 +50,7 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     import subprocess
     import pathlib
     import rich
+    import A_GIS.Cli.get_git_status
 
     # Perform the update.
     console = rich.console.Console(width=WIDTH)
@@ -59,26 +60,8 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     tree = A_GIS.Code.Tree.recurse(path=root)
     A_GIS.Code.Tree.update(tree=tree)
 
-    command = ["git", "-c", "color.ui=always", "status", f"{root}"]
-    completed_process = subprocess.run(
-        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-    )
-
-    # Get the command output
-    command_output = completed_process.stdout
-    lines = command_output.splitlines()
-    stripped_lines = [line.rstrip() for line in lines]
-    command_output = "\n".join(stripped_lines)
-
-    command_output = command_output.replace("\t", "    ")
-    # Create a Text object with the command output for styling
-    output_text = rich.text.Text.from_ansi(command_output)
-    panel = rich.panel.Panel(
-        output_text, title=f"git status {root}", expand=True, border_style="bold cyan"
-    )
-
     # Use the console to render the output inside a box, capturing the result
-    console.print(panel)
+    console.print(A_GIS.Cli.get_git_status(root=root))
 
 
 cli.add_command(update)
@@ -87,16 +70,83 @@ cli.add_command(update)
 # Define the move command.
 @click.command()
 @A_GIS.Cli.register
-def move(old: "old unit name",new:"new unit name"):
+def move(old: "old unit name", new: "new unit name"):
     """Move an A_GIS functional unit from one name/location to another"""
     import A_GIS.Code.Unit.move
 
     console = rich.console.Console(width=WIDTH)
-    console.print(f'Moving old={old} to new={new}')
-    old_path,new_path = A_GIS.Code.Unit.move(old=old, new=new)
-    console.print(f'Finished with old_path={old_path} to new_path={new_path}')
+    console.print(f"Moving old={old} to new={new}")
+    old_path, new_path = A_GIS.Code.Unit.move(old=old, new=new)
+    console.print(f"Finished with old_path={old_path} to new_path={new_path}")
+
 
 cli.add_command(move)
+
+
+# Define the catalog command.
+@click.command()
+@A_GIS.Cli.register
+def catalog(args: bool = True):
+    """Show a catalog of all of A_GIS"""
+    import A_GIS.catalog
+    import A_GIS.Code.highlight
+
+    console = rich.console.Console(width=WIDTH)
+    index = 0
+    for code in A_GIS.catalog(include_args=args):
+        index += 1
+        output_text = rich.text.Text.from_ansi(A_GIS.Code.highlight(code=code))
+        name, _ = code.split("(", 1)
+        rule = rich.rule.Rule(align="left", style="bright white", title=str(index))
+        console.print(rule)
+        console.print(code, "\n")
+
+
+cli.add_command(catalog)
+
+
+# Define the docstring command.
+@click.command()
+@A_GIS.Cli.register
+def docstring(name: "unit name to replace docstring"):
+    import A_GIS.Code.Unit.Name.init_from_path
+    import A_GIS.Code.Unit.Name.to_path
+    import A_GIS.File.read
+    import sys
+    import A_GIS.Code.Docstring.generate
+    import A_GIS.Code.Docstring.modify
+    import pathlib
+    import A_GIS.File.write
+    import A_GIS.Cli.get_git_status
+
+    if "." in name:
+        path = A_GIS.Code.Unit.Name.to_path(name=name) / "__init__.py"
+    else:
+        path = pathlib.Path(name)
+        name = A_GIS.Code.Unit.Name.init_from_path(path=path)
+        if path.is_dir():
+            path /= "__init__.py"
+    console = rich.console.Console(width=WIDTH)
+    console.print(f"Replacing docstring for unit name={name} at path={path}...")
+
+    code = A_GIS.File.read(file=path)
+    docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
+    panel = rich.panel.Panel(
+        docstring, title=f"new docstring", expand=True, border_style="bold cyan"
+    )
+    console.print(panel)
+
+    code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
+    A_GIS.File.write(content=code, file=path)
+
+    # Use the console to render the output inside a box, capturing the result
+    root = A_GIS.Code.find_root(path=path)
+    panel = A_GIS.Cli.get_git_status(root=root)
+    console.print(panel)
+
+
+cli.add_command(docstring)
+
 
 # This is always a main.
 cli()

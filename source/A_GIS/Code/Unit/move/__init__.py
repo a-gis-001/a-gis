@@ -80,4 +80,4 @@ def move(
 
     # Finally move the old path.
     shutil.move(old_path, new_path)
-    return old_path,new_path
+    return old_path, new_path
