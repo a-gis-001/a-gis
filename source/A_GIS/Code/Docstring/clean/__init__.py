@@ -1,5 +1,10 @@
 def clean(*, docstring: str):
-    """This function cleans a given docstring by removing leading and trailing blank whitespace, outer triple quotes, optional ```python``` markers, and more complex nested code blocks. It uses regular expressions to match patterns in the input string and manipulate them accordingly. The cleaned version of the input docstring is then returned as output.
+    """Cleans a docstring from things that prevent
+
+    Removing leading and trailing blank whitespace, outer triple quotes, optional
+    ```python``` markers, and more complex nested code blocks. It uses regular
+    expressions to match patterns in the input string and manipulate them accordingly.
+    The cleaned version of the input docstring is then returned as output.
 
     Args:
         docstring (str): The input docstring to be cleaned.
@@ -11,7 +16,10 @@ def clean(*, docstring: str):
         None
 
     Notes:
-        This function assumes that complex nested code blocks are represented by triple quotes or ```python``` markers, and that these blocks do not appear within the first few lines or last few lines of the docstring. If this assumption is incorrect, the cleaning process might not work as expected.
+        This function assumes that complex nested code blocks are represented by
+        triple quotes or ```python``` markers, and that these blocks do not appear
+        within the first few lines or last few lines of the docstring. If this
+        assumption is incorrect, the cleaning process might not work as expected.
     """
 
     import re
