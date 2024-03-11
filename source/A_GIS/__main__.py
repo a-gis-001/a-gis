@@ -163,7 +163,7 @@ def touch(name: "unit name"):
     import A_GIS.Code.Unit.touch
     import os
     import subprocess
-    
+
     # Touch the file.
     console = rich.console.Console(width=WIDTH)
     console.print(f"Touching name={name}")
@@ -179,7 +179,8 @@ def touch(name: "unit name"):
     if "EDITOR" in os.environ:
         subprocess.run([os.environ.get("EDITOR"), str(path)])
     else:
-        console.print('TIP: Define environmental variable EDITOR to open touched file!')
+        console.print("TIP: Define environmental variable EDITOR to open touched file!")
+
 
 cli.add_command(touch)
 
@@ -193,7 +194,9 @@ def name(description: "unit description", tries: "number of tries" = 3):
 
     # Try three times.
     console = rich.console.Console(width=WIDTH)
-    console.print(f"Initiating AI name generation with description='{description}' tries={tries}")
+    console.print(
+        f"Initiating AI name generation with description='{description}' tries={tries}"
+    )
     names = []
     for i in range(tries):
         name = A_GIS.Code.Unit.Name.generate(description=description, temperature=0.9)
@@ -207,7 +210,7 @@ def name(description: "unit description", tries: "number of tries" = 3):
     name = A_GIS.Code.Unit.Name.generate(
         description=description, suggestions=names, temperature=0.5
     )
-    console.print(f'name={name}')
+    console.print(f"name={name}")
 
 
 cli.add_command(name)

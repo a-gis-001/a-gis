@@ -130,6 +130,10 @@ docstring:
     t = docstring.find(tag)
     if t >= 0:
         docstring = docstring[t + len(tag) :]
+    tag = "### Instruction:"
+    t = docstring.find(tag)
+    if t >= 0:
+        docstring = docstring[:t]
 
     # Return the content after cleaning the docstring. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
