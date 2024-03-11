@@ -1,4 +1,23 @@
 def init_from_file(*, file: type["pathlib.Path"]):
+    """Initializes a tree object from a given Python file.
+
+    This function reads the content of a Python file and guesses its type (module or script),
+    name and full name based on its path. It then initializes a tree object with this information
+    and the code read from the file. If the provided file is a directory, it assumes an '__init__.py'
+    file exists in that directory. If the file does not exist, it raises a ValueError.
+
+    Args:
+        file (pathlib.Path): The path to the Python file to be read and used to initialize
+                              the tree object.
+
+    Raises:
+        ValueError: If the provided file does not exist.
+
+    Returns:
+        A_GIS.Code.Tree._Tree: An instance of the Tree class representing the code structure
+                                 from the given Python file.
+    """
+
     import A_GIS.Code.Tree._Tree
     import A_GIS.Code.Tree._Visitor
     import A_GIS.File.read
