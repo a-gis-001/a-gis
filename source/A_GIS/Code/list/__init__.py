@@ -1,4 +1,22 @@
 def list(*, package_name="A_GIS", filters=["_", "tests"]):
+    """Lists all modules and sub-packages within a specified package, excluding those that start with certain filter strings.
+
+    This function returns a dictionary where each key is the full name of a module or sub-package within the specified package,
+    and each value is the file path to that module or sub-package. The modules and sub-packages are filtered out if their names
+    start with any of the provided filter strings.
+
+    Args:
+        package_name (str, optional): The name of the package to search within. Defaults to "A_GIS".
+        filters (list[str], optional): A list of strings that module and sub-package names should not start with.
+                                       Defaults to ["_", "tests"].
+    Raises:
+        None
+
+    Returns:
+        dict: A dictionary mapping full module/sub-package names to their file paths within the specified package, excluding any
+              modules or sub-packages that start with any of the filter strings.
+    """
+
     import importlib
     import pathlib
     import os
