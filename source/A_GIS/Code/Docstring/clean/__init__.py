@@ -1,4 +1,14 @@
 def clean(*, docstring: str):
+    """Cleans a given docstring by removing leading and trailing blank whitespace,
+    outer triple quotes, and optional ```python``` markers. It also removes more complex nested code blocks.
+
+    Args:
+        docstring (str): The input docstring to be cleaned.
+
+    Returns:
+        str: The cleaned version of the input docstring.
+    """
+
     import re
 
     # Clean preceding blank whitespace.
