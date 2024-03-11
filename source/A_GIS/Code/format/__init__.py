@@ -1,4 +1,20 @@
 def format(code: str) -> str:
+    """Formats Python code using the autopep8 and black libraries, ensuring consistent code style.
+
+    This function takes a string of Python code as input, formats it with autopep8 and black, and returns the formatted code.
+
+    Args:
+        code (str): The Python code to be formatted.
+
+    Raises:
+        None
+
+    Returns:
+        str: The formatted Python code.
+
+    Note: This function assumes that autopep8 and black are installed in the environment where it is run. If not, it may raise an ImportError.
+    """
+
     import autopep8
     import black
     import re
