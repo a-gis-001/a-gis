@@ -3,6 +3,24 @@ def to_string(
     unit: type["A_GIS.Code.Unit._Unit"],
     start_index: int = 0,
 ):
+    """Converts a code unit into a string representation with line numbers and special markers for different sections of the code.
+
+    The function takes in a `unit`, which should be an instance of `A_GIS.Code.Unit._Unit`,
+    and an optional `start_index` to start numbering the lines (default is 0). It returns a string representation of the code unit.
+
+    `A_GIS.Code.highlight` module is imported for syntax highlighting of the code. The function adds special markers like "|TYP|", "|DEF|", and "|DOC|" to differentiate between different sections of the code.
+
+    Args:
+        unit (type["A_GIS.Code.Unit._Unit"]): An instance of `A_GIS.Code.Unit._Unit` that represents a code unit.
+        start_index (int, optional): The starting number for line numbers. Default is 0.
+
+    Raises:
+        None
+
+    Returns:
+        str: A string representation of the code unit with line numbers and special markers.
+    """
+
     import A_GIS.Code.highlight
 
     # Create a border.
