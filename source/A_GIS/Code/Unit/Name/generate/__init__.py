@@ -5,7 +5,6 @@ def generate(
     *,
     description: str,
     model="deepseek-coder:33b",
-    tries=None,
     temperature=0.5,
     num_ctx=10000,
     num_predict=50,
@@ -13,18 +12,11 @@ def generate(
     suggestions=[],
 ):
     """Generate an A_GIS functional unit name using AI."""
-    # Save the arguments for recursion.
-    current_args = locals().copy()
-
     import ollama
     import re
     import A_GIS.catalog
     import A_GIS.Text.add_indent
     import A_GIS.Code.Unit.Name.fix
-
-    # Quick return if we are done trying.
-    if tries == 0:
-        return []
 
     # Create a list of examples.
     example_list = A_GIS.catalog(
@@ -92,15 +84,9 @@ Shorter is better but you never respond with an empty result!
         ),
     )
 
-    # Parse out the content.
+    # Parse out the content and return a result.
     content = response["message"]["content"]
     matches = re.findall(r"(A_GIS\.[A-Za-z_\.]+)", content)
     result = "" if len(matches) == 0 else matches[0]
     result = A_GIS.Code.Unit.Name.fix(name=result)
-
-    # Return a scalar or list if in keep trying mode.
-    if tries is None:
-        return result
-    else:
-        current_args["tries"] = tries - 1
-        return [result] + generate(**current_args)
+    return result

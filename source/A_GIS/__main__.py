@@ -120,7 +120,9 @@ def docstring(name: "unit name"):
     import pathlib
     import A_GIS.File.write
     import A_GIS.Cli.get_git_status
+    import A_GIS.Cli.update_and_show_git_status
 
+    # Get the path and name.
     if "." in name:
         path = A_GIS.Code.Unit.Name.to_path(name=name) / "__init__.py"
     else:
@@ -131,6 +133,7 @@ def docstring(name: "unit name"):
     console = rich.console.Console(width=WIDTH)
     console.print(f"Replacing docstring for unit name={name} at path={path} ...")
 
+    # Generate a docstring.
     code = A_GIS.File.read(file=path)
     docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
     panel = rich.panel.Panel(
@@ -138,23 +141,76 @@ def docstring(name: "unit name"):
     )
     console.print(panel)
 
+    # Write the new docstring into the file.
     console.print(f"Writing new docstring to {path} ...")
     code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)
 
+    # Update all the files, doing formatting and performing checks.
     root = A_GIS.Code.find_root(path=path)
-    console.print(f"updating A_GIS at root={root} ...")
-    tree = A_GIS.Code.Tree.recurse(path=root)
-    A_GIS.Code.Tree.update(tree=tree)
-
-    # Use the console to render the output inside a box, capturing the result
-    root = A_GIS.Code.find_root(path=path)
-    panel = A_GIS.Cli.get_git_status(root=root)
+    panel = A_GIS.Cli.update_and_show_git_status(root=root)
     console.print(panel)
 
 
 cli.add_command(docstring)
 
+
+# Define the touch command.
+@click.command()
+@A_GIS.Cli.register
+def touch(name: "unit name"):
+    """Create a new unit"""
+    import A_GIS.Code.Unit.touch
+    import os
+    import subprocess
+    
+    # Touch the file.
+    console = rich.console.Console(width=WIDTH)
+    console.print(f"Touching name={name}")
+    path = A_GIS.Code.Unit.touch(name=name)
+
+    # Update all the files, doing formatting and performing checks.
+    root = A_GIS.Code.find_root(path=path)
+    console.print(f"Updating A_GIS at root={root} ...")
+    panel = A_GIS.Cli.update_and_show_git_status(root=root)
+    console.print(panel)
+
+    # Open in the editor if environment variable defined.
+    if "EDITOR" in os.environ:
+        subprocess.run([os.environ.get("EDITOR"), str(path)])
+    else:
+        console.print('TIP: Define environmental variable EDITOR to open touched file!')
+
+cli.add_command(touch)
+
+
+# Define the name command.
+@click.command()
+@A_GIS.Cli.register
+def name(description: "unit description", tries: "number of tries" = 3):
+    """Generate a new name from a description"""
+    import A_GIS.Code.Unit.Name.generate
+
+    # Try three times.
+    console = rich.console.Console(width=WIDTH)
+    console.print(f"Initiating AI name generation with description='{description}' tries={tries}")
+    names = []
+    for i in range(tries):
+        name = A_GIS.Code.Unit.Name.generate(description=description, temperature=0.9)
+        console.print(f"AI generated name={name}")
+        if len(name) > len("A_GIS."):
+            names.append(name)
+        else:
+            console.print(f"Discarding name={name} for improper format")
+
+    console.print(f"Entering final name selection with suggestions={names}")
+    name = A_GIS.Code.Unit.Name.generate(
+        description=description, suggestions=names, temperature=0.5
+    )
+    console.print(f'name={name}')
+
+
+cli.add_command(name)
 
 # This is always a main.
 cli()
