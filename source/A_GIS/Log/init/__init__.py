@@ -1,8 +1,4 @@
-def init(
-    *,
-    filename="app.log",
-    format="%(asctime)s %(name)s - %(levelname)s - %(message)s",
-):
+def init(*args, **kwargs):
     """Initializes a logging object with a specified filename and log format.
 
     This function initializes a Logger instance using the provided file name and log format string.
@@ -21,4 +17,4 @@ def init(
 
     import A_GIS.Log._Log
 
-    return A_GIS.Log._Log(filename, format)
+    A_GIS.Log._Log().logger.info(*args, **kwargs)

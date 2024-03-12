@@ -21,13 +21,9 @@ def function(func):
     # Define the logging wrapper for the decorator.
     @functools.wraps(func)
     def __wrapper(*args, **kwargs):
-        import logging
         import A_GIS.Text.hash
         import json
         import A_GIS.Log.init
-
-        # Initialize the logger.
-        A_GIS.Log.init()
 
         # Log the signature on input.
         signature = json.dumps(
@@ -38,15 +34,14 @@ def function(func):
                 "kwargs": f"{kwargs}",
             }
         )
-        s_hash = A_GIS.Text.hash(text=signature)
-        logging.info(f"BEGIN_A_GIS({s_hash}) {signature}")
+        tracking_hash = A_GIS.Text.hash(text=signature)
+        A_GIS.Log.init(tracking_hash_on_entry=tracking_hash, args=args, kwargs=kwargs)
 
         # Call the function.
-        result = func(*args, **kwargs)
+        result = func(*args, **kwargs, __tracking_hash=tracking_hash)
 
         # Log the output for returning result.
-        returned = json.dumps({"result": f"{result}"})
-        logging.info(f"END_A_GIS({s_hash}) {returned}")
+        A_GIS.Log.init(tracking_hash_on_exit=tracking_hash, output=result)
         return result
 
     return __wrapper

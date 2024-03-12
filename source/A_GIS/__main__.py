@@ -2,6 +2,7 @@ import rich_click as click
 import A_GIS.Cli.register
 import A_GIS.Cli.get_console_width
 import rich.traceback
+import rich
 
 rich.traceback.install()
 
@@ -113,7 +114,6 @@ def docstring(name: "unit name"):
     import A_GIS.Code.Unit.Name.init_from_path
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.File.read
-    import sys
     import A_GIS.Code.find_root
     import A_GIS.Code.Docstring.generate
     import A_GIS.Code.Docstring.modify
@@ -214,6 +214,34 @@ def name(description: "unit description", tries: "number of tries" = 3):
 
 
 cli.add_command(name)
+
+# Define the logserver command.
+@click.command()
+@A_GIS.Cli.register
+def logserver(port: "port to use"=9999):
+    import socket
+    import os
+
+    host,port = os.environ.get("A_GIS_LOGSERVER", 'localhost:9999').split(':')
+    port = int(port)
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        console = rich.console.Console(width=WIDTH)
+        console.print(f"Log server listening on host {host} port {port} ...")
+        server_socket.bind((host, port))
+        server_socket.listen()
+        
+        conn, addr = server_socket.accept()
+        with conn:
+            console.print(f"Connected by {addr}")
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                # Decode and print the log message
+                console.print(data.decode("utf-8"))
+
+cli.add_command(logserver)
 
 # This is always a main.
 cli()
