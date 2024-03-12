@@ -62,20 +62,17 @@ def move(
 
     # Traverse through the new package hierarchy and make sure everything
     # exists.
+    child_path = new_path
     package_path = new_path.parent
     while package_path.parent != root:
         package_file = package_path / "__init__.py"
-        if not package_file.exists():
-            A_GIS.File.touch(file=package_file)
-            code = A_GIS.File.read(file=package_file)
-            code += (
-                "\n"
-                + "from ."
-                + package_path.name
-                + " import "
-                + package_path.name
-            )
-            A_GIS.File.write(content=code, file=package_file)
+        A_GIS.File.touch(path=package_file)
+        code = A_GIS.File.read(file=package_file)
+        code += (
+            "\n" + "from ." + child_path.name + " import " + child_path.name
+        )
+        A_GIS.File.write(content=code, file=package_file)
+        child_path = child_path.parent
         package_path = package_path.parent
 
     # Finally move the old path.
