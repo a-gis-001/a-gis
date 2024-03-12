@@ -20,10 +20,6 @@ def move(
     import A_GIS.Code.Unit.Name.check
 
     # Check the input.
-    if not A_GIS.Code.Unit.Name.check(name=old):
-        raise ValueError(
-            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {old} must be a proper functional unit name."
-        )
     if not A_GIS.Code.Unit.Name.check(name=new):
         raise ValueError(
             f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name be a proper functional unit name."

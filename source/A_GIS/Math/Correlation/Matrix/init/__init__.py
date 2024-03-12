@@ -1,6 +1,6 @@
 import typing
 
-def new(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
+def init(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
     """
     Return a correlation matrix data class from the upper triangular values.
 
@@ -51,6 +51,6 @@ def new(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
                 )
 
         def __repr__(self):
-            return f"A_GIS.Math.Statistics.CorrelationMatrix.new(size={size},values={values})"
+            return f"A_GIS.Math.Correlation.Matrix.init(size={size},values={values})"
 
     return _CorrMatrix(size, values)

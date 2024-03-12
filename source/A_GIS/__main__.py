@@ -74,11 +74,17 @@ cli.add_command(update)
 def move(old: "old unit name", new: "new unit name"):
     """Move an A_GIS functional unit from one name/location to another"""
     import A_GIS.Code.Unit.move
+    import A_GIS.Cli.update_and_show_git_status
 
     console = rich.console.Console(width=WIDTH)
     console.print(f"Moving old={old} to new={new}")
     old_path, new_path = A_GIS.Code.Unit.move(old=old, new=new)
     console.print(f"Finished with old_path={old_path} to new_path={new_path}")
+
+    # Update all the files, doing formatting and performing checks.
+    root = A_GIS.Code.find_root(path=old_path)
+    panel = A_GIS.Cli.update_and_show_git_status(root=root)
+    console.print(panel)
 
 
 cli.add_command(move)
