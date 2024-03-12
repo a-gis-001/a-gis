@@ -5,7 +5,7 @@ def fix(*, name: str):
             1. Parts separated with '.' as in Python.
             2. First part is 'A_GIS', always.
             3. Last part is a function name and is lower case with underscores '_' allowed.
-            4. Other parts are package names and are capitalized, first letter only.
+            4. Other parts are package names and are camel case.
             5. There are no underscores '_' in a package name.
             6. Package names are simple, generic nouns.
             7. The first word in a function name is a verb.
@@ -23,7 +23,7 @@ def fix(*, name: str):
     for i in range(1, len(parts) - 1):  # Exclude the first and last parts
         part = parts[i]
         part = part.replace("_", "")  # Remove underscores
-        part = part.capitalize()  # Capitalize first letter only
+        part = part[0].upper() + part[1:]  # Capitalize first letter always
         parts[i] = part
 
     # Ensure the last part (function name) is in lower case

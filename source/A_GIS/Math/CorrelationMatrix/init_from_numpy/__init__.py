@@ -1,6 +1,6 @@
-def from_numpy(*, matrix):
+def init_from_numpy(*, matrix):
     """Extract the upper triangular values from a NumPy matrix and return a CorrelationMatrix object."""
-    import A_GIS.Math.Correlation.Matrix.init
+    import A_GIS.Math.CorrelationMatrix.init
     import numpy
 
     if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
@@ -13,6 +13,6 @@ def from_numpy(*, matrix):
     upper_tri_values = matrix[upper_tri_indices]
 
     # Convert to a list and create a CorrelationMatrix object
-    return A_GIS.Math.Correlation.Matrix.init(
+    return A_GIS.Math.CorrelationMatrix.init(
         size=n, values=upper_tri_values.tolist()
     )

@@ -1,3 +1,3 @@
 # Packages
-from . import Correlation
-from . import Statistics
+from . import CorrelationMatrix
+from . import Distribution

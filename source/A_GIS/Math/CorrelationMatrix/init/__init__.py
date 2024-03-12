@@ -32,7 +32,7 @@ def init(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
 
         def __post_init__(self):
             import numpy
-            import A_GIS.Math.Statistics.CorrelationMatrix
+            import A_GIS.Math.CorrelationMatrix.to_numpy
 
             nv = len(self.values)
             nc = self.size * (self.size - 1) / 2
@@ -41,9 +41,7 @@ def init(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
                     f"Invalid number of values {nv} for the correlation coefficients for the matrix size={self.size}. Should be {nc}."
                 )
 
-            corr = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(
-                upper_tri=self
-            )
+            corr = A_GIS.Math.CorrelationMatrix.to_numpy(upper_tri=self)
             eigenvalues = numpy.linalg.eigvals(corr)
             if numpy.any(eigenvalues < 0):
                 raise ValueError(
@@ -51,6 +49,6 @@ def init(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
                 )
 
         def __repr__(self):
-            return f"A_GIS.Math.Correlation.Matrix.init(size={size},values={values})"
+            return f"A_GIS.Math.CorrelationMatrix.init(size={size},values={values})"
 
     return _CorrMatrix(size, values)

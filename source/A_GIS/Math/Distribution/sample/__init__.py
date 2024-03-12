@@ -34,7 +34,7 @@ def sample(
 
     import scipy
     import numpy
-    import A_GIS.Math.Statistics.CorrelationMatrix.to_numpy
+    import A_GIS.Math.CorrelationMatrix.to_numpy
 
     n = len(marginals)
     if n != correlation.size:
@@ -43,9 +43,7 @@ def sample(
         )
 
     # Create the full correlation correlation
-    np_matrix = A_GIS.Math.Statistics.CorrelationMatrix.to_numpy(
-        upper_tri=correlation
-    )
+    np_matrix = A_GIS.Math.CorrelationMatrix.to_numpy(upper_tri=correlation)
 
     # Generate correlated normal random variables
     rvs = numpy.random.multivariate_normal(

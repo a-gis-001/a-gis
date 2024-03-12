@@ -82,7 +82,7 @@ def move(old: "old unit name", new: "new unit name"):
     console.print(f"Finished with old_path={old_path} to new_path={new_path}")
 
     # Update all the files, doing formatting and performing checks.
-    root = A_GIS.Code.find_root(path=old_path)
+    root = A_GIS.Code.find_root(path=new_path)
     panel = A_GIS.Cli.update_and_show_git_status(root=root)
     console.print(panel)
 

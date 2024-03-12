@@ -46,4 +46,4 @@ class _Triangular:
         )
 
     def __repr__(self):
-        return f"A_GIS.Math.Statistics.Distribution._Triangular(low={self.low}, mode={self.mode}, high={self.high})"
+        return f"A_GIS.Math.Distribution.Triangular.init(low={self.low}, mode={self.mode}, high={self.high})"
