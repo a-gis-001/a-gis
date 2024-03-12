@@ -10,13 +10,13 @@ def generate(
     num_predict=50,
     mirostat=2,
     suggestions=[],
-    __tracking_hash=None
+    __tracking_hash=None,
 ):
     """Generate an A_GIS functional unit name using AI."""
     import ollama
     import re
     import A_GIS.catalog
-    import A_GIS.Log.init
+    import A_GIS.Log.append
     import A_GIS.Text.add_indent
     import A_GIS.Code.Unit.Name.fix
 
@@ -85,7 +85,7 @@ Shorter is better but you never respond with an empty result!
             mirostat=mirostat,
         ),
     )
-    A_GIS.Log.init(tracking_hash=__tracking_hash,response=response)
+    A_GIS.Log.append(tracking_hash=__tracking_hash, response=response)
 
     # Parse out the content and return a result.
     content = response["message"]["content"]

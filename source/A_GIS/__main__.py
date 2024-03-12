@@ -215,14 +215,15 @@ def name(description: "unit description", tries: "number of tries" = 3):
 
 cli.add_command(name)
 
+
 # Define the logserver command.
 @click.command()
 @A_GIS.Cli.register
-def logserver(port: "port to use"=9999):
+def logserver(port: "port to use" = 9999):
     import socket
     import os
 
-    host,port = os.environ.get("A_GIS_LOGSERVER", 'localhost:9999').split(':')
+    host, port = os.environ.get("A_GIS_LOGSERVER", "localhost:9999").split(":")
     port = int(port)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
@@ -230,7 +231,7 @@ def logserver(port: "port to use"=9999):
         console.print(f"Log server listening on host {host} port {port} ...")
         server_socket.bind((host, port))
         server_socket.listen()
-        
+
         conn, addr = server_socket.accept()
         with conn:
             console.print(f"Connected by {addr}")
@@ -240,6 +241,7 @@ def logserver(port: "port to use"=9999):
                     break
                 # Decode and print the log message
                 console.print(data.decode("utf-8"))
+
 
 cli.add_command(logserver)
 
