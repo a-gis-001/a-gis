@@ -1,4 +1,4 @@
-def function(func):
+def track_function(func):
     """Decorator to enable logging
 
     This decorator logs the signature of the input arguments and output result of

@@ -1,6 +1,6 @@
-import A_GIS.Log.function
+import A_GIS.Log.track_function
 
-@A_GIS.Log.function
+@A_GIS.Log.track_function
 def generate(
     *,
     description: str,
