@@ -1,5 +1,25 @@
 def get(*, code: str):
-    """Split the code into unit"""
+    """Parse code into a functional unit
+    
+    Separates the code into four main sections 
+    
+    - type imports
+    - function definition
+    - docstring
+    - code body
+    
+    The function also reorganizes the code body string into a list of blocks. 
+    Finally, it returns an instance of the `_Unit` data class with these split parts.
+
+    Args:
+        code (str): The full code to be processed.
+
+    Raises:
+        None
+
+    Returns:
+        _Unit: An instance of the `_Unit` data class representing the split and organized code units.
+    """
 
     import A_GIS.Code.Unit._parse_first_pass
     import A_GIS.Code.Unit._Unit

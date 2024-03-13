@@ -10,6 +10,7 @@ def generate(
     num_ctx=10000,
     num_predict=1000,
     mirostat=2,
+    __tracking_hash=None,
 ) -> str:
     """Generate a docstring for code using AI
 
