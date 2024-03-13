@@ -1,4 +1,4 @@
-def touch(*, path: type["pathlib.Path"]):
+def touch(*, path: type["pathlib.Path"], content_if_empty: str = ""):
     """
     Touch creates the file at the given path if it doesn't exist.
 
@@ -16,9 +16,19 @@ def touch(*, path: type["pathlib.Path"]):
         >>> path = A_GIS.File.touch(path=pathlib.Path("test_file"))
 
     """
+    import A_GIS.File.read
+    import A_GIS.File.write
+
     # Create directories and create the file.
     path.parent.mkdir(parents=True, exist_ok=True)
     path.touch()
+
+    # Only read the file if we would replace empty content.
+    print(path)
+    if content_if_empty != "":
+        content = A_GIS.File.read(file=path)
+        if content.strip() == "":
+            A_GIS.File.write(content=content_if_empty, file=path)
 
     # Return the path.
     return path

@@ -12,10 +12,7 @@ def generate(
     mirostat=2,
     __tracking_hash=None,
 ) -> str:
-    """Generate a docstring for code using AI
-
-    Details
-    """
+    """Generate a docstring for code using AI"""
     import ollama
     import A_GIS.Text.add_indent
     import A_GIS.Code.Docstring.clean

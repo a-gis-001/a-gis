@@ -51,7 +51,9 @@ def recurse(
                 tree = A_GIS.Code.Tree.get(code=A_GIS.File.read(file=pkg_file))
                 if tree == {}:
                     # It is a package.
-                    tree[entry.name] = recurse(path=entry, _root0=_root0)
+                    tree[entry.name] = recurse(
+                        path=pathlib.Path(entry), _root0=_root0
+                    )
                     tree[entry.name]["_type"] = "package"
                 # Add file annotations.
                 for x in tree:

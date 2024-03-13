@@ -1,4 +1,5 @@
 # Functions
+from .delete import delete
 from .download import download
 from .hash import hash
 from .is_url import is_url

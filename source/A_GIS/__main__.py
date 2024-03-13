@@ -251,5 +251,43 @@ def logserver(port: "port to use" = 9999):
 
 cli.add_command(logserver)
 
+
+# Define the rate command.
+@click.command()
+@A_GIS.Cli.register
+def rate(name: "unit name"):
+    """Use AI to rate a code component"""
+    import A_GIS.Code.Unit.Name.init_from_path
+    import A_GIS.Code.Unit.Name.to_path
+    import A_GIS.File.read
+    import A_GIS.Code.find_root
+    import A_GIS.Code.Docstring.rate
+    import A_GIS.Code.Docstring.modify
+    import pathlib
+    import A_GIS.File.write
+    import A_GIS.Cli.get_git_status
+    import A_GIS.Cli.update_and_show_git_status
+
+    # Get the path and name.
+    if "." in name:
+        path = A_GIS.Code.Unit.Name.to_path(name=name) / "__init__.py"
+    else:
+        path = pathlib.Path(name)
+        name = A_GIS.Code.Unit.Name.init_from_path(path=path)
+        if path.is_dir():
+            path /= "__init__.py"
+    console = rich.console.Console(width=WIDTH)
+    console.print(f"Rating unit name={name} at path={path} ...")
+
+    # Generate a rate.
+    code = A_GIS.File.read(file=path)
+    rate = A_GIS.Code.Docstring.rate(name=name, code=code)
+    panel = rich.panel.Panel(
+        rate, title=f"Rating", expand=True, border_style="bold cyan"
+    )
+    console.print(panel)
+
+cli.add_command(rate)
+
 # This is always a main.
 cli()

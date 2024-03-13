@@ -18,6 +18,7 @@ def move(
     import A_GIS.Code.find_root
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.Code.Unit.Name.check
+    import A_GIS.Code.Tree.update_path_to_package
 
     # Check the input.
     if not A_GIS.Code.Unit.Name.check(name=new):
@@ -56,21 +57,11 @@ def move(
     if new_path.exists():
         raise ValueError("Cannot move {old} to existing path {new_path}")
 
+    # Move the old to new.
+    shutil.move(old_path, new_path)
+
     # Traverse through the new package hierarchy and make sure everything
     # exists.
-    child_path = new_path
-    package_path = new_path.parent
-    while package_path.parent != root:
-        package_file = package_path / "__init__.py"
-        A_GIS.File.touch(path=package_file)
-        code = A_GIS.File.read(file=package_file)
-        code += (
-            "\n" + "from ." + child_path.name + " import " + child_path.name
-        )
-        A_GIS.File.write(content=code, file=package_file)
-        child_path = child_path.parent
-        package_path = package_path.parent
+    A_GIS.Code.Tree.update_path_to_package(path=child_path)
 
-    # Finally move the old path.
-    shutil.move(old_path, new_path)
     return old_path, new_path

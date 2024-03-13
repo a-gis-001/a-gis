@@ -1,14 +1,14 @@
 def get(*, code: str):
     """Parse code into a functional unit
-    
-    Separates the code into four main sections 
-    
+
+    Separates the code into four main sections
+
     - type imports
     - function definition
     - docstring
     - code body
-    
-    The function also reorganizes the code body string into a list of blocks. 
+
+    The function also reorganizes the code body string into a list of blocks.
     Finally, it returns an instance of the `_Unit` data class with these split parts.
 
     Args:

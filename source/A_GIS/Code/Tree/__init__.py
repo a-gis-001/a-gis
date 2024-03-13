@@ -7,6 +7,7 @@ from .recurse import recurse
 from .to_json import to_json
 from .to_string import to_string
 from .update import update
+from .update_path_to_package import update_path_to_package
 
 # Classes
 from ._Tree import _Tree

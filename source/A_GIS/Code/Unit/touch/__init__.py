@@ -7,12 +7,23 @@ def touch(*, name: str):
 
     import pathlib
     import A_GIS.File.touch
+    import A_GIS.Code.Tree.update_path_to_package
 
     if "." in name:
         path = A_GIS.Code.Unit.Name.to_path(name=name) / "__init__.py"
     else:
         path = pathlib.Path(name).resolve()
         if not path.suffix:
-            touch_path /= "__init__.py"
+            path /= "__init__.py"
 
-    return A_GIS.File.touch(path=path)
+    # First get the root.
+    root = A_GIS.Code.find_root(path=__file__, throw_if_not_found=True)
+
+    # Then create the new file and all the package inits on the way up.
+    module = path.parent.name
+    touch_path = A_GIS.File.touch(
+        path=path, content_if_empty=f"def {module}():\n    pass"
+    )
+    A_GIS.Code.Tree.update_path_to_package(path=path.parent, root=root)
+
+    return touch_path
