@@ -9,6 +9,7 @@ def delete(file_path):
     None
     """
     import os
+
     if os.path.isfile(file_path):
         os.remove(file_path)
     else:

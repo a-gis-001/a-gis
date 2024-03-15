@@ -2,6 +2,7 @@
 from .catalog import catalog
 
 # Packages
+from . import Ai
 from . import Cli
 from . import Code
 from . import Data
