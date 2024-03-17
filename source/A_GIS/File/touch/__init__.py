@@ -14,7 +14,6 @@ def touch(*, path: type["pathlib.Path"], content_if_empty: str = ""):
         >>> import pathlib
         >>> import A_GIS.File.touch
         >>> path = A_GIS.File.touch(path=pathlib.Path("test_file"))
-        test_file
 
     """
     import A_GIS.File.read
@@ -25,7 +24,6 @@ def touch(*, path: type["pathlib.Path"], content_if_empty: str = ""):
     path.touch()
 
     # Only read the file if we would replace empty content.
-    print(path)
     if content_if_empty != "":
         content = A_GIS.File.read(file=path)
         if content.strip() == "":

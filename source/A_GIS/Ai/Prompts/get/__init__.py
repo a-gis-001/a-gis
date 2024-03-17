@@ -1,12 +1,12 @@
-def get(*,label:str, prefix:str='',postfix:str=''):
+def get(*, label: str, prefix: str = "", postfix: str = ""):
     """Load a prompt from locally stored ones"""
-    
-    system='''
+
+    system = """
     You are a helpful assistant.
-    '''
-    
-    user=f'''
+    """
+
+    user = f"""
     Answer the question in one sentence maximum. If you do not know, guess.
-    '''
-    
-    return system,user
+    """
+
+    return system, user
