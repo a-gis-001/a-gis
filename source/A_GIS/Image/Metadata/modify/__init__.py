@@ -41,7 +41,7 @@ def modify(
     """
     import json
     import PIL.PngImagePlugin
-    import A_GIS.File.Directory
+    import A_GIS.File.Directory.init
     import pathlib
 
     if metadata is not None and not isinstance(metadata, dict):

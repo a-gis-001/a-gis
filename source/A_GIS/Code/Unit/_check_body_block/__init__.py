@@ -16,6 +16,7 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
     """
     import A_GIS.Code.Unit.to_string
     import A_GIS.Code.Unit._has_imports
+    import A_GIS.Code.Unit._wrap_single_block
 
     # Iterate through each line of the block
     msg = []

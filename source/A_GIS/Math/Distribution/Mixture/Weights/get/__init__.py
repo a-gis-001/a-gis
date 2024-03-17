@@ -2,7 +2,7 @@ def get(*, correlation_matrix, variances, multipliers=None):
     """Get weights based on the correlation matrix and multipliers."""
     import cvxpy
     import numpy
-    import A_GIS.Math.CorrelationMatrix
+    import A_GIS.Math.CorrelationMatrix.to_numpy
 
     # Construct the covariance matrix from variances and correlations
     corr = A_GIS.Math.CorrelationMatrix.to_numpy(upper_tri=correlation_matrix)

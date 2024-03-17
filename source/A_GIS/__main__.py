@@ -113,7 +113,6 @@ def catalog(args: bool = True):
     for code in A_GIS.catalog(include_args=args):
         index += 1
         output_text = rich.text.Text.from_ansi(A_GIS.Code.highlight(code=code))
-        name, _ = code.split("(", 1)
         rule = rich.rule.Rule(align="left", style="bright white", title=str(index))
         console.print(rule)
         console.print(code, "\n")
@@ -121,6 +120,19 @@ def catalog(args: bool = True):
 
 cli.add_command(catalog)
 
+
+# Define the list command.
+@click.command()
+@A_GIS.Cli.register
+def list(args: bool = True):
+    """Show a list of all of A_GIS"""
+    import A_GIS.Code.list
+
+    console = rich.console.Console(width=WIDTH)
+    for f in A_GIS.Code.list(filters=['tests']):
+        console.print(f)
+
+cli.add_command(list)
 
 # Define the docstring command.
 @click.command()
@@ -265,31 +277,16 @@ cli.add_command(rate)
 # Define the distill command.
 @click.command()
 @A_GIS.Cli.register
-def distill(name: "unit name"):
+def distill(name: "unit name"=''):
     """Distill a piece of code into its basic form"""
 
-    # Get the name and path.
-    name, path = A_GIS.Cli.get_name_and_path(arg=name)
+    if name=='':
+        names = A_GIS.Code.list(filters=['__main','tests'])
+    else:
+        names = [name]
+    
     console = rich.console.Console(width=WIDTH)
-    console.print(f"Distilling unit name={name} at path={path} ...")
-    flat_name = name.replace('A_GIS.','').replace('.','__')
-
-    # Generate the distilled file.
-    code = A_GIS.File.read(file=path)
-    code = code.replace(f'def {name.split(".")[-1]}',f'def {flat_name}')
-    distilled_code = A_GIS.Code.distill(code=code)
-    hash = A_GIS.Text.hash(text=distilled_code)
-    panel = rich.panel.Panel(
-        distilled_code, title=f"{hash}", expand=True, border_style="bold cyan"
-    )
-    console.print(panel)
-
-    # Write the distilled file.
-    file = A_GIS.Code.find_root(path=path) / '..' / '_EGIS' / ('sha256_' + hash) / '__init__.py'
-    file = file.resolve()
-    console.print(f'Writing distilled code to {file}')
-    A_GIS.File.touch(path=file)
-    A_GIS.File.write(content=distilled_code,file=file)
+    A_GIS.Cli.distill(console=console,names=names)
 
 cli.add_command(distill)
 

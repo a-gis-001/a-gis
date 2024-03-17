@@ -38,7 +38,7 @@ def new(
     # Add metadata to the image if provided which requires writing to disk
     # with PIL.
     if metadata:
-        import A_GIS.File.Directory
+        import A_GIS.File.Directory.init
         import pathlib
         import json
         import PIL.PngImagePlugin
