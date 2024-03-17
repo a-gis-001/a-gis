@@ -21,8 +21,8 @@ def _send_chat_openai(
         )
 
     max_tokens = kwargs["num_ctx"] + kwargs["num_predict"]
-    if max_tokens>4096:
-        max_tokens=4096
+    if max_tokens > 4096:
+        max_tokens = 4096
     completion = client.chat.completions.create(
         messages=messages,
         model=openai_model,

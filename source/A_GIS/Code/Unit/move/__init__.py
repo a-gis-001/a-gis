@@ -62,6 +62,6 @@ def move(
 
     # Traverse through the new package hierarchy and make sure everything
     # exists.
-    A_GIS.Code.Tree.update_path_to_package(path=child_path)
+    A_GIS.Code.Tree.update_path_to_package(path=new_path)
 
     return old_path, new_path

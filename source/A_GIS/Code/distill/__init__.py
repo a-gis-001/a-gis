@@ -32,6 +32,7 @@ def distill(*, code: str) -> str:
     """
     import ast
     import re
+    import A_GIS.Code._distill_imports
 
     # Parse the code into an abstract syntax tree (AST).
     # Walk through all nodes in the AST to identify docstrings and multiline
@@ -41,8 +42,14 @@ def distill(*, code: str) -> str:
         if isinstance(node, ast.Expr) and isinstance(node.value, ast.Str):
             node.value = ast.Constant(value="")
 
+    # Fix imports.
+    distilled_code = A_GIS.Code._distill_imports(code=code)
+
     # Remove any blank lines or blank docstrings.
     distilled_code = re.sub(
         r'^\s*""""""\s*$\n', "", ast.unparse(parsed), flags=re.MULTILINE
     )
-    return re.sub(r"\n\s*\n", "\n", distilled_code)
+    distilled_code = re.sub(r"\n\s*\n", "\n", distilled_code)
+
+    # Return final distilled code.
+    return distilled_code

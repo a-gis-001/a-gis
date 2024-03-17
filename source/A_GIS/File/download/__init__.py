@@ -1,10 +1,10 @@
 import requests
-from pathlib import Path
+import pathlib
 
 def download(
     session: requests.Session,
     url: str,
-    output_folder: Path,
+    output_folder: pathlib.Path,
     start_from_scratch: bool = False,
 ):
     """
@@ -19,7 +19,7 @@ def download(
     import tqdm
     import os
 
-    filename = Path(url.rsplit("/", 1)[1])
+    filename = pathlib.Path(url.rsplit("/", 1)[1])
     output_path = output_folder / filename
     headers = {}
     mode = "wb"

@@ -15,8 +15,8 @@ def open(*, path: str):
         >>> import A_GIS.Image
         >>> image = A_GIS.Image.open(path='https://picsum.photos/200')
     """
-    from PIL import Image
-    from io import BytesIO
+    import PIL.Image
+    import io
     import requests
 
     # Check if the source is a URL
@@ -26,7 +26,7 @@ def open(*, path: str):
         response.raise_for_status()  # This will raise an exception for HTTP errors
 
         # Open and return the image from the response content
-        return Image.open(BytesIO(response.content))
+        return PIL.Image.open(io.BytesIO(response.content))
     else:
         # Open and return the image from a local file
-        return Image.open(path)
+        return PIL.Image.open(path)

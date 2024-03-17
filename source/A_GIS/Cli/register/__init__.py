@@ -14,10 +14,10 @@ def register(func):
 
     """
     import rich_click as click
-    from functools import update_wrapper
-    from inspect import signature, Parameter
+    import functools
+    import inspect
 
-    sig = signature(func)
+    sig = inspect.signature(func)
     click_options = []
     click_arguments = []
 
@@ -28,7 +28,7 @@ def register(func):
             else "No description available"
         )
 
-        if param.default is Parameter.empty:
+        if param.default is inspect.Parameter.empty:
             # Required arguments do not have default values; treated as
             # positional arguments in Click.
             click_arguments.append(click.argument(name.upper()))
@@ -63,4 +63,4 @@ def register(func):
     for decorator in reversed(decorator_stack):
         wrapper = decorator(wrapper)
 
-    return update_wrapper(wrapper, func)
+    return functools.update_wrapper(wrapper, func)

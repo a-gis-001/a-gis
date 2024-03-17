@@ -23,7 +23,7 @@ def download(
     import os
     import re
     import sys
-    from pathlib import Path
+    import pathlib.Path
     import hashlib
     import requests
     import tqdm

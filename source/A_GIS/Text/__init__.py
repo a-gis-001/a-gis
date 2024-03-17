@@ -1,6 +1,7 @@
 # Functions
 from .add_indent import add_indent
 from .apply_patch import apply_patch
+from .extract_markdown import extract_markdown
 from .get_indent import get_indent
 from .get_patch import get_patch
 from .hash import hash

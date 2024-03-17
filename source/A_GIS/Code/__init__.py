@@ -1,7 +1,10 @@
 # Functions
+from ._distill_imports import _distill_imports
 from .distill import distill
+from .extract_python import extract_python
 from .find_root import find_root
 from .format import format
+from .generate import generate
 from .guess_name import guess_name
 from .guess_type import guess_type
 from .highlight import highlight
@@ -10,6 +13,7 @@ from .is_function import is_function
 from .is_package import is_package
 from .is_program import is_program
 from .list import list
+from .replace_from_imports import replace_from_imports
 
 # Packages
 from . import Docstring

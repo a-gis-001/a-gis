@@ -9,7 +9,7 @@ def get_patch(*, initial: str, final: str):
     Returns:
     A string representing the unified diff between the initial and final states.
     """
-    from diff_match_patch import diff_match_patch
+    import diff_match_patch.diff_match_patch
 
     dmp = diff_match_patch()
     patches = dmp.patch_make(initial, final)
