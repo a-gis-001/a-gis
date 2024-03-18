@@ -16,6 +16,8 @@ def generate(
     import ollama
     import A_GIS.Text.add_indent
     import A_GIS.Code.Docstring.clean
+    import A_GIS.Text.get_after_tag
+    import A_GIS.Text.get_before_tag
 
     # Create the system prompt.
     system = f"""
@@ -123,15 +125,10 @@ docstring:
     docstring = response["message"]["content"]
     logging.info(f"raw_output={docstring}")
 
-    # Fix up the reply including the docstring:
-    tag = "docstring:"
-    t = docstring.find(tag)
-    if t >= 0:
-        docstring = docstring[t + len(tag) :]
-    tag = "### Instruction:"
-    t = docstring.find(tag)
-    if t >= 0:
-        docstring = docstring[:t]
+    docstring = A_GIS.Text.get_after_tag(text=docstring, tag="docstring:")
+    docstring = A_GIS.Text.get_before_tag(
+        text=docstring, tag="### Instruction:"
+    )
 
     # Return the content after cleaning the docstring. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
