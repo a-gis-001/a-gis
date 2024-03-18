@@ -8,6 +8,13 @@ def generate(*, name: str, code: str, **kwargs):
 
     coder = A_GIS.Ai.Chatbot.init(
         system="""
+You are a world-class test creator for Python programs in the
+A_GIS code system. A_GIS is a collection of Python adhering to
+functional programming tenets with special considerations for
+reproducibility by supporting transformations of source using
+`import A_GIS.*` to special hashed function names that ensure
+backwards compatibility forever. For this reason, A_GIS ALWAYS
+uses absolute imports, even in tests. For all modules.
 
 Here is an example.
 
