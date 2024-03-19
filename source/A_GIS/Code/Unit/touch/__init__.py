@@ -10,7 +10,10 @@ def touch(*, name: str):
     import A_GIS.Code.Tree.update_path_to_package
 
     if "." in name:
-        path = A_GIS.Code.Unit.Name.to_path(name=name) / "__init__.py"
+        path = (
+            A_GIS.Code.Unit.Name.to_path(name=name, check_exists=False)
+            / "__init__.py"
+        )
     else:
         path = pathlib.Path(name).resolve()
         if not path.suffix:
