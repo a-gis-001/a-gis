@@ -11,25 +11,25 @@ def convert_multiline(*, code: str):
     import textwrap
 
     # This prefix is used to indent the nodes
-    _prefix = '--convert_multiline' * 4
-    
+    _prefix = "--convert_multiline" * 4
+
     class StringTransformer(ast.NodeTransformer):
         # This method will visit every string in the code.
         def visit_Str(self, node):
-            
+
             had_newline = "\n" in node.s
 
             output = io.StringIO()
-            print(node.s, file=output, end='')
+            print(node.s, file=output, end="")
             node.s = output.getvalue()
             output.close()
 
             if had_newline:
-                triple_singles="'''"
-                triple_doubles='"""'
-                if node.s.find(triple_doubles)>=0:
-                    node.s = node.s.replace(triple_doubles,triple_singles)
-                node.s = textwrap.indent(node.s,_prefix)
+                triple_singles = "'''"
+                triple_doubles = '"""'
+                if node.s.find(triple_doubles) >= 0:
+                    node.s = node.s.replace(triple_doubles, triple_singles)
+                node.s = textwrap.indent(node.s, _prefix)
 
             return node
 
@@ -41,5 +41,5 @@ def convert_multiline(*, code: str):
     converted_tree = converter.visit(tree)
 
     source = astor.to_source(converted_tree)
-    source,_ = re.subn('^'+_prefix,'',source,flags=re.MULTILINE)
+    source, _ = re.subn(_prefix, "", source, flags=re.MULTILINE)
     return source

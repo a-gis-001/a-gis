@@ -49,8 +49,5 @@ def format(*, code: str) -> str:
     # Remove tabs.
     formatted_code = formatted_code.expandtabs(4)
 
-    # Fix multiline strings.
-    formatted_code = A_GIS.Code.convert_multiline(code=formatted_code)
-
     # Return formatted code.
     return formatted_code
