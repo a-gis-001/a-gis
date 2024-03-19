@@ -1,6 +1,8 @@
 def find_and_replace(*, text: str, old: str, new: str, is_regex: bool = False):
     """
-    Find and replace in file. Can use plain strings or regular expressions.
+    Find and replace within provided text
+
+    Can use plain strings or regular expressions.
     Returns the total number of replacements made across all files.
 
     Parameters:

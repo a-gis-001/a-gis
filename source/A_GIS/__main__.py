@@ -129,10 +129,12 @@ def list(args: bool = True):
     import A_GIS.Code.list
 
     console = rich.console.Console(width=WIDTH)
-    for f in A_GIS.Code.list(filters=['tests']):
+    for f in A_GIS.Code.list(filters=["tests"]):
         console.print(f)
 
+
 cli.add_command(list)
+
 
 # Define the docstring command.
 @click.command()
@@ -271,22 +273,24 @@ def rate(name: "unit name"):
     )
     console.print(panel)
 
+
 cli.add_command(rate)
 
 
 # Define the distill command.
 @click.command()
 @A_GIS.Cli.register
-def distill(name: "unit name"=''):
+def distill(name: "unit name" = ""):
     """Distill a piece of code into its basic form"""
 
-    if name=='':
-        names = A_GIS.Code.list(filters=['__main','tests'])
+    if name == "":
+        names = A_GIS.Code.list(filters=["__main", "tests"])
     else:
         names = [name]
-    
+
     console = rich.console.Console(width=WIDTH)
-    A_GIS.Cli.distill(console=console,names=names)
+    A_GIS.Cli.distill(console=console, names=names)
+
 
 cli.add_command(distill)
 
