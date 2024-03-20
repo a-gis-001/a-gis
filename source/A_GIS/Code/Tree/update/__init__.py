@@ -3,7 +3,7 @@ def update(*, tree: dict):
     the correct format and content."""
     import A_GIS.File.write
     import A_GIS.File.read
-    import A_GIS.Code.format
+    import A_GIS.Code.reformat
 
     imports = None
     if "_type" in tree:
@@ -35,5 +35,5 @@ def update(*, tree: dict):
     elif "_file" in tree:
         code = A_GIS.File.read(file=tree["_file"])
         A_GIS.File.write(
-            content=A_GIS.Code.format(code=code), file=tree["_file"]
+            content=A_GIS.Code.reformat(code=code), file=tree["_file"]
         )

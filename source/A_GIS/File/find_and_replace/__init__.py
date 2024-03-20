@@ -1,6 +1,6 @@
 def find_and_replace(
     *,
-    file: type["pathlib.Path"],
+    file: type["pathlib.Path"] = None,
     files: list["pathlib.Path"] = None,
     old: str,
     new: str,
@@ -13,7 +13,7 @@ def find_and_replace(
 
     if files is None:
         files = [file]
-    else:
+    elif file is not None:
         files += file
 
     total_replacements = 0
