@@ -10,3 +10,4 @@ from .get_patch import get_patch
 from .hash import hash
 from .remove_indent import remove_indent
 from .replace_block import replace_block
+from .split_first_sentence import split_first_sentence

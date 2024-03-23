@@ -8,16 +8,20 @@ def touch(*, name: str):
     import pathlib
     import A_GIS.File.touch
     import A_GIS.Code.Tree.update_path_to_package
+    import A_GIS.Code.Unit.Name.is_path
 
-    if "." in name:
+    # It already was a path.
+    if A_GIS.Code.Unit.Name.is_path(name=name):
+        path = pathlib.Path(name).resolve()
+        if not path.suffix:
+            path /= "__init__.py"
+
+    # Convert it to a path.
+    else:
         path = (
             A_GIS.Code.Unit.Name.to_path(name=name, check_exists=False)
             / "__init__.py"
         )
-    else:
-        path = pathlib.Path(name).resolve()
-        if not path.suffix:
-            path /= "__init__.py"
 
     # First get the root.
     root = A_GIS.Code.find_root(path=__file__, throw_if_not_found=True)
@@ -29,4 +33,5 @@ def touch(*, name: str):
     )
     A_GIS.Code.Tree.update_path_to_package(path=path.parent, root=root)
 
+    # Return the path from the touch.
     return touch_path

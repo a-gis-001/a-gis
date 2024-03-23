@@ -1,4 +1,4 @@
-def get_indent(line):
+def get_indent(*, line: str) -> int:
     """Gets the indentation of a line in a string.
 
     This function takes a single argument, `line`, which is expected to be a string. It returns
