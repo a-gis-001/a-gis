@@ -10,7 +10,7 @@ def reformat(docstring: str) -> str:
     import A_GIS.Text.replace_block
     import A_GIS.Text.insert_block_placeholders
     import A_GIS.Text.reconstitute_blocks
-    
+
     # Split the first sentence
     first_sentence, remaining_text = A_GIS.Text.split_first_sentence(
         text=docstring
@@ -19,7 +19,9 @@ def reformat(docstring: str) -> str:
     remaining_text = textwrap.dedent(remaining_text).strip()
 
     # Add placeholders.
-    subs,ntext = A_GIS.Text.insert_block_placeholders(text=remaining_text,block_name=r"\S*")
+    subs, ntext = A_GIS.Text.insert_block_placeholders(
+        text=remaining_text, block_name=r"\S*"
+    )
 
     # Process each paragraph separately to preserve paragraph breaks
     paragraphs = ntext.split("\n\n")
@@ -30,10 +32,14 @@ def reformat(docstring: str) -> str:
 
     # Join processed paragraphs with double newline and indent
     wrapped_and_indented_text = "\n\n".join(wrapped_paragraphs)
-    wrapped_and_indented_text = textwrap.indent(wrapped_and_indented_text,'    ')
+    wrapped_and_indented_text = textwrap.indent(
+        wrapped_and_indented_text, "    "
+    )
 
     # Reinsert code blocks into their original positions
-    rtext = A_GIS.Text.reconstitute_blocks(text=wrapped_and_indented_text,subs=subs)
+    rtext = A_GIS.Text.reconstitute_blocks(
+        text=wrapped_and_indented_text, subs=subs
+    )
 
     # Construct final docstring
     if rtext.strip():

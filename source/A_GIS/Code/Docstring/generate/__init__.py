@@ -136,4 +136,7 @@ docstring:
     clean_docstring = A_GIS.Code.Docstring.clean(docstring=docstring)
     if float(len(clean_docstring)) / float(len(docstring)) >= 0.8:
         docstring = clean_docstring
+
+    docstring = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
     return docstring

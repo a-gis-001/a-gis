@@ -25,8 +25,8 @@ def replace_block(
 
     # If a simple replacement works, do it.
     if (not "\n" in find_block) and (not "\n" in replace_with):
-        return text.replace(find_block,replace_with,count)
-    
+        return text.replace(find_block, replace_with, count)
+
     # Splitting the input text and find_block into lines for line-by-line
     # handling
     original_lines = text.splitlines()

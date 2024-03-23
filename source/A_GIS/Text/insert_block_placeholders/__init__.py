@@ -2,7 +2,7 @@ def insert_block_placeholders(
     *,
     text: str,
     label: str = "__PLACEHOLDER__",
-    block_name: str = "\S*",
+    block_name: str = r"\S*",
     opening: str = "```",
     closing: str = "```",
 ):
