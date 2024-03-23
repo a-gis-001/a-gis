@@ -21,7 +21,8 @@ def modify(code: str, docstring: str):
     if docstring is None:
         formatted_docstring = ""
     else:
-        formatted_docstring = f'"""{docstring.strip()}\n"""\n'
+        docstring = docstring.strip()
+        formatted_docstring = f'"""{docstring}\n"""\n'
 
     # Function to replace or add the docstring
     def _replace_match(match):
