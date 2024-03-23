@@ -6,9 +6,11 @@ def reformat(docstring: str) -> str:
     """
     import re
     import textwrap
-    import A_GIS.Text.split_first_sentence  
+    import A_GIS.Text.split_first_sentence
     import A_GIS.Text.replace_block
-
+    import A_GIS.Text.insert_block_placeholders
+    import A_GIS.Text.reconstitute_blocks
+    
     # Split the first sentence
     first_sentence, remaining_text = A_GIS.Text.split_first_sentence(
         text=docstring
@@ -16,34 +18,26 @@ def reformat(docstring: str) -> str:
     first_sentence = first_sentence.strip()
     remaining_text = textwrap.dedent(remaining_text).strip()
 
-    # Pattern to match code blocks or preformatted text
-    # This is a simple heuristic and might need adjustment for complex cases
-    code_block_pattern = r'(```[\s\S]*?```)'  # Matches fenced code blocks
-    code_blocks = re.findall(code_block_pattern, remaining_text)
-    placeholders = [f"CODE_BLOCK_{i}" for i in range(len(code_blocks))]
-
-    # Temporarily replace code blocks with placeholders
-    for placeholder, block in zip(placeholders, code_blocks):
-        remaining_text = remaining_text.replace(block, placeholder, 1)
+    # Add placeholders.
+    subs,ntext = A_GIS.Text.insert_block_placeholders(text=remaining_text,block_name=r"\S*")
 
     # Process each paragraph separately to preserve paragraph breaks
-    paragraphs = remaining_text.split('\n\n')
+    paragraphs = ntext.split("\n\n")
     wrapped_paragraphs = []
     for paragraph in paragraphs:
-        wrapped_paragraph = textwrap.fill(paragraph, width=68)
+        wrapped_paragraph = textwrap.fill(textwrap.dedent(paragraph), width=68)
         wrapped_paragraphs.append(wrapped_paragraph)
-    
+
     # Join processed paragraphs with double newline and indent
-    wrapped_and_indented_text = '\n\n'.join(['    ' + paragraph.replace('\n', '\n    ') for paragraph in wrapped_paragraphs])
+    wrapped_and_indented_text = "\n\n".join(wrapped_paragraphs)
+    wrapped_and_indented_text = textwrap.indent(wrapped_and_indented_text,'    ')
 
     # Reinsert code blocks into their original positions
-    for placeholder, block in zip(placeholders, code_blocks):
-        wrapped_and_indented_text = A_GIS.Text.replace_block(
-            text=wrapped_and_indented_text,find_block=placeholder,replace_with=block)
+    rtext = A_GIS.Text.reconstitute_blocks(text=wrapped_and_indented_text,subs=subs)
 
     # Construct final docstring
-    if wrapped_and_indented_text.strip():
-        docstring = f"{first_sentence}\n\n{wrapped_and_indented_text}\n    "
+    if rtext.strip():
+        docstring = f"{first_sentence}\n\n{rtext}\n    "
     else:
         docstring = first_sentence
 

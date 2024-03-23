@@ -8,6 +8,8 @@ from .get_before_tag import get_before_tag
 from .get_indent import get_indent
 from .get_patch import get_patch
 from .hash import hash
+from .insert_block_placeholders import insert_block_placeholders
+from .reconstitute_blocks import reconstitute_blocks
 from .remove_indent import remove_indent
 from .replace_block import replace_block
 from .split_first_sentence import split_first_sentence

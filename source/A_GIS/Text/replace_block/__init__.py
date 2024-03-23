@@ -1,4 +1,6 @@
-def replace_block(*, text: str, find_block: str, replace_with: str) -> str:
+def replace_block(
+    *, text: str, find_block: str, replace_with: str, count: int = 1
+) -> str:
     """
     Replace the first occurrence of a specified block of text with a new block of text within the given string.
 
@@ -21,6 +23,10 @@ def replace_block(*, text: str, find_block: str, replace_with: str) -> str:
     # Encapsulating the import within the function
     import re
 
+    # If a simple replacement works, do it.
+    if (not "\n" in find_block) and (not "\n" in replace_with):
+        return text.replace(find_block,replace_with,count)
+    
     # Splitting the input text and find_block into lines for line-by-line
     # handling
     original_lines = text.splitlines()
@@ -31,11 +37,13 @@ def replace_block(*, text: str, find_block: str, replace_with: str) -> str:
 
     # Building a regex pattern to match the find_block with any leading
     # whitespace and capture the indentation
-    block_pattern = r"(\s*)" + r"\s*".join(escaped_block_lines)
+    block_pattern = r"^(\s*)" + r"\n\s*".join(escaped_block_lines)
 
     # Preparing the replacement text with indentation preserved from the
     # find_block
-    indented_replacement = r"\1" + replace_with
+    indented_replacement = "".join(
+        [rf"\1{x}" for x in replace_with.splitlines()]
+    )
 
     # Performing the replacement operation with consideration for multiline
     # and dotall modes
@@ -44,7 +52,7 @@ def replace_block(*, text: str, find_block: str, replace_with: str) -> str:
         indented_replacement,
         text,
         flags=re.MULTILINE | re.DOTALL,
-        count=1,
+        count=count,
     )
 
     # Returning the text after the replacement

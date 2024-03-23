@@ -1,26 +1,45 @@
-def extract_markdown(*, text: str, block_name: str = "python") -> str:
+def extract_markdown(
+    *,
+    text: str,
+    block_name: str = "python",
+    content_only: bool = True,
+    opening: str = "```",
+    closing: str = "```",
+    dedent_result: bool = False,
+) -> str:
     """
-    Extracts the content between specified Markdown code block markers.
+    Extracts the content between specified Markdown code block markers, preserving
+    the relative indentation of the content.
 
     Args:
         text (str): The input Markdown text from which to extract the content.
         block_name (str): The language specifier for the code block. Defaults to 'python'.
+        opening (str): The opening marker for the code block.
+        closing (str): The closing marker for the code block.
 
     Returns:
-        str: The extracted content from the specified Markdown code block. Returns an empty string if no matching block is found.
+        str: The extracted content from the specified Markdown code block, preserving relative indentation.
+        str: The block name extracted, if any; otherwise, returns an empty string.
     """
     import re
+    import textwrap
 
-    # Clean preceding blank whitespace from the text
-    text = re.sub(r"^\s*$", "", text, flags=re.M)
+    # Pattern to match the code blocks, capturing the optional language specifier and the content
+    # It accounts for optional leading whitespace (indentation) before the
+    # opening marker
+    pattern = rf"^([ \t]*){opening}[ \t]*({block_name})[ \t]*\n([\s\S]*?)\n\1{closing}"
 
-    # Pattern to match the opening and closing ``` with the optional block_name
-    # and capture the content in between. It supports optional spaces after
-    # ``` for the opening marker.
-    pattern = rf"```{block_name}\s*\n?([\s\S]*?)\n?```"
     match = re.search(pattern, text, flags=re.MULTILINE)
 
     if match:
-        text = match.group(1).strip()
-
-    return text
+        # Extract the content with preserved relative indentation
+        indentation, extracted_block_name, block_content = match.groups()
+        if dedent_result:
+            indentation = ""
+            block_content = textwrap.dedent(block_content)
+        if content_only:
+            return block_content
+        else:
+            return f"{indentation}{opening}{extracted_block_name}\n{block_content}\n{indentation}{closing}"
+    else:
+        return ""

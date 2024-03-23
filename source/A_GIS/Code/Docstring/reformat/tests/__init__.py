@@ -68,7 +68,7 @@ def test_reformat_multiline_with_blank_lines():
 def test_reformat_with_code_block():
     docstring = """This is the first sentence. Here is a code block:
 
-    ```
+    ```python
     def example_function():
         pass
     ```
@@ -79,13 +79,12 @@ def test_reformat_with_code_block():
 
     Here is a code block:
 
-    ```
+    ```python
     def example_function():
         pass
     ```
 
     The code block should remain untouched.
     """
-    dick = A_GIS.Code.Docstring.reformat(docstring=docstring)
-    print('{'+dick+'}')
+
     assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
