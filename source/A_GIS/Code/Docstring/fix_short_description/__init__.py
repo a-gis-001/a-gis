@@ -9,6 +9,9 @@ def fix_short_description(
     many cases is printed along with the function signature for function
     summarization. Therefore it should be short and concise, separated
     from the rest of the 'long description' by a blank line.
+
+    This function needs the full docstring so that there is context available
+    to the AI.
     """
     import A_GIS.Code.Docstring.check_short_description
     import A_GIS.Ai.Chatbot.init
