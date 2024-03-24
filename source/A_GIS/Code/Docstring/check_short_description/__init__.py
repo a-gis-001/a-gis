@@ -12,7 +12,7 @@ def check_short_description(*, short_description: str):
     - No whitespace at the end.
 
     """
-    import A_GIS.Text.get_word_stem
+    import A_GIS.Text.get_root_word
     import A_GIS.Text.starts_with_verb
 
     # Check and abort if not a string.
@@ -43,7 +43,7 @@ def check_short_description(*, short_description: str):
 
     # Check simplest form of verb.
     first = short_description.split(" ")[0].lower()
-    stem = A_GIS.Text.get_word_stem(word=first).lower()
+    stem = A_GIS.Text.get_root_word(word=first).lower()
     if stem != first:
         errors.append(
             f"Verb is not a simple stem (found '{first}', should be '{stem}')."

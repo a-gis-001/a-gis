@@ -10,26 +10,52 @@ def generate(
     num_ctx=10000,
     num_predict=1000,
     mirostat=2,
+    reformat: bool = False,
     __tracking_hash=None,
 ) -> str:
-    """Generate a docstring for code using AI"""
+    """Generate docstring for code using AI model.
+
+    Args:
+        name (str): The name of the function for which to generate the docstring.
+        code (str): The Python code snippet for which to generate the docstring.
+        model (str, optional): The AI model to use for generating the docstring. Defaults to 'deepseek-coder:33b'.
+        temperature (float, optional): The temperature parameter for controlling randomness in the AI's response.
+            Defaults to 0.5.
+        num_ctx (int, optional): The number of context tokens to use when generating the docstring. Defaults to 10000.
+        num_predict (int, optional): The maximum number of predicted tokens to generate in the AI's response.
+            Defaults to 1000.
+        mirostat (int, optional): The mirostat mode parameter for controlling how the AI generates its responses.
+            Defaults to 2.
+        reformat (bool, optional): If True, reformats the generated docstring to follow standard Python formatting rules.
+            Defaults to False.
+        __tracking_hash (str, optional): An internal tracking hash for tracking function execution. Defaults to None.
+
+    Raises:
+        None
+
+    Returns:
+        str: The generated docstring for the provided code.
+    """
+
     import ollama
     import A_GIS.Text.add_indent
     import A_GIS.Code.Docstring.clean
     import A_GIS.Text.get_after_tag
     import A_GIS.Text.get_before_tag
+    import A_GIS.Code.Docstring.init
+    import A_GIS.Code.Docstring.fix_short_description
+    import A_GIS.Code.Docstring.reformat
 
     # Create the system prompt.
     system = f"""
 Given a Python function, generate and return a high-quality docstring
-with the following elements
+following the Google docstring rules. Include the following elements.
 
-    1. A one line summary at the beginning, less than 80 characters.
-    2. Describe the capability in more detail.
-    3. List the requirements.
-    4. List the arguments with full type specifications.
-    5. List what the function raises.
-    6. List the return value.
+    1. A one line summary at the beginning, less than 64 characters.
+    2. Describe the capability in more detail including requirements.
+    4. Arguments with full type specifications.
+    5. Exceptions the function raises, if any.
+    6. The return value and type.
 
 REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
 
@@ -79,10 +105,9 @@ docstring:
 
     Args:
         path (str, optional): The path where the directory should be created. If None,
-                              a temporary directory is created using the `tempfile` module.
+            a temporary directory is created using the `tempfile` module.
         scoped_delete (bool, optional): If True, the created directory will be deleted
-                                        when the TempDir object is destroyed or when
-                                        exiting a context manager block.
+            when the TempDir object is destroyed or when exiting a context manager block.
     Raises:
         None
 
@@ -122,19 +147,26 @@ docstring:
             mirostat=mirostat,
         ),
     )
-    docstring = response["message"]["content"]
-    logging.info(f"raw_output={docstring}")
+    text = response["message"]["content"]
+    logging.info(f"raw_output={text}")
 
-    docstring = A_GIS.Text.get_after_tag(text=docstring, tag="docstring:")
-    docstring = A_GIS.Text.get_before_tag(
-        text=docstring, tag="### Instruction:"
-    )
+    text = A_GIS.Text.get_after_tag(text=text, tag="docstring:")
+    text = A_GIS.Text.get_before_tag(text=text, tag="### Instruction:")
 
-    # Return the content after cleaning the docstring. We do some extra checks
+    # Return the content after cleaning the text. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
     # original.
-    clean_docstring = A_GIS.Code.Docstring.clean(docstring=docstring)
-    if float(len(clean_docstring)) / float(len(docstring)) >= 0.8:
-        docstring = clean_docstring
+    clean = A_GIS.Code.Docstring.clean(docstring=text)
+    if float(len(clean)) / float(len(text)) >= 0.8:
+        text = clean
 
-    return docstring
+    # Three fix-up operations.
+    docstring = A_GIS.Code.Docstring.init(text=text, reference_code=code)
+    docstring = A_GIS.Code.Docstring.fix_short_description(docstring=docstring)
+    # This is messing up formatting in cases where the input cannot
+    # be parsed correctly. In this case the paragraph wrapping does weird
+    # stuff.
+    if reformat:
+        docstring = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    return str(docstring)

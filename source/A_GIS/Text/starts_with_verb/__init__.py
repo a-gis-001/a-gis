@@ -5,7 +5,7 @@ def starts_with_verb(*, sentence: str, do_second_pass: bool = True):
 
     """
     import nltk
-    import A_GIS.Text.get_word_stem
+    import A_GIS.Text.get_root_word
 
     nltk.download("averaged_perceptron_tagger")
 

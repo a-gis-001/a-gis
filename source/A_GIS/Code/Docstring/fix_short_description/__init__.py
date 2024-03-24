@@ -3,16 +3,30 @@ def fix_short_description(
     docstring: type["A_GIS.Code.Docstring._Docstring"],
     force_ai=False,
 ) -> str:
-    """Fix the short description in the docstring.
+    """Improve function's short description using AI, if needed.
 
-    The short description is the first line of the docstring and in
-    many cases is printed along with the function signature for function
-    summarization. Therefore it should be short and concise, separated
-    from the rest of the 'long description' by a blank line.
+    This function fixes the short description of a function's docstring
+    using AI-generated suggestions. It checks the existing short
+    description for any issues and suggests corrections through an AI
+    model. The AI model is only engaged when issues are identified or
+    when `force_ai` is set to True.
 
-    This function needs the full docstring so that there is context available
-    to the AI.
+    Args:
+        docstring (A_GIS.Code.Docstring._Docstring):
+            The docstring object of the function.
+        force_ai (bool, optional):
+            If True, AI assistance will be used regardless of whether issues are
+            present in the short description.
+
+    Returns:
+        str:
+            The updated docstring with a new or improved short description.
+
+    Raises:
+        ValueError:
+            If the AI-suggested short description does not meet all requirements.
     """
+
     import A_GIS.Code.Docstring.check_short_description
     import A_GIS.Ai.Chatbot.init
 
@@ -42,6 +56,7 @@ concise function descriptions. Your description should be no more
 than 64 characters. The first word of the description should be a
 simple verb stem, e.g. 'Run' not 'Runs' or 'Ran'. The short
 description should be a full sentence and end with a period.
+Avoid abbreviations and punctuation.
     """
 
     # Create user prompt.
@@ -61,7 +76,7 @@ Note, the existing short description is:
     # TODO: Dynamically populate these options from optimal settings.
     chatbot = A_GIS.Ai.Chatbot.init(
         model="mixtral",
-        temperature=0.1,
+        temperature=0.7,
         num_ctx=3000,
         num_predict=20,
         mirostat=2,
@@ -69,19 +84,29 @@ Note, the existing short description is:
     )
     result = chatbot.chat(message=user)
     print(result)
-    suggestion = result["message"]["content"].strip().replace("\n", ".")
-    suggestion = suggestion[: suggestion.find("..")] + "."
-    print("s", suggestion)
 
-    # Only keep the first sentence in short.
-    suggestion, other = A_GIS.Text.split_first_sentence(text=suggestion)
-    print("s", suggestion)
+    # Strip layers of junk.
+    suggestion = result["message"]["content"].strip().strip("'\"").strip()
+    print("s1", suggestion)
 
-    # Final fix-ups for the suggestion.
+    # Keep first line.
+    suggestion = suggestion.split("\n")[0]
+    print("s2", suggestion)
+
+    # Only keep the first sentence.
+    suggestion, _ = A_GIS.Text.split_first_sentence(text=suggestion)
+    print("s3", suggestion)
+
+    # Force first word to be stem.
     words = suggestion.split(" ")
-    words[0] = A_GIS.Text.get_word_stem(word=words[0]).capitalize()
+    words[0] = A_GIS.Text.get_root_word(word=words[0]).capitalize()
+    print("stem", words[0])
     suggestion = " ".join(words)
-    print("s", suggestion)
+    print("s4", suggestion)
+
+    # Force last char to be period.
+    if not suggestion.endswith("."):
+        suggestion = suggestion + "."
 
     # Final check the suggestion now meets all requirements.
     errors = A_GIS.Code.Docstring.check_short_description(

@@ -53,9 +53,15 @@ def reformat(
     paragraphs = wrapped_and_indented_text.split("\n\n")
     wrapped_paragraphs = []
     for paragraph in paragraphs:
-        wrapped_paragraph = textwrap.fill(
-            textwrap.dedent(paragraph), width=width - 4
-        )
+        # Check if any line in the paragraph exceeds the max line limit
+        if any(len(line) > (width - 4) for line in paragraph.splitlines()):
+            # If so, wrap the entire paragraph
+            wrapped_paragraph = textwrap.fill(
+                textwrap.dedent(paragraph), width=width - 4
+            )
+        else:
+            # Otherwise, just dedent without wrapping
+            wrapped_paragraph = textwrap.dedent(paragraph)
         wrapped_paragraphs.append(wrapped_paragraph)
 
     # Join processed paragraphs with double newline and indent
@@ -66,8 +72,4 @@ def reformat(
         text=wrapped_and_indented_text, subs=subs
     )
 
-    # Indent long.
-    docstring.long_description = textwrap.indent(
-        docstring.long_description, "    "
-    )
     return docstring

@@ -7,7 +7,7 @@ from .get_after_tag import get_after_tag
 from .get_before_tag import get_before_tag
 from .get_indent import get_indent
 from .get_patch import get_patch
-from .get_word_stem import get_word_stem
+from .get_root_word import get_root_word
 from .hash import hash
 from .insert_block_placeholders import insert_block_placeholders
 from .reconstitute_blocks import reconstitute_blocks
