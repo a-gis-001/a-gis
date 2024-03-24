@@ -1,72 +1,89 @@
 import pytest
-import A_GIS.Code.Docstring.reformat  # Adjust the import as necessary
+import A_GIS.Code.Docstring.reformat  
+import A_GIS.Code.Docstring.init
+
+def _assert(test_result,expected):
+
+    assert str(test_result) == expected,'\ntest{\n'+str(test_result).replace(' ','_')+'\n}\n'+'expected{\n'+str(expected.replace(' ','_'))+'\n}\n'
 
 def test_reformat_multiple_sentences():
-    docstring = (
-        "This is the first sentence. This is the second sentence. "
+    docstring = A_GIS.Code.Docstring.init(
+        text="This is the first sentence. This is the second sentence. "
         "This is the third sentence."
     )
     expected = """This is the first sentence.
 
-    This is the second sentence. This is the third sentence.
-    """
+    This is the second sentence. This is the third sentence."""
     test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
-    assert test_result == expected
+
+    _assert(test_result,expected)
 
 def test_reformat_with_leading_trailing_spaces():
-    docstring = "    This is the first sentence. This is the second sentence.      "
+    docstring = A_GIS.Code.Docstring.init(text="    This is the first sentence. This is the second sentence.      ")
     expected = """This is the first sentence.
 
-    This is the second sentence.
-    """
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    This is the second sentence."""
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_already_compliant():
-    docstring = """This is a compliant docstring.
+    docstring = A_GIS.Code.Docstring.init(text="""This is a compliant docstring.
 
     It already adheres to PEP 257 conventions. There is no need to
     change its format significantly.
-    """
+    """)
     
     # Expect the function to recognize and not alter the compliant structure
-    expected = docstring
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    expected = """This is a compliant docstring.
+
+    It already adheres to PEP 257 conventions. There is no need to
+    change its format significantly."""
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_empty_docstring():
-    docstring = ""
+    docstring = A_GIS.Code.Docstring.init(text="")
     expected = ""
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_with_complex_punctuation():
-    docstring = "Dr. Smith visited Washington, D.C. yesterday. This is additional text."
+    docstring = A_GIS.Code.Docstring.init(text="Dr. Smith visited Washington, D.C. yesterday. This is additional text.")
     expected = """Dr. Smith visited Washington, D.C. yesterday.
 
-    This is additional text.
-    """
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    This is additional text."""
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_single_sentence_with_newline():
-    docstring = "This is a single sentence with a newline character.\n"
+    docstring = A_GIS.Code.Docstring.init(text="This is a single sentence with a newline character.\n")
     expected = "This is a single sentence with a newline character."
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_multiline_with_blank_lines():
-    docstring = """This is the first sentence.
+    docstring = A_GIS.Code.Docstring.init(text="""This is the first sentence.
 
     This is a second sentence, followed by a blank line.
 
     This should be a new paragraph.
-    """
+    """)
     expected = """This is the first sentence.
 
     This is a second sentence, followed by a blank line.
 
-    This should be a new paragraph.
-    """
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    This should be a new paragraph."""
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)
 
 def test_reformat_with_code_block():
-    docstring = """This is the first sentence. Here is a code block:
+    docstring = A_GIS.Code.Docstring.init(text="""This is the first sentence. Here is a code block:
 
     ```python
     def example_function():
@@ -74,7 +91,7 @@ def test_reformat_with_code_block():
     ```
 
     The code block should remain untouched.
-    """
+    """)
     expected = """This is the first sentence.
 
     Here is a code block:
@@ -84,7 +101,8 @@ def test_reformat_with_code_block():
         pass
     ```
 
-    The code block should remain untouched.
-    """
+    The code block should remain untouched."""
 
-    assert A_GIS.Code.Docstring.reformat(docstring=docstring) == expected
+    test_result = A_GIS.Code.Docstring.reformat(docstring=docstring)
+
+    _assert(test_result,expected)

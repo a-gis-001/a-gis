@@ -1,4 +1,4 @@
-def modify(code: str, docstring: str):
+def replace_docstring(code: str, docstring: str):
     """
     Add or replace the docstring of the first class or function definition in the code.
 

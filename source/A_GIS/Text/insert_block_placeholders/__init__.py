@@ -32,7 +32,7 @@ def insert_block_placeholders(
             A tuple containing two elements:
             - subs (dict): A dictionary where keys are placeholders and values are the original blocks.
             - text (str): The modified input `text` with placeholders replacing the original blocks.
-"""
+    """
 
     import A_GIS.Text.extract_markdown
     import A_GIS.Text.replace_block

@@ -5,8 +5,8 @@ import A_GIS.Cli.get_name_and_path
 import A_GIS.Cli.register
 import A_GIS.Cli.update_and_show_git_status
 import A_GIS.Code.Docstring.generate
-import A_GIS.Code.Docstring.modify
-import A_GIS.Code.Docstring.rate
+import A_GIS.Code.replace_docstring
+import A_GIS.Code.Docstring.fix_short_description
 import A_GIS.Code.find_root
 import A_GIS.Code.highlight
 import A_GIS.Code.Tree.recurse
@@ -157,7 +157,7 @@ def docstring(name: "unit name"):
 
     # Write the new docstring into the file.
     console.print(f"Writing new docstring to {path} ...")
-    code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
+    code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)
 
     # Update all the files, doing formatting and performing checks.
@@ -267,7 +267,7 @@ def rate(name: "unit name"):
 
     # Generate a rate.
     code = A_GIS.File.read(file=path)
-    rate = A_GIS.Code.Docstring.rate(name=name, code=code)
+    rate = A_GIS.Code.Docstring.fix_short_description(name=name, code=code)
     panel = rich.panel.Panel(
         rate, title=f"Rating", expand=True, border_style="bold cyan"
     )

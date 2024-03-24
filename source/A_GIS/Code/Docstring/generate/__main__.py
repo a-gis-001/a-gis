@@ -4,7 +4,7 @@ def main():
     import A_GIS.File.read
     import sys
     import A_GIS.Code.Docstring.generate
-    import A_GIS.Code.Docstring.modify
+    import A_GIS.Code.replace_docstring
     import pathlib
     import A_GIS.File.write
 
@@ -24,7 +24,7 @@ def main():
     docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
     print("docstring:", docstring)
 
-    code = A_GIS.Code.Docstring.modify(code=code, docstring=docstring)
+    code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)
 
 
