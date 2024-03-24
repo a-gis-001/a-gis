@@ -39,7 +39,9 @@ def fix_short_description(
     system = f"""
 You are an expert Python programmer specializing in writing short,
 concise function descriptions. Your description should be no more
-than 64 characters. Shorter is better.
+than 64 characters. The first word of the description should be a
+simple verb stem, e.g. 'Run' not 'Runs' or 'Ran'. The short
+description should be a full sentence and end with a period.
     """
 
     # Create user prompt.
@@ -59,23 +61,27 @@ Note, the existing short description is:
     # TODO: Dynamically populate these options from optimal settings.
     chatbot = A_GIS.Ai.Chatbot.init(
         model="mixtral",
-        temperature=0.5,
+        temperature=0.1,
         num_ctx=3000,
         num_predict=20,
         mirostat=2,
         system=system,
     )
     result = chatbot.chat(message=user)
-    suggestion = result["message"]["content"]
+    print(result)
+    suggestion = result["message"]["content"].strip().replace("\n", ".")
+    suggestion = suggestion[: suggestion.find("..")] + "."
+    print("s", suggestion)
+
+    # Only keep the first sentence in short.
+    suggestion, other = A_GIS.Text.split_first_sentence(text=suggestion)
+    print("s", suggestion)
 
     # Final fix-ups for the suggestion.
     words = suggestion.split(" ")
-    words[0] = A_GIS.Text.get_word_stem(words[0]).capitalize()
+    words[0] = A_GIS.Text.get_word_stem(word=words[0]).capitalize()
     suggestion = " ".join(words)
-    if len(suggestion) > 63:
-        suggestion = suggestion[0:63]
-    if not suggestion.endswith("."):
-        suggestion = suggestion + "."
+    print("s", suggestion)
 
     # Final check the suggestion now meets all requirements.
     errors = A_GIS.Code.Docstring.check_short_description(
@@ -83,7 +89,7 @@ Note, the existing short description is:
     )
     if len(errors) > 0:
         raise ValueError(
-            f"The AI-suggested docstring short description={suggestion} fails to meet criteria with errors: {errors}."
+            f"The AI-suggested docstring short description='{suggestion}' fails to meet criteria with errors: {errors}."
         )
 
     # Update the docstring only if it meets requirements.
