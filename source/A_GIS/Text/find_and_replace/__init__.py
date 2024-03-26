@@ -1,12 +1,12 @@
 def find_and_replace(*, text: str, old: str, new: str, is_regex: bool = False):
-    """Perform find-replace in text using flag for regex.
+    """Find-replace returning new text and number of replacements
 
-        This function searches for a specified string or regular
-        expression in the provided text and replaces it with
-        another string. The search can be performed as a plain
-        string match or using regular expressions, based on the
-        `is_regex` flag. It also counts the number of replacements
-        made.
+    This function searches for a specified string or regular
+    expression in the provided text and replaces it with
+    another string. The search can be performed as a plain
+    string match or using regular expressions, based on the
+    `is_regex` flag. It also counts the number of replacements
+    made.
 
     Args:
         - text (str): The input text where replacements should
