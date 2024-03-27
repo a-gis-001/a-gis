@@ -209,7 +209,7 @@ def name(description: "unit description", tries: "number of tries" = 3):
     )
     names = []
     for i in range(tries):
-        name = A_GIS.Code.Unit.Name.generate(description=description, temperature=0.9)
+        name = A_GIS.Code.Unit.Name.generate(description=description, temperature=1.5)
         console.print(f"AI generated name={name}")
         if len(name) > len("A_GIS."):
             names.append(name)

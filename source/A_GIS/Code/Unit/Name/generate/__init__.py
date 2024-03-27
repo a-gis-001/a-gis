@@ -19,6 +19,7 @@ def generate(
     import A_GIS.Log.append
     import A_GIS.Text.add_indent
     import A_GIS.Code.Unit.Name.fix
+    import A_GIS.Ai.Chatbot.init
 
     # Create a list of examples.
     example_list = A_GIS.catalog(
@@ -61,6 +62,12 @@ Be careful about introducing unnecessary hierarchy for synonymous concepts.
 
 Shorter is better but you never respond with an empty result!
 """
+
+    chatbot = A_GIS.Ai.Chatbot.init(model="mixtral")
+    result = description = chatbot.chat(
+        f"Generate 5 synonomous descriptions of this function: {description}"
+    )
+    description = result["message"]["content"]
 
     user = f"Function description: {description} --> Function name: "
 

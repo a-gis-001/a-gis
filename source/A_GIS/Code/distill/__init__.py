@@ -1,14 +1,14 @@
 def distill(*, code: str) -> str:
     """Distill code to only executable code and imports
 
-    This function parses the input Python code into an Abstract Syntax 
-    Tree (AST) using the `ast` module in Python's standard library. It 
-    then walks through all nodes in the AST, identifying and replacing 
+    This function parses the input Python code into an Abstract Syntax
+    Tree (AST) using the `ast` module in Python's standard library. It
+    then walks through all nodes in the AST, identifying and replacing
     docstrings and multiline string literals with empty strings.
 
-    Please note that due to the nature of how Python parses ASTs and 
-    comments, comments (which start with '#') are not included in the 
-    AST and hence are not present in the unparsed code, effectively 
+    Please note that due to the nature of how Python parses ASTs and
+    comments, comments (which start with '#') are not included in the
+    AST and hence are not present in the unparsed code, effectively
     removing them from the output.
 
     Args:
@@ -17,7 +17,7 @@ def distill(*, code: str) -> str:
 
     Returns:
         str:
-            The distilled Python code as a string, with docstrings and 
+            The distilled Python code as a string, with docstrings and
             multiline string literals removed.
 
     Examples:
