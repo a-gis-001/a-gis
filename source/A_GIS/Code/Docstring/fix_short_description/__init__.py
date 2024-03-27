@@ -53,7 +53,7 @@ def fix_short_description(
     system = f"""
 You are an expert Python programmer specializing in writing short,
 concise function descriptions. Your description should be no more
-than 64 characters. The first word of the description should be a
+than 63 characters. The first word of the description should be a
 simple verb stem, e.g. 'Run' not 'Runs' or 'Ran'. The short
 description should be a full sentence and end with a period.
 Avoid abbreviations and punctuation.
@@ -83,26 +83,20 @@ Note, the existing short description is:
         system=system,
     )
     result = chatbot.chat(message=user)
-    print(result)
 
     # Strip layers of junk.
     suggestion = result["message"]["content"].strip().strip("'\"").strip()
-    print("s1", suggestion)
 
     # Keep first line.
     suggestion = suggestion.split("\n")[0]
-    print("s2", suggestion)
 
     # Only keep the first sentence.
     suggestion, _ = A_GIS.Text.split_first_sentence(text=suggestion)
-    print("s3", suggestion)
 
     # Force first word to be stem.
     words = suggestion.split(" ")
     words[0] = A_GIS.Text.get_root_word(word=words[0]).capitalize()
-    print("stem", words[0])
     suggestion = " ".join(words)
-    print("s4", suggestion)
 
     # Force last char to be period.
     if not suggestion.endswith("."):

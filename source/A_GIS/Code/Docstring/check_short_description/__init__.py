@@ -22,8 +22,9 @@ def check_short_description(*, short_description: str):
         return errors
 
     # Check length.
-    if len(short_description) > 64:
-        errors.append("Length must be 64 characters or less.")
+    length = len(short_description)
+    if length > 64:
+        errors.append(f"Length ({length}) must be 64 characters or less.")
 
     # Add check for ends with a period.
     if not short_description.endswith("."):

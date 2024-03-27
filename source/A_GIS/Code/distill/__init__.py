@@ -1,22 +1,24 @@
 def distill(*, code: str) -> str:
-    """Distill the given Python code by removing docstrings, converting
-    multiline string literals, and removing comments.
+    """Distill code to only executable code and imports
 
-    This function parses the provided Python code into an abstract syntax tree (AST),
-    and then walks through the AST. It identifies and blanks out all docstrings and
-    multiline string literals. Additionally, due to the nature of AST parsing in Python,
-    comments (which start with '#') are not included in the AST and hence are not present
-    in the unparsed code, effectively removing them from the output.
+    This function parses the input Python code into an Abstract Syntax 
+    Tree (AST) using the `ast` module in Python's standard library. It 
+    then walks through all nodes in the AST, identifying and replacing 
+    docstrings and multiline string literals with empty strings.
 
-    It's important to note that this removal of comments is a byproduct of how the Python
-    parser and the AST handle comments, rather than an explicit action by this function.
+    Please note that due to the nature of how Python parses ASTs and 
+    comments, comments (which start with '#') are not included in the 
+    AST and hence are not present in the unparsed code, effectively 
+    removing them from the output.
 
     Args:
-        code (str): A string representing the Python code to be distilled.
+        code (str):
+            The Python code string to be distilled.
 
     Returns:
-        str: A string representing the purified Python code, with docstrings, multiline string
-             literals, and comments removed.
+        str:
+            The distilled Python code as a string, with docstrings and 
+            multiline string literals removed.
 
     Examples:
         >>> ds=('"'*3) + 'I am a docstring!' + ('"'*3)
@@ -30,6 +32,7 @@ def distill(*, code: str) -> str:
         def example_function(param1, param2):
             return (param1, param2)
     """
+
     import ast
     import re
     import A_GIS.Code._distill_imports
