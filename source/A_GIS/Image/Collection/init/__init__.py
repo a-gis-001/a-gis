@@ -20,7 +20,7 @@ def init(
     # start you milvus server
     if not milvus.default_server.running:
         milvus.default_server.start()
-        milvus.default_server.cleanup()
+        #milvus.default_server.cleanup()
 
     # connect
     pymilvus.connections.connect(host=host, port=port)
