@@ -42,7 +42,6 @@ def distill(*, console, names: list[str]):
     def create_registry(names):
         registry = {}
         for name in names:
-
             # Get the name and path.
             name, path = A_GIS.Cli.get_name_and_path(arg=name)
             # console.print(f"Distilling unit name={name} at path={path} ...")
@@ -75,7 +74,6 @@ def distill(*, console, names: list[str]):
 
         # Update each item based on sorted order
         for k, v in sorted_items:
-
             if v["count"] == 0:
                 v["count"] = -1  # This marks the item as processed
                 # console.print('hash=' + v['hash'])

@@ -23,7 +23,6 @@ def check(*, unit: type["A_GIS.Code.Unit._Unit"]) -> list[str]:
     # Iterate through code body and accumulate error messages.
     errors = []
     for i, block in enumerate(unit.code_body):
-
         # Determine if first block is an import block.
         is_import_block = i == 0 and A_GIS.Code.Unit._has_imports(block=block)
 

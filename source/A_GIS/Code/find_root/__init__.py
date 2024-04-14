@@ -12,7 +12,6 @@ def find_root(
         input_path.name == "__init__.py"
         or (input_path / "__init__.py").exists()
     ):
-
         # Walk up the directory tree until the parent directory does not have
         # __init__.py.
         system_root = input_path.root

@@ -8,8 +8,8 @@ def to_numpy(*, upper_tri):
 
     # Assign values to both upper and lower parts of the matrix
     matrix[upper_tri_indices] = upper_tri.values
-    matrix[(upper_tri_indices[1], upper_tri_indices[0])] = (
-        upper_tri.values  # Mirror the values
-    )
+    matrix[
+        (upper_tri_indices[1], upper_tri_indices[0])
+    ] = upper_tri.values  # Mirror the values
 
     return matrix

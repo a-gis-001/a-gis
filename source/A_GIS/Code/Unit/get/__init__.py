@@ -25,9 +25,12 @@ def get(*, code: str):
     import A_GIS.Code.Unit._Unit
 
     # Split the full code body into 4 expected sections.
-    type_imports0, function_definition0, docstring0, code_body0 = (
-        A_GIS.Code.Unit._parse_first_pass(code=code)
-    )
+    (
+        type_imports0,
+        function_definition0,
+        docstring0,
+        code_body0,
+    ) = A_GIS.Code.Unit._parse_first_pass(code=code)
 
     # Reorganize the code body string into unit.
     code_body = []

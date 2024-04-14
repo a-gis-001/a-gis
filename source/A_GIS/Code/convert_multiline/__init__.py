@@ -10,7 +10,6 @@ def convert_multiline(*, code: str) -> str:
 
     class MultilineStringTransformer(libcst.CSTTransformer):
         def leave_SimpleString(self, original_node, updated_node):
-
             # Check if string is triple doubles or singles
             new_value = updated_node.value.encode("utf-8").decode(
                 "unicode_escape"

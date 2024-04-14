@@ -26,7 +26,6 @@ def _check_imports(*, block: list[str], start_index: int = 0) -> list[str]:
     msg = []
     if A_GIS.Code.Unit._has_imports(block=block):
         for line in block:
-
             # Check for non-absolute imports.
             if line.lstrip().startswith("from "):
                 msg.append(

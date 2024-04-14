@@ -1,7 +1,6 @@
 import libcst
 
 class _Visitor(libcst.CSTVisitor):
-
     def __init__(self, root):
         self.stack = [root]
         self.structure = {}

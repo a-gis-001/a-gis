@@ -22,7 +22,6 @@ def _check_body_block(*, block: list[str], start_index: int = 0) -> list[str]:
     msg = []
     is_body, has_internal_comments = False, False
     for line_number, line_content in enumerate(block):
-
         # Check for comments at the beginning of the block
         if line_number == 0 and not line_content.lstrip().startswith("#"):
             msg.append(

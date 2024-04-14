@@ -1,5 +1,4 @@
 class _Url:
-
     def __init__(self, url, chunk_size=1024, binary=False):
         import requests
         import zlib
