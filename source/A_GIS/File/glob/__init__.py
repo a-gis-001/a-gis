@@ -1,6 +1,7 @@
 def glob(*, paths, glob_args):
     """Recursively glob files and directories in one flat list."""
     import pathlib
+
     file_names = []
     for path0 in paths:
         path = pathlib.Path(path0)
