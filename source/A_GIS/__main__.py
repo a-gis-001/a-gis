@@ -139,7 +139,7 @@ cli.add_command(list)
 # Define the docstring command.
 @click.command()
 @A_GIS.Cli.register
-def docstring(name: "unit name"):
+def docstring(name: "unit name", *, model: "model name"="gemma-2b-code"):
     """Use AI to replace a docstring"""
 
     # Get the path and name.

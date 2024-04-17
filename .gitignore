@@ -1,5 +1,6 @@
 # Package specific
 models
+__a_gis*
 
 # MacOS
 .DS_Store

@@ -17,13 +17,18 @@ def init(
     # default it wil using %APPDATA%/milvus-io/milvus-server
     milvus.default_server.set_base_dir(base_dir)
 
-    # start you milvus server
-    if not milvus.default_server.running:
+    # Connect to Milvus server
+    try:
+        pymilvus.connections.connect(host=host, port=port)
+        print("Connected to Milvus server at {}:{}".format(host, port))
+    except Exception as e:
         milvus.default_server.start()
-        #milvus.default_server.cleanup()
-
-    # connect
-    pymilvus.connections.connect(host=host, port=port)
+        try:
+            pymilvus.connections.connect(host=host, port=port)
+            print("Connected to Milvus server at {}:{}".format(host, port))
+        except Exception as e:
+            print(f"Failed to connect to Milvus server: {e}")
+            return None
 
     # Create.
     field1 = pymilvus.FieldSchema(
