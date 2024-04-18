@@ -5,7 +5,7 @@ def generate(
     *,
     name: str,
     code: str,
-    model="deepseek-coder:33b",
+    model="wizardlm2:7b",
     temperature=0.5,
     num_ctx=10000,
     num_predict=1000,
@@ -162,7 +162,9 @@ docstring:
 
     # Three fix-up operations.
     docstring = A_GIS.Code.Docstring.init(text=text, reference_code=code)
-    docstring = A_GIS.Code.Docstring.fix_short_description(docstring=docstring)
+    docstring = A_GIS.Code.Docstring.fix_short_description(
+        docstring=docstring, model=model
+    )
     # This is messing up formatting in cases where the input cannot
     # be parsed correctly. In this case the paragraph wrapping does weird
     # stuff.

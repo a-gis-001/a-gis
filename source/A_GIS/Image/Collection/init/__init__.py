@@ -8,6 +8,36 @@ def init(
     vec={"dim": 512, "description": "encoding", "name": "vec"},
     album={"length": 256, "description": "name of album", "name": "album"},
 ):
+    """Initialize a collection of images using a vector database.
+
+    This function initializes a new collection within a Milvus vector database,
+    allowing for the storage and retrieval of image data along with their associated vectors and metadata. The collection is configured with user-defined parameters for file storage paths, server connection details, and schema definitions for the data fields.
+
+    Args:
+        base_dir (str, optional):
+            The base directory where the Milvus server stores its data. Default is `__a_gis_image_db__`.
+        host (str, optional):
+            The host address of the Milvus server. Default is `127.0.0.1`.
+        port (int, optional):
+            The network port on which the Milvus server listens for connections. Default is `19530`.
+        name (str):
+            The name of the collection to be created within the Milvus database.
+        id (dict):
+            Configuration for the 'id' field in the collection schema. It specifies the field's length, description, and whether it is a primary key. Example: `{'length': 256, 'description': 'filename', 'name': 'id'}`.
+        vec (dict):
+            Configuration for the 'vec' field in the collection schema. It defines the field's data type (FLOAT_VECTOR), dimension, description, and whether it is a primary key. Example: `{'dim': 512, 'description': 'encoding', 'name': 'vec'}`.
+        album (str):
+            Configuration for the 'album' field in the collection schema. It specifies the field's data type (VARCHAR), maximum length, description, and whether it is a primary key. Example: `{'length': 256, 'description': 'name of album', 'name': 'album'}`.
+
+    Returns:
+        _Collection:
+            An instance of the dataclass `_Collection` containing the initialization parameters for the Milvus collection, along with the connection details and schema.
+
+    Raises:
+        Exception:
+            If the Milvus server cannot be connected to on the specified host and port, an exception will be raised. The function will attempt to start the Milvus server locally if it is not already running. If the server still cannot be connected to after these attempts, `None` is returned, and an error message is printed.
+    """
+
     import milvus
     import pymilvus
     import dataclasses

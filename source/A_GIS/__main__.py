@@ -139,7 +139,7 @@ cli.add_command(list)
 # Define the docstring command.
 @click.command()
 @A_GIS.Cli.register
-def docstring(name: "unit name", *, model: "model name"="gemma-2b-code"):
+def docstring(name: "unit name", *, model: "model name"="wizardlm2:7b"):
     """Use AI to replace a docstring"""
 
     # Get the path and name.
@@ -149,7 +149,7 @@ def docstring(name: "unit name", *, model: "model name"="gemma-2b-code"):
 
     # Generate a docstring.
     code = A_GIS.File.read(file=path)
-    docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
+    docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model)
     panel = rich.panel.Panel(
         docstring, title=f"new docstring", expand=True, border_style="bold cyan"
     )

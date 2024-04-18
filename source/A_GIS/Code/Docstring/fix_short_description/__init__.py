@@ -2,6 +2,7 @@ def fix_short_description(
     *,
     docstring: type["A_GIS.Code.Docstring._Docstring"],
     force_ai=False,
+    model: str = "mixtral",
 ) -> str:
     """Improve function's short description using AI, if needed.
 
@@ -42,12 +43,12 @@ def fix_short_description(
     problems = ""
     if errors:
         problems = "The existing short description has these problems you should fix:\n"
-        problems += "\n    -".join(errors)
+        problems += "\n".join(["    - " + x for x in errors])
 
     # Turn the reference code into a directive.
     reference = ""
     if docstring.reference_code:
-        reference = "For reference, the code for the docstring is:\n{docstring.reference_code}"
+        reference = f"For reference, the code for the docstring is:\n{docstring.reference_code}"
 
     # Create the system prompt.
     system = f"""
@@ -70,15 +71,18 @@ Note, the existing short description is:
 {docstring.short_description}
 
 {problems}
+
+IMPORTANT: REPLY WITH ONLY THE 63 CHARACTER SHORT DESCRIPTION ON A SINGLE LINE!
+ANYTHING AFTER 63 CHARACTERS WILL BE REMOVED. 63 CHARACTERS IS 9 WORDS OR LESS.
 """
 
     # Initialize and engage the chatbot for the short description suggestion.
     # TODO: Dynamically populate these options from optimal settings.
     chatbot = A_GIS.Ai.Chatbot.init(
-        model="mixtral",
+        model=model,
         temperature=0.7,
         num_ctx=3000,
-        num_predict=20,
+        num_predict=100,
         mirostat=2,
         system=system,
     )
