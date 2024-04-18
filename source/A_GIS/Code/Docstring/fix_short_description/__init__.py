@@ -111,7 +111,7 @@ ANYTHING AFTER 63 CHARACTERS WILL BE REMOVED. 63 CHARACTERS IS 9 WORDS OR LESS.
         short_description=suggestion
     )
     if len(errors) > 0:
-        raise ValueError(
+        A_GIS.Log.append(
             f"The AI-suggested docstring short description='{suggestion}' fails to meet criteria with errors: {errors}."
         )
 
