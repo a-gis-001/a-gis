@@ -1,9 +1,9 @@
 def get_git_diff(*, args: list):
     """Get the git diff in the current directory.
 
-    Execute a 'git diff' command with the given arguments and returns the resulting diff as plain text, utilizing the `subprocess` module to run the command.
-    returns the output of the diff as plain text. It utilizes the `subprocess` module to
-    run the git command.
+    Execute a 'git diff' command with the given arguments and returns the
+    resulting diff as plain text, utilizing the `subprocess` module to run
+    the command.
 
     Args:
         args (List[str]):
