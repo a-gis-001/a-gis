@@ -16,4 +16,5 @@ from .recreate_sentence import recreate_sentence
 from .remove_indent import remove_indent
 from .replace_block import replace_block
 from .split_first_sentence import split_first_sentence
+from .split_into_sentences import split_into_sentences
 from .starts_with_verb import starts_with_verb
