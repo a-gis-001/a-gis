@@ -1,6 +1,7 @@
 # Functions
 from .add_indent import add_indent
 from .apply_patch import apply_patch
+from .calculate_embedding import calculate_embedding
 from .extract_markdown import extract_markdown
 from .find_and_replace import find_and_replace
 from .get_after_tag import get_after_tag
