@@ -8,3 +8,4 @@ from .validate import validate
 from . import Collection
 from . import Encoder
 from . import Metadata
+from . import Plot
