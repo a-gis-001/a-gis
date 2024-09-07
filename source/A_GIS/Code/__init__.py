@@ -19,6 +19,7 @@ from .replace_docstring import replace_docstring
 from .replace_from_imports import replace_from_imports
 
 # Packages
+from . import Commit
 from . import Docstring
 from . import Tree
 from . import Unit

@@ -5,6 +5,7 @@ from .extract_markdown import extract_markdown
 from .find_and_replace import find_and_replace
 from .get_after_tag import get_after_tag
 from .get_before_tag import get_before_tag
+from .get_between_tags import get_between_tags
 from .get_indent import get_indent
 from .get_patch import get_patch
 from .get_root_word import get_root_word

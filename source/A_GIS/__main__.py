@@ -19,6 +19,7 @@ import A_GIS.Code.Unit.touch
 import A_GIS.File.read
 import A_GIS.File.write
 import importlib
+import io
 import os
 import pathlib
 import rich
@@ -108,7 +109,12 @@ cli.add_command(move)
 def catalog(args: bool = True):
     """Show a catalog of all of A_GIS"""
 
-    console = rich.console.Console(width=WIDTH)
+    # Use StringIO to capture the rich output into a buffer
+    output_buffer = io.StringIO()
+
+    # Use a Console that writes to the buffer
+    console = rich.console.Console(file=output_buffer, width=WIDTH, force_terminal=True)
+
     index = 0
     for code in A_GIS.catalog(include_args=args):
         index += 1
@@ -117,6 +123,11 @@ def catalog(args: bool = True):
         console.print(rule)
         console.print(code, "\n")
 
+    # Retrieve the buffer content
+    output_content = output_buffer.getvalue()
+
+    # Use click to page the output
+    click.echo_via_pager(output_content)
 
 cli.add_command(catalog)
 
