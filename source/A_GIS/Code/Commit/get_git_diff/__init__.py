@@ -1,9 +1,10 @@
-def get_git_diff(*, diff_args:list=["--staged"]):
+def get_git_diff(*, args:list):
+    """Get the git diff in the current directory."""
+    import subprocess
 
-    command = ["git", *list]
+    command = ["git", "diff", *args]
     completed_process = subprocess.run(
         command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
     )
 
-    # Get the command output
     return completed_process.stdout
