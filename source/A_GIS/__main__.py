@@ -129,6 +129,7 @@ def catalog(args: bool = True):
     # Use click to page the output
     click.echo_via_pager(output_content)
 
+
 cli.add_command(catalog)
 
 
@@ -150,7 +151,7 @@ cli.add_command(list)
 # Define the docstring command.
 @click.command()
 @A_GIS.Cli.register
-def docstring(name: "unit name", *, model: "model name"="wizardlm2:7b"):
+def docstring(name: "unit name", *, model: "model name" = "wizardlm2:7b"):
     """Use AI to replace a docstring"""
 
     # Get the path and name.

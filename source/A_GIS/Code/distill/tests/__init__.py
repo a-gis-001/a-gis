@@ -16,7 +16,7 @@ def example_function(param1, param2):
 
 
 def test_distill_removes_docstring2():
-    ds = '"' * 3 + 'I am a docstring!' + '"' * 3
+    ds = '"' * 3 + "I am a docstring!" + '"' * 3
     test_code = f"""
 def example_function(param1, param2):
     {ds}
@@ -40,4 +40,3 @@ def example_function(param1, param2):
     return (param1, param2)
 """.strip()
     assert A_GIS.Code.distill(code=test_code) == expected_result
-

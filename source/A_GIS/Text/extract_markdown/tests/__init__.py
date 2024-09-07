@@ -1,7 +1,8 @@
 # test_extract_markdown.py
 import pytest
-import A_GIS.Text.extract_markdown 
+import A_GIS.Text.extract_markdown
 import textwrap
+
 
 def test_extract_simple_block():
     text = """
@@ -20,9 +21,14 @@ def test_extract_simple_block():
 def hello_world():
     print("Hello, world!")
 ```
-""".strip("\n")
-    content = A_GIS.Text.extract_markdown(text=text, block_name="python",dedent_result=True,content_only=False)
+""".strip(
+        "\n"
+    )
+    content = A_GIS.Text.extract_markdown(
+        text=text, block_name="python", dedent_result=True, content_only=False
+    )
     assert content == expected_content
+
 
 def test_missing_closing():
     text = """
@@ -34,6 +40,7 @@ def test_missing_closing():
     content = A_GIS.Text.extract_markdown(text=text, block_name="python")
     assert content == expected_content
 
+
 def test_no_matching_block():
     text = """
     Some random text
@@ -42,6 +49,7 @@ def test_no_matching_block():
     content = A_GIS.Text.extract_markdown(text=text, block_name="python")
     assert content == ""
 
+
 def test_wrong_block_name():
     text = """
     ```X
@@ -49,8 +57,11 @@ def test_wrong_block_name():
         print("Hello, world!")
     ```
     """
-    content = A_GIS.Text.extract_markdown(text=text, block_name="python",content_only=False)
-    assert content==""
+    content = A_GIS.Text.extract_markdown(
+        text=text, block_name="python", content_only=False
+    )
+    assert content == ""
+
 
 def test_regex_block_name():
     text = """
@@ -59,6 +70,10 @@ def test_regex_block_name():
         print("Hello, world!")
     ```
     """
-    content = A_GIS.Text.extract_markdown(text=text, block_name=r"\S*",content_only=False)
-    expected_content='    ```X\n    def hello_world():\n        print("Hello, world!")\n    ```'
-    assert content==expected_content
+    content = A_GIS.Text.extract_markdown(
+        text=text, block_name=r"\S*", content_only=False
+    )
+    expected_content = (
+        '    ```X\n    def hello_world():\n        print("Hello, world!")\n    ```'
+    )
+    assert content == expected_content

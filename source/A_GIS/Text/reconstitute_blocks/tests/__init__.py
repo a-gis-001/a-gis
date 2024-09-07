@@ -2,8 +2,9 @@ import pytest
 import A_GIS.Text.reconstitute_blocks
 import A_GIS.Text.insert_block_placeholders
 
+
 def test_reconstitute_different_indents():
-	text="""
+    text = """
 Hello
 
 ```python
@@ -21,6 +22,6 @@ def a():
     And after this
 
 """
-	subs,ntext = A_GIS.Text.insert_block_placeholders(text=text)
-	rtext = A_GIS.Text.reconstitute_blocks(text=ntext,subs=subs)
-	assert rtext==text
+    subs, ntext = A_GIS.Text.insert_block_placeholders(text=text)
+    rtext = A_GIS.Text.reconstitute_blocks(text=ntext, subs=subs)
+    assert rtext == text

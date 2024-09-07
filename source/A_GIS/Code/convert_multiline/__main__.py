@@ -6,5 +6,4 @@ import sys
 for file in sys.argv[1:]:
     code = A_GIS.File.read(file=file)
     code = A_GIS.Code.convert_multiline(code=code)
-    A_GIS.File.write(content=code,file=file)
-    
+    A_GIS.File.write(content=code, file=file)

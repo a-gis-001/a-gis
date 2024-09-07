@@ -61,7 +61,10 @@ def generate_message(
         **kwargs,
     )
 
-    result = coder.chat(message=A_GIS.Code.Commit.get_git_diff(args=diff_args))
+    message = A_GIS.Code.Commit.get_git_diff(args=diff_args)
+    if message="":
+        raise ValueError(f"git diff with args={diff_args} was empty!")
+    result = coder.chat(message=message)
     content = result["message"]["content"]
 
     output = A_GIS.Text.get_between_tags(
