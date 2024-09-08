@@ -307,5 +307,28 @@ def distill(name: "unit name" = ""):
 cli.add_command(distill)
 
 
+# Define the commit command.
+@click.command()
+@A_GIS.Cli.register
+def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just generate message without committing" = False):
+    """Use AI to generate a commit message for the staged changes"""
+
+    # Show current status.
+    root = A_GIS.Code.find_root(path=root)
+    os.chdir(root)
+    console = rich.console.Console(width=WIDTH)
+    console.print(f"Generating commit message for A_GIS at root={root} ...")
+    panel = A_GIS.Cli.update_and_show_git_status(root=root)
+    console.print(panel)
+
+    # Get the commit message.
+    message = A_GIS.Code.Commit.generate_message(do_commit=not dry_run)
+    panel = rich.panel.Panel(
+        message, title=f"commit message", expand=True, border_style="bold cyan"
+    )
+    console.print(panel)
+
+cli.add_command(commit)
+
 # This is always a main.
 cli()
