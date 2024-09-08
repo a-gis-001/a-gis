@@ -1,4 +1,6 @@
-def calculate_embedding(*, lines: list, nchunks: int, model="nomic-embed-text"):
+def calculate_embedding(
+    *, lines: list, nchunks: int, model="nomic-embed-text"
+):
     """Calculate text embeddings for a list of lines in chunks.
 
     This function processes a list of text lines and calculates their embeddings using an OLLama model, handling the input text in chunks to manage memory usage effectively. It returns the progress of chunk processing, the calculated embeddings, and the original chunks of text.
@@ -53,7 +55,8 @@ def calculate_embedding(*, lines: list, nchunks: int, model="nomic-embed-text"):
         # Generate the embedding for the current chunk
         # nomic-embed-text,bge-m3,mxbai-embed-large
         embedding_result = ollama.embeddings(
-            model=model, prompt=f"Calculate an embedding for detecting text similarity:\n{chunk_content}"
+            model=model,
+            prompt=f"Calculate an embedding for detecting text similarity:\n{chunk_content}",
         )
         embeddings.append(embedding_result["embedding"])
 
