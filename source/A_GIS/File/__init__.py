@@ -7,6 +7,7 @@ from .find_and_replace import find_and_replace
 from .glob import glob
 from .hash import hash
 from .is_url import is_url
+from .monitor import monitor
 from .open import open
 from .read import read
 from .read_to_text import read_to_text
