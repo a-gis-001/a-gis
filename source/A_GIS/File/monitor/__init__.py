@@ -5,16 +5,16 @@ def monitor(
     ignore_subdirs: list = [],
     only_extensions=[],
     ignore_dot_files=True,
+    follow_symlinks=True,  # New option to follow symlinks
     database_name: str = "file_monitor",
     collection_name: str = "file_changes",
     debug=True,
     sleep_seconds=1,
     max_entries=32,
 ):
-    """Monitor a list of directories for changes
+    """Monitor a list of directories for changes and file creation.
 
-    Stores changes in a mongodb.
-
+    Stores changes in a MongoDB database.
     """
     import os
     import time
@@ -27,6 +27,7 @@ def monitor(
     import numpy
     import pathlib
     import queue
+    import datetime
 
     # MongoDB setup
     client = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -56,47 +57,56 @@ def monitor(
             self.only_extensions = set(only_extensions)
             self.ignore_dot_files = ignore_dot_files
 
-        def on_modified(self, event):
+        def _should_ignore(self, file_path):
+            """Helper function to determine if a file should be ignored."""
+            # Only consider certain extensions.
+            if self.only_extensions:
+                ext = os.path.splitext(file_path)[1]
+                if not ext in self.only_extensions:
+                    if debug:
+                        print(
+                            f"Ignored because not in extension list: {file_path}"
+                        )
+                    return True
+
+            # Ignore file changes inside specific directories or files starting
+            # with "."
+            if self.ignore_dot_files and any(
+                part.startswith(".") for part in file_path.split(os.sep)
+            ):
+                if debug:
+                    print(f"Ignored hidden file or directory: {file_path}")
+                return True
+
+            # Ignore file changes inside specific directories
+            for ignored_dir in self.ignore_dirs:
+                if file_path.startswith(os.path.abspath(ignored_dir)):
+                    if debug:
+                        print(f"Ignored change in: {file_path}")
+                    return True
+
+            # Ignore file changes inside specific named subdirectories
+            dirs = set(file_path.split(os.sep)[:-2])
+            for ignored_subdir in self.ignore_subdirs:
+                if ignored_subdir in dirs:
+                    if debug:
+                        print(
+                            f"Ignored subdir {ignored_subdir} change in: {file_path}"
+                        )
+                    return True
+
+            return False
+
+        def process_event(self, event, event_type):
+            """Process the file event and update the database."""
             if not event.is_directory:
                 file_path = os.path.abspath(event.src_path)
                 if debug:
-                    print(f"Event for file: {file_path}")
+                    print(f"Event ({event_type}) for file: {file_path}")
 
-                # Only consider certain extensions.
-                if self.only_extensions:
-                    ext = os.path.splitext(file_path)[1]
-                    if not ext in self.only_extensions:
-                        if debug:
-                            print(
-                                f"Ignored because not in extension list: {file_path}"
-                            )
-                        return
-
-                # Ignore file changes inside specific directories or files
-                # starting with "."
-                if self.ignore_dot_files and any(
-                    part.startswith(".") for part in file_path.split(os.sep)
-                ):
-                    if debug:
-                        print(f"Ignored hidden file or directory: {file_path}")
+                # Check if we should ignore the file
+                if self._should_ignore(file_path):
                     return
-
-                # Ignore file changes inside specific directories
-                for ignored_dir in self.ignore_dirs:
-                    if file_path.startswith(os.path.abspath(ignored_dir)):
-                        if debug:
-                            print(f"Ignored change in: {file_path}")
-                        return
-
-                # Ignore file changes inside specific named subdirectories
-                dirs = set(file_path.split(os.sep)[:-2])
-                for ignored_subdir in self.ignore_subdirs:
-                    if ignored_subdir in dirs:
-                        if debug:
-                            print(
-                                f"Ignored subdir {ignored_subdir} change in: {file_path}"
-                            )
-                        return
 
                 try:
                     # Try to get the modification time; skip if the file
@@ -110,23 +120,29 @@ def monitor(
                             f"File not found or deleted too quickly: {file_path}"
                         )
                     return
+                current_mod_time = datetime.datetime.now().timestamp()
+
                 # Calculate SHA-256 checksum
                 sha256 = A_GIS.File.hash(file=file_path)
 
                 # Try to find the existing document
                 existing_entry = collection.find_one({"_id": file_path})
 
-                # If the SHA-256 hasn't changed, skip the update
-                if (
-                    existing_entry
-                    and existing_entry.get("sha256_list", [])
-                    and existing_entry["sha256_list"][-1] == sha256
-                ):
-                    if debug:
-                        print(
-                            f"No changes detected in {file_path}, skipping update."
-                        )
-                    return
+                # If the SHA-256 hasn't changed but there has been an angle change
+                # recorded then we skip. This is so you don't keep overwriting history
+                # with no real data.
+                if existing_entry:
+                    # Get existing lists or initialize empty lists
+                    sha256_list = existing_entry.get("sha256_list", [])
+                    mod_time_list = existing_entry.get("mod_time_list", [])
+                    angle_list = existing_entry.get("angle_list", [])
+
+                    if( angle_list[-1] != 0.0 and sha256_list[-1] == sha256):
+                        if debug:
+                            print(
+                                f"No changes detected in {file_path}, skipping update."
+                            )
+                        return
 
                 try:
                     text = A_GIS.File.read_to_text(
@@ -136,7 +152,9 @@ def monitor(
                         lines=[text], nchunks=1
                     )
                     embedding = list(embedding.flatten())
-                except BaseException:
+                except BaseException as e:
+                    # Print the exception and its message
+                    print(f"Caught an exception: {e}")
                     embedding = None
 
                 if embedding is None:
@@ -146,10 +164,6 @@ def monitor(
 
                 dir = []
                 if existing_entry:
-                    # Get existing lists or initialize empty lists
-                    sha256_list = existing_entry.get("sha256_list", [])
-                    mod_time_list = existing_entry.get("mod_time_list", [])
-                    angle_list = existing_entry.get("angle_list", [])
 
                     # Get the previous embedding and calculate the angle
                     # between the two
@@ -160,9 +174,8 @@ def monitor(
                             previous_embedding = embedding
                         sign = 1.0
                         if len(previous_dir) == len(embedding):
-                            if len(angle_list) > 0:
-                                if angle_list[-1] < 0.0:
-                                    sign = numpy.sign(angle_list[-1])
+                            if len(angle_list) > 0 and angle_list[-1] < 0.0:
+                                sign = numpy.sign(angle_list[-1])
                         angle_between_embeddings, dir = (
                             A_GIS.Math.calculate_angle_between_vectors(
                                 a=previous_embedding,
@@ -197,10 +210,10 @@ def monitor(
                     {"_id": file_path},
                     {
                         "$set": {
-                            "sha256_list": sha256_list,  # Store the checksum list
-                            "mod_time_list": mod_time_list,  # Store the modification time list
-                            "angle_list": angle_list,  # Store the angle list
-                            "embedding": embedding,  # Store the current embedding
+                            "sha256_list": sha256_list,
+                            "mod_time_list": mod_time_list,
+                            "angle_list": angle_list,
+                            "embedding": embedding,
                             "dir": dir,
                         }
                     },
@@ -217,11 +230,24 @@ def monitor(
                     }
                 )
 
+        def on_modified(self, event):
+            self.process_event(event, "modified")
+
+        def on_created(self, event):
+            self.process_event(event, "created")
+
+    # Initialize the observer
     event_handler = FileModificationHandler(
         ignore_dirs, ignore_subdirs, only_extensions, ignore_dot_files
     )
     observer = watchdog.observers.Observer()
-    observer.schedule(event_handler, root_dir, recursive=True)
+
+    # Schedule the observer with follow_symlinks option
+    observer.schedule(
+        event_handler,
+        root_dir,
+        recursive=True,
+    )
     observer.start()
 
     try:
