@@ -2,6 +2,7 @@ def monitor(
     *,
     root_dir: type["pathlib.Path"],
     ignore_dirs: list = [],
+    ignore_subdirs: list = [],
     only_extensions=[],
     ignore_dot_files=True,
     database_name: str = "file_monitor",
@@ -43,8 +44,15 @@ def monitor(
 
     # Watchdog event handler for file changes
     class FileModificationHandler(watchdog.events.FileSystemEventHandler):
-        def __init__(self, ignore_dirs, only_extensions, ignore_dot_files):
+        def __init__(
+            self,
+            ignore_dirs,
+            ignore_subdirs,
+            only_extensions,
+            ignore_dot_files,
+        ):
             self.ignore_dirs = ignore_dirs
+            self.ignore_subdirs = ignore_subdirs
             self.only_extensions = set(only_extensions)
             self.ignore_dot_files = ignore_dot_files
 
@@ -78,6 +86,16 @@ def monitor(
                     if file_path.startswith(os.path.abspath(ignored_dir)):
                         if debug:
                             print(f"Ignored change in: {file_path}")
+                        return
+
+                # Ignore file changes inside specific named subdirectories
+                dirs = set(file_path.split(os.sep)[:-2])
+                for ignored_subdir in self.ignore_subdirs:
+                    if ignored_subdir in dirs:
+                        if debug:
+                            print(
+                                f"Ignored subdir {ignored_subdir} change in: {file_path}"
+                            )
                         return
 
                 try:
@@ -200,7 +218,7 @@ def monitor(
                 )
 
     event_handler = FileModificationHandler(
-        ignore_dirs, only_extensions, ignore_dot_files
+        ignore_dirs, ignore_subdirs, only_extensions, ignore_dot_files
     )
     observer = watchdog.observers.Observer()
     observer.schedule(event_handler, root_dir, recursive=True)
