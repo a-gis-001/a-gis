@@ -6,6 +6,7 @@ def monitor(
     logger=None,
     sleep_seconds=1,
     max_entries=32,
+    min_bytes=8000,
 ):
     """Monitor a directory tree for changes and records new or modified files into a MongoDB collection using the `watchdog` library.
 
@@ -17,7 +18,8 @@ def monitor(
         collection (pymongo.collection.Collection):
             The MongoDB collection where monitored file changes will be stored.
         should_ignore (callable):
-            A function that determines whether a change should be ignored or not. It receives an event object and returns True if the event should be ignored, or False otherwise.
+            A function that determines whether a change should be ignored or not. It receives a file path string
+            and returns True if the path should be ignored, or False otherwise.
         logger (logging.Logger, optional):
             The logger to use for logging messages. If None, no logging will be performed.
         sleep_seconds (float, optional):
@@ -40,7 +42,7 @@ def monitor(
 
     # Initialize the observer
     event_handler = A_GIS.File._Modification_Handler(
-        collection, should_ignore, logger, max_entries
+        collection, should_ignore, logger, max_entries, min_bytes
     )
     observer = watchdog.observers.Observer()
 
