@@ -4,6 +4,7 @@ def should_ignore(
     ignore_subdirs: list = [],
     only_extensions: list = [],
     ignore_dot_files: bool = True,
+    ignore_tilde_files: bool = True,
     logger=None,
 ):
     """Determines whether a file path should be ignored during file monitoring or other operations.
@@ -58,6 +59,14 @@ def should_ignore(
                     self.logger.debug(
                         f"Ignored hidden file or directory: {path}"
                     )
+                return True
+
+            # Ignore files that start with tilde.
+            if self.ignore_dot_files and path.split(os.sep)[-1].startswith(
+                "~"
+            ):
+                if self.logger:
+                    self.logger.debug(f"Ignored file starting with ~: {path}")
                 return True
 
             # Ignore file changes inside specific directories

@@ -48,5 +48,5 @@ class _Log:
         logging.getLogger().addHandler(file_handler)
 
         _Log.logger = structlog.get_logger(_Log.name)
-        _Log.logger.info("A_GIS_LOG initialized")
+        _Log.logger.info(f"{_Log.name} initialized")
         _Log.initialized = True

@@ -6,7 +6,7 @@ def monitor(
     logger=None,
     sleep_seconds=1,
     max_entries=32,
-    min_bytes=8000,
+    min_bytes=200,
 ):
     """Monitor a directory tree for changes and records new or modified files into a MongoDB collection using the `watchdog` library.
 

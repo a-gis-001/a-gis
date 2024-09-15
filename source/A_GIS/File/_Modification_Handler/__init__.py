@@ -15,6 +15,7 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
         self, collection, should_ignore, logger, max_entries, min_bytes
     ):
         import A_GIS.Text.calculate_embedding
+        import queue
 
         self.null_embedding = A_GIS.Text.calculate_embedding(
             lines=[""], nchunks=1
@@ -33,7 +34,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
         import A_GIS.File.read_to_text
         import A_GIS.Text.calculate_embedding
         import A_GIS.Math.calculate_angle_between_vectors
+        import A_GIS.File.Database.prune_deleted
         import datetime
+        import pathlib
 
         if not event.is_directory:
             file_path = os.path.abspath(event.src_path)
@@ -44,44 +47,57 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
             if self.should_ignore(path=file_path):
                 return
 
+            # Try to get properties like modification time and size.
+            updates = {"file_path": file_path}
             try:
-                # Try to get the modification time; skip if the file
-                # doesn't exist
-                mod_time = os.path.getmtime(file_path)
+                updates["bytes"] = os.path.getsize(file_path)
             except FileNotFoundError:
-                # Handle temporary files that are deleted before we can
-                # access them
+                # We come here typically for temporary files that are deleted before we can
+                # access them.
                 if self.logger:
                     self.logger.debug(
                         f"File not found or deleted too quickly: {file_path}"
                     )
                 return
-            mod_time = datetime.datetime.now().timestamp()
+            updates["mod_time"] = datetime.datetime.now().timestamp()
+
+            # Check if too small to track.
+            if updates["bytes"] < self.min_bytes:
+                if self.logger:
+                    self.logger.info(
+                        f"File too small {updates['bytes']}<{self.min_bytes} (bytes): {file_path}"
+                    )
+                return
 
             # Calculate SHA-256 checksum
-            sha256 = A_GIS.File.hash(file=file_path)
+            updates["sha256"] = A_GIS.File.hash(file=file_path)
 
             # Try to find the existing document
             existing_entry = self.collection.find_one({"_id": file_path})
 
             # Initialize empty lists
-            sha256_list = []
-            mod_time_list = []
-            angle_list = []
+            lists = {"sha256": [], "mod_time": [], "angle": [], "bytes": []}
 
             # Calculate the new embedding.
             # If the SHA-256 hasn't changed then we do not update.
             try:
+                A_GIS.File.Database.prune_deleted(
+                    collection=self.collection,
+                    sha256=updates["sha256"],
+                    logger=self.logger,
+                )
                 if existing_entry:
-                    sha256_list = existing_entry.get("sha256_list")
-                    mod_time_list = existing_entry.get("mod_time_list")
-                    angle_list = existing_entry.get("angle_list")
-                    if sha256_list[-1] == sha256:
+                    lists["sha256"] = existing_entry.get("sha256_list", [])
+                    lists["mod_time"] = existing_entry.get("mod_time_list", [])
+                    lists["angle"] = existing_entry.get("angle_list", [])
+                    lists["bytes"] = existing_entry.get("bytes_list", [])
+                    if lists["sha256"][-1] == updates["sha256"]:
                         if self.logger:
                             self.logger.debug(
                                 f"No changes detected in {file_path}, skipping update."
                             )
                         return
+
                 text = A_GIS.File.read_to_text(file=pathlib.Path(file_path))
                 _, embedding, _ = A_GIS.Text.calculate_embedding(
                     lines=[text], nchunks=1
@@ -96,34 +112,35 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
 
             except BaseException as e:
                 # Print the exception and its message
-                if logger:
+                if self.logger:
                     self.logger.warning(f"Caught an exception: {e}")
                 embedding = None
 
             # Get the angle from null embedding.
-            angle, _ = A_GIS.Math.calculate_angle_between_vectors(
-                a=self.null_embedding, b=embedding
-            )
+            if embedding:
+                updates["angle"], _ = (
+                    A_GIS.Math.calculate_angle_between_vectors(
+                        a=self.null_embedding, b=embedding
+                    )
+                )
+            else:
+                updates["angle"] = 0
 
             # Update lists with the new values, keeping only some entries.
-            sha256_list = update_list_with_limit(
-                sha256_list, sha256, self.max_entries
-            )
-            mod_time_list = update_list_with_limit(
-                mod_time_list, mod_time, self.max_entries
-            )
-            angle_list = update_list_with_limit(
-                angle_list, angle, self.max_entries
-            )
+            for k, v in lists.items():
+                lists[k] = self.update_list_with_limit(
+                    v, updates[k], self.max_entries
+                )
 
             # Update or insert the file tracking information
             self.collection.update_one(
                 {"_id": file_path},
                 {
                     "$set": {
-                        "sha256_list": sha256_list,
-                        "mod_time_list": mod_time_list,
-                        "angle_list": angle_list,
+                        "sha256_list": lists["sha256"],
+                        "mod_time_list": lists["mod_time"],
+                        "angle_list": lists["angle"],
+                        "bytes": lists["bytes"],
                         "embedding": embedding,
                     }
                 },
@@ -131,15 +148,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
             )
 
             # Put the result in a queue.
-            result = {
-                "file_path": file_path,
-                "mod_time": mod_time_list[-1],
-                "sha256": sha256_list[-1],
-                "angle": angle_list[-1],
-            }
             if self.logger:
-                self.logger.info(f"Added result to queue: {result}")
-            self.result_queue.put(result)
+                self.logger.info(f"Added result to queue: {updates}")
+            self.result_queue.put(updates)
 
     def on_modified(self, event):
         self.process_event(event, "modified")
