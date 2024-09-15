@@ -64,7 +64,7 @@ Here is an example.
 ### Instruction:
 
 name:
-    A_GIS.File.Directory.init
+    A_GIS.File.make_directory
 
 code:
     def init(*, path: str = None, scoped_delete: bool = False):

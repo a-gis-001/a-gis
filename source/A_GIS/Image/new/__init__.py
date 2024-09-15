@@ -38,7 +38,7 @@ def new(
     # Add metadata to the image if provided which requires writing to disk
     # with PIL.
     if metadata:
-        import A_GIS.File.Directory.init
+        import A_GIS.File.make_directory
         import pathlib
         import json
         import PIL.PngImagePlugin
@@ -46,7 +46,7 @@ def new(
         pnginfo = PIL.PngImagePlugin.PngInfo()
         for key, value in metadata.items():
             pnginfo.add_text(key, json.dumps(value))
-        tempdir = A_GIS.File.Directory.init(scoped_delete=True)
+        tempdir = A_GIS.File.make_directory(scoped_delete=True)
         path = pathlib.Path(tempdir.path) / "new.png"
         image.save(path, "PNG", pnginfo=pnginfo)
         image = PIL.Image.open(path)

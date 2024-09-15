@@ -1,4 +1,4 @@
-def init(*, path: str = None, scoped_delete: bool = False):
+def make_directory(*, path: str = None, scoped_delete: bool = False):
     """Creates a directory object that may delete itself when it goes out of scope.
 
     This function returns an instance of the nested class `TempDir`. This class
@@ -16,8 +16,8 @@ def init(*, path: str = None, scoped_delete: bool = False):
         TempDir: An instance of the TempDir class representing the created directory.
 
     Examples:
-        >>> import A_GIS.File.Directory.init
-        >>> with A_GIS.File.Directory.init(scoped_delete=True) as temp_dir:
+        >>> import A_GIS.File.make_directory
+        >>> with A_GIS.File.make_directory(scoped_delete=True) as temp_dir:
         ...     pass
     """
     import os

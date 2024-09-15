@@ -41,7 +41,7 @@ def modify(
     """
     import json
     import PIL.PngImagePlugin
-    import A_GIS.File.Directory.init
+    import A_GIS.File.make_directory
     import pathlib
 
     if metadata is not None and not isinstance(metadata, dict):
@@ -54,7 +54,7 @@ def modify(
     # Write/overwrite with new metadata.
     for key, value in metadata.items():
         pnginfo.add_text(key, json.dumps(value))
-    tempdir = A_GIS.File.Directory.init(scoped_delete=True)
+    tempdir = A_GIS.File.make_directory(scoped_delete=True)
     path = pathlib.Path(tempdir.path) / "new.png"
     image.save(path, "PNG", pnginfo=pnginfo)
     return PIL.Image.open(path)
