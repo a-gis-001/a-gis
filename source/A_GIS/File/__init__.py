@@ -12,6 +12,7 @@ from .open import open
 from .read import read
 from .read_to_text import read_to_text
 from .should_ignore import should_ignore
+from .show_tree import show_tree
 from .touch import touch
 from .write import write
 
@@ -22,3 +23,4 @@ from ._Url import _Url
 # Packages
 from . import Database
 from . import Duplicates
+from . import Node
