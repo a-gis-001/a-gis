@@ -2,4 +2,5 @@ Assume a functional python framework where you always use full import names.
 Functions should be short and rely on other functions within the A_GIS framework.
 All functions should have a google style docstring.
 All functions should start with a verb.
-
+Imports always occur inside the deepest function where it can to reduce dependencies
+to only when you need them.

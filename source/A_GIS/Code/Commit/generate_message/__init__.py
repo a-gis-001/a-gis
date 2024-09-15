@@ -77,9 +77,7 @@ def generate_message(
     remaining_text = ""
     if len(lines) > 1:
         remaining_text = "\n".join(lines[1:])
-    remaining_text = textwrap.fill(
-        textwrap.dedent(remaining_text), width=72
-    ).strip()
+    remaining_text = A_GIS.Text.reformat(text=remaining_text).strip()
     message = f"{first_sentence}\n\n{remaining_text}\n"
     if do_commit:
         import subprocess

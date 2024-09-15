@@ -14,6 +14,7 @@ from .hash import hash
 from .insert_block_placeholders import insert_block_placeholders
 from .reconstitute_blocks import reconstitute_blocks
 from .recreate_sentence import recreate_sentence
+from .reformat import reformat
 from .remove_indent import remove_indent
 from .replace_block import replace_block
 from .slugify import slugify

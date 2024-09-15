@@ -1,5 +1,9 @@
 def generate_summary(
-    *, directory: type["path.Pathlib"], max_iterations=10, root_dir=None
+    *,
+    directory: type["path.Pathlib"],
+    max_iterations=10,
+    root_dir=None,
+    overwrite_existing: bool = False,
 ):
     """Generates a summary of the directory contents."""
     import A_GIS.Ai.Chatbot.init
@@ -91,7 +95,8 @@ def generate_summary(
 
     READ_FILE takes a file path and the beginning character index (beginchar) and
     the ending character index (endchar) and returns the text between those characters.
-    If the file is not convertible to text you will see binary garbage.
+    READ_FILE supports reading many file formats like DOCX and PDF. If the file is not
+    internally convertible to a text representation, you will see binary garbage.
 
     Your summary should be a short, concise description in Markdown format.
 
@@ -178,4 +183,12 @@ Please summarize the contents of the '{str(top_dir)}' directory.
             # If there are requests, then we update the prompt.
             message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
 
-    return extract_summary(result["message"]["content"])
+    # Extract the final summary and reformat to be pretty.
+    summary = extract_summary(result["message"]["content"])
+    summary = A_GIS.Text.reformat(summary)
+
+    # Overwrite the existing file.
+    if overwrite_existing:
+        A_GIS.File.write(file=directory / "_summary.md", text=summary)
+
+    return summary
