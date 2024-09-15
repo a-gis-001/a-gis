@@ -1,4 +1,6 @@
-def generate_summary(*, directory: type["path.Pathlib"], max_iterations=10):
+def generate_summary(
+    *, directory: type["path.Pathlib"], max_iterations=10, root_dir=None
+):
     """Generates a summary of the directory contents."""
     import A_GIS.Ai.Chatbot.init
     import os
@@ -6,11 +8,48 @@ def generate_summary(*, directory: type["path.Pathlib"], max_iterations=10):
     import A_GIS.File.read_to_text
     import A_GIS.File.show_tree
 
+    if not root_dir:
+        root_dir = directory
+
+    def parse_request(request):
+        if request.startswith("SHOW_TREE"):
+            _, subdir, nlevels, nperdir, *extensions = request.split()
+            nlevels = int(nlevels)
+            nperdir = int(nperdir)
+            extensions = extensions if extensions else None
+            abs_subdir = root_dir / subdir
+            if not abs_subdir.exists():
+                result = f"The requested directory {subdir} does not exist."
+            else:
+                result = A_GIS.File.show_tree(
+                    directory=abs_subdir,
+                    max_levels=nlevels,
+                    num_per_dir=nperdir,
+                    only_extensions=extensions,
+                    root_dir=root_dir,
+                )
+        elif request.startswith("READ_FILE"):
+            _, file, beginchar, endchar = request.split()
+            abs_file = root_dir / file
+            if not abs_file.exists():
+                result = f"The requested file {file} does not exist."
+            text = A_GIS.File.read_to_text(file=abs_file)
+            beginchar = min(max(0, int(beginchar)), len(text) - 1)
+            endchar = min(max(0, int(endchar)), len(text) - 1)
+            if endchar > beginchar:
+                result = text[beginchar:endchar]
+            else:
+                result = f"Error: requested beginchar {beginchar} and endchar {endchar} do not make sense."
+        else:
+            result = f"Error: Invalid request {request} should start with SHOW_TREE or READ_FILE."
+
+        return result
+
     def handle_requests(chatbot, response_content):
         import re
 
         request_block = re.search(
-            r"<requests>(.*?)</requests>", response_content, re.DOTALL
+            r"<request>(.*?)</request>", response_content, re.DOTALL
         )
         if not request_block:
             return ""
@@ -19,39 +58,34 @@ def generate_summary(*, directory: type["path.Pathlib"], max_iterations=10):
         if len(requests) > 1:
             return "Error: More than one request found."
 
-        request = requests[0]
-        if request.startswith("SHOW_TREE"):
-            _, directory, nlevels, nperdir, *extensions = request.split()
-            nlevels = int(nlevels)
-            nperdir = int(nperdir)
-            extensions = extensions if extensions else None
-            result = A_GIS.File.show_tree(
-                directory=pathlib.Path(directory),
-                levels=nlevels,
-                num_per_dir=nperdir,
-                only_extensions=extensions,
-            )
-        elif request.startswith("READ_FILE"):
-            _, file, beginchar, endchar = request.split()
-            beginchar = int(beginchar)
-            endchar = int(endchar)
-            with open(file, "r") as f:
-                f.seek(beginchar)
-                result = f.read(endchar - beginchar)
+        return parse_request(requests[0])
+
+    def extract_summary(response_content):
+        import re
+
+        block = re.search(
+            r"<output>(.*?)</output>", response_content, re.DOTALL
+        )
+        if not block:
+            return ""
         else:
-            result = "Error: Invalid request."
+            return block.group(1).strip()
 
-        return result
-
+    reminder = """
+    Remember, your <output> block will always contain your best attempt at a summary.
+    If you do not put a <request> block in your message, we'll assume you are finished
+    and take whatever is in the <output> block as the final summary.
+    """
     system_prompt = f"""
-    You are a summarization bot tasked with generating summaries of directory contents.
-    You emit a new block called <requests> where you ask to use a single tool.
-    The available tools are: SHOW_TREE and READ_FILE.
+    You are a summarization bot tasked with generating a new or updated _summary.md file
+    which describes why a directory exists. What is it's purpose?
+
+    You have tools at your disposal which you call using a <request> block.
 
     1. SHOW_TREE directory nlevels nperdir ext1 ext2 ...
     2. READ_FILE file beginchar endchar
 
-    SHOW_TREE takes a directory path, the recursive depth (nlevesl), the number of files
+    SHOW_TREE takes a directory path, the recursive depth (nlevels), the number of files
     per directory (nperdir), and a list of file extensions to show. Any other files
     are suppressed.
 
@@ -59,32 +93,80 @@ def generate_summary(*, directory: type["path.Pathlib"], max_iterations=10):
     the ending character index (endchar) and returns the text between those characters.
     If the file is not convertible to text you will see binary garbage.
 
-    Your <output> block will always contain your best attempt at a summary.
-    If you do not have a <requests> block, we'll assume you are finished and take
-    whatever is in the <output> block as the final summary.
-
-    Your summary should be in Markdown format, but a simple single paragraph without
-    title or headings.
+    Your summary should be a short, concise description in Markdown format.
 
     The current settings allow {max_iterations} back and forth iterations to
     arrive at the final summary.
+
+    An example of a request is:
+    <request>
+    SHOW_TREE my_dir/test/_ 2 10 py
+    </request>
+    Which would should the directory my_dir/test/_, with 2 levels of recursion, a maximum of 10 files, and only for .py extensions.
+
+    A follow-up request could be:
+    <request>
+    READ_FILE my_dir/test/_/plot.py 0 999
+    </request>
+    Which would show the first 1000 characters in the file, my_dir/test/_/plot.py.
+
+    As you are writing the final summary, format it nicely with paragraphs, lists, etc.
+    from Markdown and don't make lines too long (80 characters wide is a good limit).
+
+    When you reference files within the directory, try to use their relative paths so that
+    the Markdown can link to them easily. I.e. instead of saying file `xyz.py` in directory
+    `uvw`, say file `uvw/xyz.py`. Never refer to the '.' directory. Just refer to this
+    directory, i.e. "This directory contains ...".
+
+    Do not refer to the _summary.md file in your description (this is the file you
+    are updating).
+
+    The convention for this structure is that a directory called `_` can contain
+    additional subdirectories that may be symlinked and should not be altered
+    by this organization system. Files that are not within a _ directory may be
+    moved around by another bot when they are found to better match another directory.
+
+    Part of this matching is based on the content of _summary.md, so it should help
+    other bots choose good additional content for this directory.
+
+    Place all your thoughts in your normal <thinking> block. In your <output> block
+    always present your best attempt at a confident, full description that will be
+    refined as you learn more.
+
+{reminder}
     """
-    chatbot = A_GIS.Ai.Chatbot.init(model="reflection", system=system_prompt)
 
-    summary_file_path = directory / "_summary.md"
-    existing_summary = ""
-    if summary_file_path.exists():
-        existing_summary = A_GIS.File.read_to_text(path=summary_file_path)
-
-    # Generate a directory tree that is at most 2 levels deep and only shows the following files.
-    # .py, .pdf, .docx, .md,
-    contents = A_GIS.File.show_tree(
-        directory=directory,
-        levels=2,
-        only_extensions=["pdf", "py", "docx", "md"],
+    chatbot = A_GIS.Ai.Chatbot.init(
+        model="reflection",
+        system=system_prompt,
+        num_predict=15000,
+        num_ctx=30000,
+        temperature=0.7,
     )
 
-    message = f"Current summary:\n{existing_summary}\n\nDirectory contents:\n{contents}\n\nPlease summarize the contents."
+    summary_file_path = directory / "_summary.md"
+    existing_summary = "FILE DOES NOT EXIST"
+    if summary_file_path.exists():
+        existing_summary = A_GIS.File.read_to_text(file=summary_file_path)
+
+    top_dir = directory.relative_to(root_dir)
+
+    request = f"SHOW_TREE {str(top_dir)} 2 10"
+    contents = parse_request(request)
+    message = f"""
+Current summary '{str(top_dir)}/_summary.md':
+{existing_summary}
+
+Initial SHOW_TREE request:
+<request>
+{request}
+</request>
+
+Contents:
+{contents}
+
+Please summarize the contents of the '{str(top_dir)}' directory.
+    """
 
     for iteration in range(max_iterations):
         result = chatbot.chat(message, keep_state=True)
@@ -94,6 +176,6 @@ def generate_summary(*, directory: type["path.Pathlib"], max_iterations=10):
             break
         else:
             # If there are requests, then we update the prompt.
-            message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}"
+            message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
 
-    return extract_summary(result)
+    return extract_summary(result["message"]["content"])
