@@ -40,16 +40,6 @@ def should_ignore(
             import os
 
             """Helper function to determine if a file should be ignored."""
-            # Only consider certain extensions.
-            if self.only_extensions:
-                ext = os.path.splitext(path)[1]
-                if not ext in self.only_extensions:
-                    if self.logger:
-                        self.logger.debug(
-                            f"Ignored because not in extension list: {path}"
-                        )
-                    return True
-
             # Ignore file changes inside specific directories or files starting
             # with "."
             if self.ignore_dot_files and any(
@@ -83,6 +73,16 @@ def should_ignore(
                     if self.logger:
                         self.logger.debug(
                             f"Ignored subdir {ignored_subdir} change in: {path}"
+                        )
+                    return True
+
+            # Only consider certain extensions.
+            if self.only_extensions:
+                ext = os.path.splitext(path)[1]
+                if not ext in self.only_extensions:
+                    if self.logger:
+                        self.logger.debug(
+                            f"Ignored because not in extension list: {path}"
                         )
                     return True
 
