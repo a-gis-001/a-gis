@@ -5,7 +5,37 @@ def generate_summary(
     root_dir=None,
     overwrite_existing: bool = False,
 ):
-    """Generates a summary of the directory contents."""
+    """Generate concise Markdown directory summary using AI chatbot interactions.
+
+    This function generates a summary that describes the purpose and
+    contents of a given directory, based on the directory's structure and
+    the contents of files like `_summary.md`. It uses an AI chatbot to parse
+    requests for showing directory tree structures or reading specific parts
+    of files within the directory. The function iteratively communicates
+    with the chatbot until a final summary is reached, up to a specified
+    maximum number of iterations.
+
+    Args:
+        directory (type:
+            pathlib.Path): The path to the target directory for which the summary
+            should be generated.
+        max_iterations (int, optional):
+            The maximum number of iterations allowed for the chatbot to reach a
+            final summary. Defaults to 10.
+        root_dir (pathlib.Path, optional):
+            The root directory from which relative paths are calculated for the AI
+            chatbot's requests. If None, the `directory` itself is used as the root
+            directory.
+        overwrite_existing (bool, optional):
+            A flag indicating whether to overwrite the existing `_summary.md` file
+            in the target directory. Defaults to False.
+
+    Returns:
+        str:
+            A Markdown formatted summary of the directory's contents. The summary includes a description
+            of the directory's purpose, a structured outline of its contents derived from the `SHOW_TREE` requests,
+            and text extracts from files within the directory as per the `READ_FILE` requests.
+    """
     import A_GIS.Ai.Chatbot.init
     import os
     import pathlib

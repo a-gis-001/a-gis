@@ -22,10 +22,6 @@ def fix_short_description(
     Returns:
         str:
             The updated docstring with a new or improved short description.
-
-    Raises:
-        ValueError:
-            If the AI-suggested short description does not meet all requirements.
     """
 
     import A_GIS.Code.Docstring.check_short_description
@@ -81,8 +77,8 @@ ANYTHING AFTER 63 CHARACTERS WILL BE REMOVED. 63 CHARACTERS IS 9 WORDS OR LESS.
     chatbot = A_GIS.Ai.Chatbot.init(
         model=model,
         temperature=0.7,
-        num_ctx=3000,
-        num_predict=100,
+        num_ctx=5000,
+        num_predict=30,
         mirostat=2,
         system=system,
     )
@@ -114,8 +110,10 @@ ANYTHING AFTER 63 CHARACTERS WILL BE REMOVED. 63 CHARACTERS IS 9 WORDS OR LESS.
         A_GIS.Log.append(
             f"The AI-suggested docstring short description='{suggestion}' fails to meet criteria with errors: {errors}."
         )
+    print(errors)
 
     # Update the docstring only if it meets requirements.
+    print(len(suggestion), suggestion)
     docstring.short_description = suggestion
 
     # Return docstring.

@@ -7,25 +7,37 @@ def should_ignore(
     ignore_tilde_files: bool = True,
     logger=None,
 ):
-    """Determines whether a file path should be ignored during file monitoring or other operations.
+    """Returns a function that filters out file paths.
 
-    This function constructs and returns an instance of `_ShouldIgnore`, which is a callable object. The callable object evaluates whether a given file path should be excluded from consideration based on user-defined criteria, such as ignoring files within certain directories, specific subdirectories, or only considering files with specified extensions. It also respects hidden files unless explicitly set not to.
+    The `should_ignore` function constructs an instance of the nested class
+    `_ShouldIgnore`, which is a callable object that evaluates whether a
+    given file path should be excluded from consideration based on user-
+    defined criteria. This includes the ability to ignore files within
+    certain directories, specific subdirectories, or only considering files
+    with specified extensions, as well as respecting hidden files unless
+    explicitly set not to.
 
     Args:
-        ignore_dirs (list, optional): A list of directory paths that should be ignored when monitoring file changes.
-        ignore_subdirs (list, optional): A list of subdirectory names that should be ignored when they appear within a path.
-        only_extensions (list, optional): A list of file extensions for which the file will only be considered if it matches one of these extensions.
-            If `None`, no filtering by file extension is performed.
-        ignore_dot_files (bool, optional): If True (default), hidden files and directories (those starting with '.') will be ignored.
-        logger (optional): A logging.Logger instance to log debug messages when a path is ignored.
+        ignore_dirs (List[str], optional):
+            A list of directory paths that should be ignored when monitoring file
+            changes.
+        ignore_subdirs (List[str], optional):
+            A list of subdirectory names that should be ignored when they appear
+            within a path.
+        only_extensions (Optional[List[str]]]:
+            A list of file extensions for which the file will only be considered if
+            it matches one of these extensions. If `None`, no filtering by file
+            extension is performed.
+        ignore_dot_files (bool, optional):
+            If True, hidden files and directories (those starting with '.') will be
+            ignored.
+        logger (Optional[logging.Logger], optional):
+            A logging.Logger instance to log debug messages when a path is ignored.
 
     Returns:
-        _ShouldIgnore: A callable object that can be called with a `path` as an argument. The callable returns a boolean indicating whether the file path should be ignored or not.
-
-    Raises:
-        None
-
-    The returned callable object `_ShouldIgnore` has a `__call__` method that takes a single argument, `path`, and returns a boolean value. This allows for easy integration into file monitoring systems where certain paths need to be filtered out based on the provided criteria.
+        Callable:
+            A callable object that takes a single argument, `path`, and returns a
+            boolean value indicating whether the file path should be ignored or not.
     """
 
     class _Should_Ignore:

@@ -1,21 +1,20 @@
 def add_indent(text, spaces=4):
-    """Adds indentation to each line of a given text block.
+    """Add indent to a text block.
 
-    This function takes a string of text and adds an indentation (a certain number of spaces)
-    to the beginning of each line using regular expressions. The result is a modified version of
-    the original text with added indentation.
-
-    Note: This function assumes that the input text uses Unix-style newlines ('
-    ') for line separation.
+    The `add_indent` function takes a string containing multiple lines of
+    code or text and adds a specified number of spaces as indentation to the
+    beginning of each line. This can be used to format unindented code
+    blocks or text paragraphs.
 
     Args:
-        text (str): The string to which indentation should be added.
-        spaces (int, optional): The number of spaces by which each line should be indented.
-                                 Defaults to 4 spaces if not provided.
+        text (str):
+            The multiline text or code block that needs to be indented.
+        spaces (int, optional):
+            The number of spaces to add as indentation. Default is 4.
 
     Returns:
-        str: A new string with the same content as the input text but with each line indented
-             by the specified number of spaces.
+        str:
+            A new string with the specified indentation added to each line of the original text.
     """
 
     import re

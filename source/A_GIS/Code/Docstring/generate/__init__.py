@@ -8,7 +8,7 @@ def generate(
     model="wizardlm2:7b",
     temperature=0.5,
     num_ctx=10000,
-    num_predict=1000,
+    num_predict=2000,
     mirostat=2,
     reformat: bool = False,
     __tracking_hash=None,
@@ -18,25 +18,35 @@ def generate(
     The generated docstring is put into the Docstring object format.
 
     Args:
-        name (str): The name of the function for which to generate the docstring.
-        code (str): The Python code snippet for which to generate the docstring.
-        model (str, optional): The AI model to use for generating the docstring. Defaults to 'deepseek-coder:33b'.
-        temperature (float, optional): The temperature parameter for controlling randomness in the AI's response.
-            Defaults to 0.5.
-        num_ctx (int, optional): The number of context tokens to use when generating the docstring. Defaults to 10000.
-        num_predict (int, optional): The maximum number of predicted tokens to generate in the AI's response.
+        name (str):
+            The name of the function for which to generate the docstring.
+        code (str):
+            The Python code snippet for which to generate the docstring.
+        model (str, optional):
+            The AI model to use for generating the docstring. Defaults to 'deepseek-
+            coder:33b'.
+        temperature (float, optional):
+            The temperature parameter for controlling randomness in the AI's
+            response. Defaults to 0.5.
+        num_ctx (int, optional):
+            The number of context tokens to use when generating the docstring.
+            Defaults to 10000.
+        num_predict (int, optional):
+            The maximum number of predicted tokens to generate in the AI's response.
             Defaults to 1000.
-        mirostat (int, optional): The mirostat mode parameter for controlling how the AI generates its responses.
-            Defaults to 2.
-        reformat (bool, optional): If True, reformats the generated docstring to follow standard Python formatting rules.
-            Defaults to False.
-        __tracking_hash (str, optional): An internal tracking hash for tracking function execution. Defaults to None.
-
-    Raises:
-        None
+        mirostat (int, optional):
+            The mirostat mode parameter for controlling how the AI generates its
+            responses. Defaults to 2.
+        reformat (bool, optional):
+            If True, reformats the generated docstring to follow standard Python
+            formatting rules. Defaults to False.
+        __tracking_hash (str, optional):
+            An internal tracking hash for tracking function execution. Defaults to
+            None.
 
     Returns:
-        str: generated Docstring object.
+        str:
+            generated Docstring object.
     """
 
     import ollama
@@ -99,22 +109,23 @@ code:
 
 docstring:
 
-    Creates a directory object that may delete itself when it goes out of scope.
+    Creates a potentially scoped directory object.
 
     This function returns an instance of the nested class `TempDir`. This class
     provides functionality to create a temporary directory that can be set to
     self-delete when the object is no longer in use, based on the `scoped_delete` flag.
 
     Args:
-        path (str, optional): The path where the directory should be created. If None,
+        path (str, optional):
+            The path where the directory should be created. If None,
             a temporary directory is created using the `tempfile` module.
-        scoped_delete (bool, optional): If True, the created directory will be deleted
+        scoped_delete (bool, optional):
+            If True, the created directory will be deleted
             when the TempDir object is destroyed or when exiting a context manager block.
-    Raises:
-        None
 
     Returns:
-        TempDir: An instance of the TempDir class representing the created directory.
+        TempDir:
+            An instance of the TempDir class representing the created directory.
 
 """
 
@@ -167,9 +178,6 @@ docstring:
     docstring = A_GIS.Code.Docstring.fix_short_description(
         docstring=docstring, model=model
     )
-    # This is messing up formatting in cases where the input cannot
-    # be parsed correctly. In this case the paragraph wrapping does weird
-    # stuff.
     if reformat:
         docstring = A_GIS.Code.Docstring.reformat(docstring=docstring)
 

@@ -7,19 +7,25 @@ def show_tree(
     ignore_dot_files: bool = True,
     root_dir: type["pathlib.Path"] = None,
 ):
-    """
-    Generates a directory tree.
+    """Show a directory tree.
 
     Args:
-        directory (pathlib.Path): The root directory to start the tree.
-        max_levels (int): The recursive depth to show.
-        num_per_dir (int): The maximum number of entries to show per directory.
-        only_extensions (list, optional): List of file extensions to include in the tree.
-        indent_chars (int, optional): Number of spaces for indentation. Default is 4.
+        directory (pathlib.Path):
+            The root directory to start the tree.
+        max_levels (int):
+            The recursive depth to show.
+        num_per_dir (int):
+            The maximum number of entries to show per directory.
+        only_extensions (list, optional):
+            List of file extensions to include in the tree.
+        indent_chars (int, optional):
+            Number of spaces for indentation. Default is 4.
 
     Returns:
-        str: A string representation of the directory tree.
+        str:
+            A string representation of the directory tree.
     """
+
     import pathlib
 
     if root_dir and directory.relative_to(root_dir):

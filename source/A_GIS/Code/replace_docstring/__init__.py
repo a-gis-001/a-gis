@@ -1,7 +1,10 @@
 def replace_docstring(*, code: str, docstring) -> str:
-    """Add or replaces the docstring of the first class or function in provided code, appending if no existing docstring is found.
+    """Add or replaces the docstring of the first class.
 
-    This function searches for the first class or function definition in the provided code and replaces its existing docstring with the new one provided. If no docstring is found, it adds a new docstring at the end of the class or function definition.
+    This function searches for the first class or function definition in the
+    provided code and replaces its existing docstring with the new one
+    provided. If no docstring is found, it adds a new docstring at the end
+    of the class or function definition.
 
     Args:
         code (str):
@@ -12,13 +15,9 @@ def replace_docstring(*, code: str, docstring) -> str:
 
     Returns:
         str:
-            A string containing the modified code with the updated docstring for the first class or function definition found.
-
-    Raises:
-        ValueError:
-            If no class or function definitions are found in the code, indicating that there is nothing to replace or add.
+            A string containing the modified code with the updated docstring for the
+            first class or function definition found.
     """
-
     import re
 
     if not isinstance(docstring, str):
@@ -27,7 +26,7 @@ def replace_docstring(*, code: str, docstring) -> str:
     # Pattern to match class or function definitions (including multiline
     # signatures and return types)
     pattern = re.compile(
-        r'^(class\s+\w+|def\s+\w+)\s*\(.*?\)(?:\s*->\s*.*?)?\s*:\s*(""".*?""")?',
+        r'^(class\s+\w+|def\s+\w+)\s*\((?:.|\n)*?\)(?:\s*->\s*[^:]*)?:\s*(""".*?""")?',
         re.DOTALL | re.MULTILINE,
     )
 
@@ -36,7 +35,7 @@ def replace_docstring(*, code: str, docstring) -> str:
         formatted_docstring = ""
     else:
         docstring = docstring.strip()
-        formatted_docstring = f'"""{docstring}\n"""\n'
+        formatted_docstring = f'"""{docstring}\n    """'
 
     # Function to replace or add the docstring
     def _replace_match(match):

@@ -19,6 +19,7 @@ def reformat(
 
     import A_GIS.Text.split_first_sentence
     import A_GIS.Text.reformat
+    import A_GIS.Text.get_indent
     import textwrap
 
     # Initialize empty descriptions if none exist.
@@ -49,8 +50,13 @@ def reformat(
 
     # Wrap and indent parameter descriptions using Text.reformat.
     for i in range(len(docstring.params)):
-        docstring.params[i].description = textwrap.dedent(
-            docstring.params[i].description
+        d = docstring.params[i].description
+        indent = A_GIS.Text.get_indent(line=d)
+        docstring.params[i].description = textwrap.fill(
+            d,
+            width=width - indent,
+            initial_indent=" " * indent,
+            subsequent_indent=" " * indent,
         )
 
     return docstring
