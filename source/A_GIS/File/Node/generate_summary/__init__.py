@@ -215,7 +215,7 @@ Please summarize the contents of the '{str(top_dir)}' directory.
 
     # Extract the final summary and reformat to be pretty.
     summary = extract_summary(result["message"]["content"])
-    summary = A_GIS.Text.reformat(summary)
+    summary = A_GIS.Text.reformat(text=summary)
 
     # Overwrite the existing file.
     if overwrite_existing:
