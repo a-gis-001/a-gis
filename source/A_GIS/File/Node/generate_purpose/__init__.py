@@ -1,15 +1,15 @@
-def generate_summary(
+def generate_purpose(
     *,
     directory: type["path.Pathlib"],
     max_iterations=10,
     root_dir=None,
     overwrite_existing: bool = False,
 ):
-    """Generate concise Markdown directory summary using AI chatbot interactions.
+    """Generate a concise purpose statement for content in a directory.
 
-    This function generates a summary that describes the purpose and
+    This function generates a purpose statement that declares purpose and
     contents of a given directory, based on the directory's structure and
-    the contents of files like `_summary.md`. It uses an AI chatbot to parse
+    the contents of files like `_purpose.md`. It uses an AI chatbot to parse
     requests for showing directory tree structures or reading specific parts
     of files within the directory. The function iteratively communicates
     with the chatbot until a final summary is reached, up to a specified
@@ -27,14 +27,12 @@ def generate_summary(
             chatbot's requests. If None, the `directory` itself is used as the root
             directory.
         overwrite_existing (bool, optional):
-            A flag indicating whether to overwrite the existing `_summary.md` file
+            A flag indicating whether to overwrite the existing `_purpose.md` file
             in the target directory. Defaults to False.
 
     Returns:
         str:
-            A Markdown formatted summary of the directory's contents. The summary includes a description
-            of the directory's purpose, a structured outline of its contents derived from the `SHOW_TREE` requests,
-            and text extracts from files within the directory as per the `READ_FILE` requests.
+            A Markdown formatted purpose for the directory.
     """
     import A_GIS.Ai.Chatbot.init
     import os
@@ -94,7 +92,7 @@ def generate_summary(
 
         return parse_request(requests[0])
 
-    def extract_summary(response_content):
+    def extract_purpose(response_content):
         import re
 
         block = re.search(
@@ -106,13 +104,14 @@ def generate_summary(
             return block.group(1).strip()
 
     reminder = """
-    Remember, your <output> block will always contain your best attempt at a summary.
+    Remember, your <output> block must always contain your best guess for the purpose.
     If you do not put a <request> block in your message, we'll assume you are finished
-    and take whatever is in the <output> block as the final summary.
+    and take whatever is in the <output> block as the final purpose statement.
     """
     system_prompt = f"""
-    You are a summarization bot tasked with generating a new or updated _summary.md file
-    which describes why a directory exists. What is it's purpose?
+    You are a interpretation AI tasked with generating the purpose of a directory
+    in a file system based on any files currently in that directory. This purpose
+    is stored in a special file called `_purpose.md`.
 
     You have tools at your disposal which you call using a <request> block.
 
@@ -128,7 +127,7 @@ def generate_summary(
     READ_FILE supports reading many file formats like DOCX and PDF. If the file is not
     internally convertible to a text representation, you will see binary garbage.
 
-    Your summary should be a short, concise description in Markdown format.
+    Your purpose should be short, concise, and in Markdown format.
 
     The current settings allow {max_iterations} back and forth iterations to
     arrive at the final summary.
@@ -137,7 +136,8 @@ def generate_summary(
     <request>
     SHOW_TREE my_dir/test/_ 2 10 py
     </request>
-    Which would should the directory my_dir/test/_, with 2 levels of recursion, a maximum of 10 files, and only for .py extensions.
+    Which would should the directory my_dir/test/_, with 2 levels of recursion,
+    a maximum of 10 files, and only for .py extensions.
 
     A follow-up request could be:
     <request>
@@ -145,28 +145,23 @@ def generate_summary(
     </request>
     Which would show the first 1000 characters in the file, my_dir/test/_/plot.py.
 
-    As you are writing the final summary, format it nicely with paragraphs, lists, etc.
-    from Markdown and don't make lines too long (80 characters wide is a good limit).
+    When you reference files within the directory, use their relative paths. For
+    example, instead of putting "`xyz.py` in directory `uvw`", put
+    "file `uvw/xyz.py`".
 
-    When you reference files within the directory, try to use their relative paths so that
-    the Markdown can link to them easily. I.e. instead of saying file `xyz.py` in directory
-    `uvw`, say file `uvw/xyz.py`. Never refer to the '.' directory. Just refer to this
-    directory, i.e. "This directory contains ...".
+    Do not refer to the `_purpose.md` file in your <output> description. You can use
+    its contents as a way to help you understand the previous thoughts on the purpose
+    of the directory, but your main job is to update the `_purpose.md` file with an
+    updated purpose statement.
 
-    Do not refer to the _summary.md file in your description (this is the file you
-    are updating).
+    This file structure has a convention to support an optional directory `_` that can
+    contain related files/subdirs. These may be simple symlinks. You should generally
+    treat content that is within a `_` directory as less important to defining the
+    purpose than other content outside the `_` directory.
 
-    The convention for this structure is that a directory called `_` can contain
-    additional subdirectories that may be symlinked and should not be altered
-    by this organization system. Files that are not within a _ directory may be
-    moved around by another bot when they are found to better match another directory.
-
-    Part of this matching is based on the content of _summary.md, so it should help
-    other bots choose good additional content for this directory.
-
-    Place all your thoughts in your normal <thinking> block. In your <output> block
-    always present your best attempt at a confident, full description that will be
-    refined as you learn more.
+    Use your <thinking> block to interpret the result of your last request, relate it
+    to the overarching goal to determine the purpose for this directory, and then
+    plan your next actions.
 
 {reminder}
     """
@@ -179,18 +174,18 @@ def generate_summary(
         temperature=0.7,
     )
 
-    summary_file_path = directory / "_summary.md"
-    existing_summary = "FILE DOES NOT EXIST"
-    if summary_file_path.exists():
-        existing_summary = A_GIS.File.read_to_text(file=summary_file_path)
+    purpose_file_path = directory / "_purpose.md"
+    existing_purpose = "FILE DOES NOT EXIST"
+    if purpose_file_path.exists():
+        existing_purpose = A_GIS.File.read_to_text(file=purpose_file_path)
 
     top_dir = directory.relative_to(root_dir)
 
     request = f"SHOW_TREE {str(top_dir)} 2 10"
     contents = parse_request(request)
     message = f"""
-Current summary '{str(top_dir)}/_summary.md':
-{existing_summary}
+Current purpose statement '{str(top_dir)}/_purpose.md':
+{existing_purpose}
 
 Initial SHOW_TREE request:
 <request>
@@ -200,25 +195,25 @@ Initial SHOW_TREE request:
 Contents:
 {contents}
 
-Please summarize the contents of the '{str(top_dir)}' directory.
+Please assign a purpose to the '{str(top_dir)}' directory.
     """
 
     for iteration in range(max_iterations):
         result = chatbot.chat(message, keep_state=True)
         requests = handle_requests(chatbot, result["message"]["content"])
         if requests == "":
-            # No more requests mean the final summary has been made.
+            # No more requests mean the final purpose has been declared.
             break
         else:
             # If there are requests, then we update the prompt.
             message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
 
-    # Extract the final summary and reformat to be pretty.
-    summary = extract_summary(result["message"]["content"])
-    summary = A_GIS.Text.reformat(text=summary)
+    # Extract the final purpose statement and reformat to be pretty.
+    purpose = extract_purpose(result["message"]["content"])
+    purpose = A_GIS.Text.reformat(text=purpose)
 
     # Overwrite the existing file.
     if overwrite_existing:
-        A_GIS.File.write(file=directory / "_summary.md", text=summary)
+        A_GIS.File.write(file=directory / "_purpose.md", text=purpose)
 
-    return summary
+    return purpose

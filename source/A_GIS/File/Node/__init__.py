@@ -1,3 +1,3 @@
 # Functions
-from .generate_summary import generate_summary
+from .generate_purpose import generate_purpose
 from .get_leaf import get_leaf
