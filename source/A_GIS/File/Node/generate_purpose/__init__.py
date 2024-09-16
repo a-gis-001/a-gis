@@ -154,9 +154,30 @@ def generate_purpose(
     of the directory, but your main job is to update the `_purpose.md` file with an
     updated purpose statement.
 
+    Do not refer to the '.' directory. Your purpose statement should have a H2 heading,
+    and state directly the purpose, followed by another H2 heading for a list of key
+    contents. For example.
+
+    ## Purpose
+
+    To store documents related to William Wieselquist's professional
+    profile, career development, and research activities.
+
+    ## Key Contents
+
+    - `waw_cv-2024.docx`: latest CV
+    - `waw_cv-2024.pdf`: PDF version of his CV
+    - `works.bib`: bibliography file of research publications
+
+    Be concise like the example! Instead of "contains his latest CV with work experience"
+    just say "latest CV". Because the context is already describing "Key Contents",
+    you don't need to repeat "contains" or other similar words. Also a CV contains
+    work experience and leadership roles by definition, so "CV" suffices. These are
+    just examples. Use this type of judgement in all your statements.
+
     This file structure has a convention to support an optional directory `_` that can
     contain related files/subdirs. These may be simple symlinks. You should generally
-    treat content that is within a `_` directory as less important to defining the
+    treat content that is within a `_` directory as less important in defining the
     purpose than other content outside the `_` directory.
 
     Use your <thinking> block to interpret the result of your last request, relate it
@@ -174,11 +195,11 @@ def generate_purpose(
         temperature=0.7,
     )
 
-    purpose_file_path = directory / "_purpose.md"
+    purpose_file_path = (directory / "_purpose.md").resolve()
+
     existing_purpose = "FILE DOES NOT EXIST"
     if purpose_file_path.exists():
         existing_purpose = A_GIS.File.read_to_text(file=purpose_file_path)
-
     top_dir = directory.relative_to(root_dir)
 
     request = f"SHOW_TREE {str(top_dir)} 2 10"
@@ -214,6 +235,6 @@ Please assign a purpose to the '{str(top_dir)}' directory.
 
     # Overwrite the existing file.
     if overwrite_existing:
-        A_GIS.File.write(file=directory / "_purpose.md", text=purpose)
+        A_GIS.File.write(file=directory / "_purpose.md", content=purpose)
 
     return purpose

@@ -2,7 +2,7 @@ import argparse
 import pathlib
 import A_GIS.File.Node.generate_purpose
 
-parser = argparse.ArgumentParser(description="Generate a summary of a directory.")
+parser = argparse.ArgumentParser(description="Generate a purpose of a directory.")
 parser.add_argument("path", type=str, help="Path to the directory or file.")
 
 args = parser.parse_args()
@@ -14,4 +14,7 @@ if input_path.is_file():
 else:
     current_dir = input_path
 
-print(A_GIS.File.Node.generate_purpose(directory=current_dir))
+purpose = A_GIS.File.Node.generate_purpose(directory=current_dir, overwrite_existing=True)
+
+print(f"Purpose written to {current_dir}/_purpose.md\n")
+print(purpose)

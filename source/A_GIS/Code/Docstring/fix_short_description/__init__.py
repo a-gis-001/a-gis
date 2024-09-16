@@ -2,7 +2,7 @@ def fix_short_description(
     *,
     docstring: type["A_GIS.Code.Docstring._Docstring"],
     force_ai=False,
-    model: str = "mixtral",
+    model: str = "reflection",
 ) -> str:
     """Improve function's short description using AI, if needed.
 
@@ -110,10 +110,8 @@ ANYTHING AFTER 63 CHARACTERS WILL BE REMOVED. 63 CHARACTERS IS 9 WORDS OR LESS.
         A_GIS.Log.append(
             f"The AI-suggested docstring short description='{suggestion}' fails to meet criteria with errors: {errors}."
         )
-    print(errors)
 
     # Update the docstring only if it meets requirements.
-    print(len(suggestion), suggestion)
     docstring.short_description = suggestion
 
     # Return docstring.

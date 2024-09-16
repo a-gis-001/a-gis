@@ -14,8 +14,6 @@ def read_to_text(*, file: type["pathlib.Path"]):
         str:
             The content of the file in plain text format.
 
-    Raises:
-        None
     """
 
     if file.suffix == ".pdf":

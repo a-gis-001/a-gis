@@ -22,7 +22,7 @@ def main():
 
     code = A_GIS.File.read(file=path)
     docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
-    print("docstring:", docstring)
+    print("docstring:\n", docstring)
 
     code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
     A_GIS.File.write(content=code, file=path)

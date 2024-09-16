@@ -1,19 +1,23 @@
 def write(*, content, file: type["pathlib.Path"], binary: bool = False):
-    """Writes content to a file.
+    """Write content to a file, with an option to specify binary mode.
 
-    This function writes the provided `content` to a specified `file` using Python's built-in
-    `open()` function, which supports both text and binary writing based on the `binary` flag.
+    This function writes the provided `content` to the specified `file`. The
+    `binary` flag determines whether the write operation is performed in
+    binary mode or text mode. If `binary` is set to `True`, the file will be
+    opened in binary write mode; otherwise, it will be opened in text mode.
 
     Args:
-            content (str or bytes): The content to write to the file. If `binary` is True, this should be a bytes object.
-            file (pathlib.Path): A Path object representing the path of the file to write to.
-            binary (bool, optional): If True, the file will be opened in binary mode for writing bytes. Defaults to False.
-
-    Raises:
-            None
+        content (str):
+            The data to be written to the file.
+        file (pathlib.Path):
+            The path object representing the file to write to.
+        binary (bool, optional):
+            A flag that indicates whether the write operation should be performed in
+            binary mode (True) or text mode (False). Defaults to False.
 
     Returns:
-            None
+        None:
+            The function does not explicitly return a value as it performs an in-place modification of the file specified by `file`.
     """
 
     mode = "w"

@@ -59,27 +59,23 @@ def generate(
     import A_GIS.Code.Docstring.reformat
 
     # Create the system prompt.
-    system = f"""
+    system = f'''
 Given a Python function, generate and return a high-quality docstring
 following the Google docstring rules. Include the following elements.
 
     1. A one line summary at the beginning, less than 64 characters.
     2. Describe the capability in more detail including requirements.
-    4. Arguments with full type specifications.
-    5. Exceptions the function raises, if any.
-    6. The return value and type.
+    3. Arguments with full type specifications.
+    4. The return value and type.
 
 REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
 
 Here is an example.
 
-### Instruction:
+## Code
 
-name:
-    A_GIS.File.make_directory
-
-code:
-    def init(*, path: str = None, scoped_delete: bool = False):
+    def make_directory(*, path: str = None, scoped_delete: bool = False):
+        """Replace with docstring for A_GIS.File.make_directory"""
         class _TempDir:
             def __init__(self, path: str = None, scoped_delete: bool = False):
                 self.scoped_delete = scoped_delete
@@ -105,11 +101,9 @@ code:
 
         return _TempDir(path, scoped_delete)
 
-### Response:
+## Docstring
 
-docstring:
-
-    Creates a potentially scoped directory object.
+    Creates an optionally scoped directory object.
 
     This function returns an instance of the nested class `TempDir`. This class
     provides functionality to create a temporary directory that can be set to
@@ -127,10 +121,13 @@ docstring:
         TempDir:
             An instance of the TempDir class representing the created directory.
 
-"""
+'''
 
+    code = A_GIS.Code.replace_docstring(
+        code=code, docstring=f"Replace with docstring for {name}"
+    )
     indented_code = A_GIS.Text.add_indent(text=code)
-    user = f"name:\n    {name}code:\n{indented_code}\n"
+    user = f"## Code\n    {indented_code}\n"
 
     import logging
 
@@ -163,8 +160,7 @@ docstring:
     text = response["message"]["content"]
     logging.info(f"raw_output={text}")
 
-    text = A_GIS.Text.get_after_tag(text=text, tag="docstring:")
-    text = A_GIS.Text.get_before_tag(text=text, tag="### Instruction:")
+    text = A_GIS.Text.get_after_tag(text=text, tag="## Docstring")
 
     # Return the content after cleaning the text. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
