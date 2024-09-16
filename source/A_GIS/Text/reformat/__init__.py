@@ -11,21 +11,43 @@ def reformat(
     whitespace reduction after wrapping.
 
     Args:
-        text (str): The source text to be reformatted.
-        width (int, optional): The maximum number of characters per line.
+        text (str):
+            The source text to be reformatted.
+        width (int, optional):
+            The maximum number of characters per line.
             Defaults to 72.
-        indent (int, optional): Indent reformatted text.
-        collapse_whitespace (bool, optional): If True, collapses whitespace
+        indent (int, optional):
+            Indent reformatted text.
+        collapse_whitespace (bool, optional):
+            If True, collapses whitespace
             between words to a single space after wrapping. Defaults to True.
 
     Returns:
-        str: A new string containing the text with lines wrapped to fit within
-        the specified width, preserving paragraph breaks and original indentation.
+        str:
+            A new string containing the text with lines wrapped to fit within
+            the specified width, preserving paragraph breaks and original indentation.
     """
+
     import re
     import textwrap
     import A_GIS.Text.insert_block_placeholders
     import A_GIS.Text.reconstitute_blocks
+
+    # Nested function for wrapping text
+    def _wrap_text(
+        text_segment: str,
+        initial_indent: str = "",
+        subsequent_indent: str = "",
+        wrap_width: int = 72,
+    ) -> str:
+        return textwrap.fill(
+            text_segment.strip(),
+            width=wrap_width,
+            replace_whitespace=collapse_whitespace,
+            break_long_words=False,
+            initial_indent=initial_indent,
+            subsequent_indent=subsequent_indent,
+        )
 
     # Step 1: Remove extra newlines, but preserve paragraph breaks.
     text = re.sub(r"\n\n+", r"\n\n", text)
@@ -37,7 +59,7 @@ def reformat(
         text=text, block_name=r"\S*"
     )
 
-    # Step 2: Split text into lines, preserving line breaks.
+    # Step 3: Split text into lines, preserving line breaks.
     lines = text.splitlines(keepends=True)
 
     # Define a regex to detect list markers (e.g., '-', '*', or numbered lists)
@@ -51,13 +73,11 @@ def reformat(
             # Empty line indicates paragraph break
             if paragraph:
                 # Wrap the accumulated paragraph
-                wrapped_paragraph = textwrap.fill(
-                    paragraph.strip(),
-                    width=width - indent,
-                    replace_whitespace=collapse_whitespace,
-                    break_long_words=False,
+                wrapped_paragraph = _wrap_text(
+                    paragraph,
                     initial_indent=" " * indent,
                     subsequent_indent=" " * indent,
+                    wrap_width=width - indent,
                 )
                 wrapped_text += wrapped_paragraph + "\n\n"
                 paragraph = ""
@@ -68,13 +88,11 @@ def reformat(
             # Line is a list item
             if paragraph:
                 # Wrap the previous paragraph before handling the list item
-                wrapped_paragraph = textwrap.fill(
-                    paragraph.strip(),
-                    width=width - indent,
-                    replace_whitespace=collapse_whitespace,
-                    break_long_words=False,
+                wrapped_paragraph = _wrap_text(
+                    paragraph,
                     initial_indent=" " * indent,
                     subsequent_indent=" " * indent,
+                    wrap_width=width - indent,
                 )
                 wrapped_text += wrapped_paragraph + "\n\n"
                 paragraph = ""
@@ -84,13 +102,11 @@ def reformat(
             content = line[len(list_marker) :].strip()
 
             # Wrap the list item with proper indentation
-            wrapped_item = textwrap.fill(
+            wrapped_item = _wrap_text(
                 content,
-                width=width - indent - len(list_marker),
-                replace_whitespace=collapse_whitespace,
-                break_long_words=False,
                 initial_indent=" " * indent + list_marker,
                 subsequent_indent=" " * (indent + len(list_marker)),
+                wrap_width=width - indent - len(list_marker),
             )
             wrapped_text += wrapped_item + "\n"
         else:
@@ -99,20 +115,18 @@ def reformat(
 
     # Wrap any remaining text in the paragraph buffer
     if paragraph:
-        wrapped_paragraph = textwrap.fill(
-            paragraph.strip(),
-            width=width - indent,
-            replace_whitespace=collapse_whitespace,
-            break_long_words=False,
+        wrapped_paragraph = _wrap_text(
+            paragraph,
             initial_indent=" " * indent,
             subsequent_indent=" " * indent,
+            wrap_width=width - indent,
         )
         wrapped_text += wrapped_paragraph + "\n"
 
     # Clean up extra newlines and trailing whitespace
     wrapped_text = re.sub(r"\n{3,}", "\n\n", wrapped_text).rstrip("\n")
 
-    # Step 5: Reinsert the code blocks into their original positions
+    # Step 4: Reinsert the code blocks into their original positions
     reformatted_text = A_GIS.Text.reconstitute_blocks(
         text=wrapped_text, subs=subs
     )

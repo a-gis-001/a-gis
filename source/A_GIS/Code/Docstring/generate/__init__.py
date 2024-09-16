@@ -15,6 +15,8 @@ def generate(
 ) -> type["A_GIS.Code.Docstring._Docstring"]:
     """Generate docstring for code using AI model.
 
+    The generated docstring is put into the Docstring object format.
+
     Args:
         name (str): The name of the function for which to generate the docstring.
         code (str): The Python code snippet for which to generate the docstring.
@@ -34,7 +36,7 @@ def generate(
         None
 
     Returns:
-        str: The generated docstring for the provided code.
+        str: generated Docstring object.
     """
 
     import ollama
