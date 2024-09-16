@@ -6,7 +6,7 @@ def catalog(
 ):
     """Generates a catalog of all functions in the specified Python package and their descriptions.
 
-    This function retrieves a list of all code files within a given Python package using `A_GIS.Code.list`. It then reads each file, checks if it contains a function with `A_GIS.Code.is_function`, and extracts its definition with `A_GIS.Code.Unit.get`. The function description is obtained from the docstring of the code using `A_GIS.Code.get_docstring`.
+    This function retrieves a list of all code files within a given Python package using `A_GIS.Code.list`. It then reads each file, checks if it contains a function with `A_GIS.Code.is_function`, and extracts its definition with `A_GIS.Code.Unit.get`. The function description is obtained from the docstring of the code using `A_GIS.Code.parse_docstring`.
 
     The catalog entries are formatted according to a provided format string (entry_format), which can include placeholders for 'header', 'description', 'name', and 'file'. If the 'include_args' flag is set, function argument details will be included in the header; otherwise, only the signature of the function without arguments will be shown.
 
@@ -23,7 +23,7 @@ def catalog(
     """
 
     import A_GIS.Code.list
-    import A_GIS.Code.get_docstring
+    import A_GIS.Code.parse_docstring
     import A_GIS.Code.Unit.get
     import A_GIS.Code.is_function
     import A_GIS.File.read
@@ -37,7 +37,7 @@ def catalog(
             continue
         unit = A_GIS.Code.Unit.get(code=code)
         description = (
-            A_GIS.Code.get_docstring(code=code, only_description=True)
+            A_GIS.Code.parse_docstring(code=code, only_description=True)
             or "None"
         ).lstrip()
         if unit.function_definition != [""]:

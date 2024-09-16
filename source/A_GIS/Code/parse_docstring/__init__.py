@@ -1,7 +1,7 @@
 import A_GIS.Log.track_function
 
 @A_GIS.Log.track_function
-def get_docstring(
+def parse_docstring(
     *,
     code: str,
     clean: bool = True,

@@ -3,8 +3,12 @@ import docstring_parser
 class _Docstring(docstring_parser.common.Docstring):
     """Subclass docstring_parser.common.Docstring for inter-operatability"""
 
-    def __init__(self, *, parent, reference_code):
+    def __init__(self, *, text, reference_code):
         super().__init__()
+
+        parent = docstring_parser.parse(
+            text, style=docstring_parser.DocstringStyle.AUTO
+        )
         self.short_description = parent.short_description
         self.long_description = parent.long_description
         self.blank_after_short_description = (

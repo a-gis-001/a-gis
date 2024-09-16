@@ -161,9 +161,9 @@ def docstring(name: "unit name", *, model: "model name" = "wizardlm2:7b"):
 
     # Generate a docstring.
     code = A_GIS.File.read(file=path)
-    docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model)
+    docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model, reformat=True)
     panel = rich.panel.Panel(
-        docstring, title=f"new docstring", expand=True, border_style="bold cyan"
+        str(docstring), title=f"new docstring", expand=True, border_style="bold cyan"
     )
     console.print(panel)
 

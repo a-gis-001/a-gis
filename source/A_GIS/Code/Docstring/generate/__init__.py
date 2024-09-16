@@ -12,7 +12,7 @@ def generate(
     mirostat=2,
     reformat: bool = False,
     __tracking_hash=None,
-) -> str:
+) -> type["A_GIS.Code.Docstring._Docstring"]:
     """Generate docstring for code using AI model.
 
     Args:
@@ -171,4 +171,4 @@ docstring:
     if reformat:
         docstring = A_GIS.Code.Docstring.reformat(docstring=docstring)
 
-    return str(docstring)
+    return docstring

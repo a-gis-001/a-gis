@@ -1,10 +1,10 @@
 def _parse_first_pass(*, code: str):
     import A_GIS.Code.replace_docstring
-    import A_GIS.Code.get_docstring
+    import A_GIS.Code.parse_docstring
 
     # Get formatted lines and docstring.
     code0 = A_GIS.Code.replace_docstring(code=code, docstring=None)
-    docstring = A_GIS.Code.get_docstring(code=code)
+    docstring = A_GIS.Code.parse_docstring(code=code)
     lines = [line.rstrip() for line in code0.split("\n")]
 
     # Create type_imports, function_definition, and code_body strings.

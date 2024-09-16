@@ -5,40 +5,52 @@ def reformat(
 
     - Split out the first sentence and show as description.
     - Wrap and indent text to fill 72 chars, preserving paragraph breaks.
+
+    Args:
+        docstring (Docstring):
+            The docstring object to reformat.
+        width (int):
+            The maximum line width for formatting.
+
+    Returns:
+        Docstring:
+            The reformatted docstring object.
     """
+
     import A_GIS.Text.split_first_sentence
     import A_GIS.Text.reformat
     import textwrap
 
-    # Set as empty.
+    # Initialize empty descriptions if none exist.
     if docstring.short_description is None:
         docstring.short_description = ""
     if docstring.long_description is None:
         docstring.long_description = ""
 
-    # Only keep the first sentence in short.
+    # Extract the first sentence for the short description.
     first, other = A_GIS.Text.split_first_sentence(
         text=docstring.short_description
     )
     docstring.short_description = first
-    other = other.strip()
-    if other != "":
+
+    # Append remaining content to the long description if there is more.
+    if other.strip() != "":
         other = other + "\n\n"
     docstring.long_description = other + docstring.long_description
 
-    # Add formatting options.
+    # Ensure proper formatting flags.
     docstring.blank_after_short_description = True
     docstring.blank_after_long_description = True
 
-    # Reformat the long description text
+    # Reformat the long description text using Text.reformat
     docstring.long_description = A_GIS.Text.reformat(
         text=docstring.long_description, width=width
     )
 
-    # Wrap parameter descriptions.
+    # Wrap and indent parameter descriptions using Text.reformat.
     for i in range(len(docstring.params)):
-        docstring.params[i].description = (
-            textwrap.fill(docstring.params[i].description, width) + "\n"
+        docstring.params[i].description = textwrap.dedent(
+            docstring.params[i].description
         )
 
     return docstring
