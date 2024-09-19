@@ -39,6 +39,7 @@ def generate_purpose(
     import pathlib
     import A_GIS.File.read_to_text
     import A_GIS.File.show_tree
+    import A_GIS.File.is_subdirectory
 
     if not root_dir:
         root_dir = directory
@@ -52,6 +53,10 @@ def generate_purpose(
             abs_subdir = root_dir / subdir
             if not abs_subdir.exists():
                 result = f"The requested directory {subdir} does not exist."
+            elif not A_GIS.File.is_subdirectory(
+                parent=root_dir, sub=abs_subdir, allow_same=True
+            ):
+                result = f"The requested directory {subdir} is not a subdirectory (.. not allowed)."
             else:
                 result = A_GIS.File.show_tree(
                     directory=abs_subdir,
@@ -65,6 +70,10 @@ def generate_purpose(
             abs_file = root_dir / file
             if not abs_file.exists():
                 result = f"The requested file {file} does not exist."
+            elif not A_GIS.File.is_subdirectory(
+                parent=root_dir, sub=abs_file, allow_same=True
+            ):
+                result = f"The requested file {file} is not in a subdirectory (.. not allowed)."
             text = A_GIS.File.read_to_text(file=abs_file)
             beginchar = min(max(0, int(beginchar)), len(text) - 1)
             endchar = min(max(0, int(endchar)), len(text) - 1)

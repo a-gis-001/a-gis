@@ -1,4 +1,4 @@
-def _read_to_text_pdf(*, file: type["pathlib.Path"]):
+def _read_to_text_pdf(*, file: type["pathlib.Path"]) -> str:
     """Reads a PDF and returns text
 
     Helper function for read_to_text not meant to be used

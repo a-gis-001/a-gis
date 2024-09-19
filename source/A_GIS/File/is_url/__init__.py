@@ -1,26 +1,23 @@
-def is_url(path):
-    """Checks if a given path is a URL with a recognized protocol scheme.
+def is_url(name: str):
+    """Checks if a given name is a URL with a recognized protocol scheme.
 
     This function uses the `urlparse` method from the `urllib.parse` module to parse
-    the input path into its components, and checks if it has a recognized protocol
+    the input name into its components, and checks if it has a recognized protocol
     scheme (http, https, ftp or ftps). If both conditions are met, the function
     returns True; otherwise, False.
 
     Args:
-        path (str): The path to be checked.
-
-    Raises:
-        None
+        name (str): The name to be checked.
 
     Returns:
-        bool: True if the path is a URL with a recognized protocol scheme,
+        bool: True if the name is a URL with a recognized protocol scheme,
               False otherwise.
     """
 
     from urllib.parse import urlparse
 
-    parsed_path = urlparse(str(path))
-    return bool(parsed_path.scheme) and parsed_path.scheme in [
+    parsed_name = urlparse(str(name))
+    return bool(parsed_name.scheme) and parsed_name.scheme in [
         "http",
         "https",
         "ftp",

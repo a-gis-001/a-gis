@@ -1,30 +1,29 @@
-def read_to_text(*, file: type["pathlib.Path"]):
-    """Convert files to plain text based on file extension.
+def read_to_text(*, path: type["pathlib.Path"] | str):
+    """Read a file or URL, partitions content, and returns formatted plain text with double newlines separating sections.
 
-    This function reads a file provided by the `pathlib.Path` class and converts its content
-    to a string representation, depending on the file's extension. It currently supports
-    PDF and DOCX files through internal helper functions and falls back to a general file reading
-    method for other file types. Future versions may extend support to additional file types.
+    This function reads the contents of a given file path or URL and returns
+    it as a plain text string, formatted with double newlines between
+    sections for readability. It leverages the `unstructured.partition.auto`
+    utility to automatically partition the content into sections based on
+    the provided key (filename or url).
 
     Args:
-        file (pathlib.Path):
-            The path to the file that needs to be read and converted to text.
+        path (type["pathlib.Path"] | str):
+            The file system path to a local file or a URL from which to read the
+            content.
 
     Returns:
         str:
-            The content of the file in plain text format.
-
+            A string containing the plain text content of the file or the content retrieved from the URL, with double newlines between sections for visual separation. If no content is found, an empty string is returned.
     """
+    import unstructured.partition.auto
+    import pathlib
 
-    if file.suffix == ".pdf":
-        import A_GIS.File._read_to_text_pdf
-
-        return A_GIS.File._read_to_text_pdf(file=file)
-    elif file.suffix == ".docx":
-        import A_GIS.File._read_to_text_docx
-
-        return A_GIS.File._read_to_text_docx(file=file)
+    if isinstance(path, pathlib.Path):
+        key = "filename"
     else:
-        import A_GIS.File.read
+        key = "url"
 
-        return A_GIS.File.read(file=file)
+    elements = unstructured.partition.auto.partition(**{key: str(path)})
+
+    return "\n\n".join(map(str, elements))

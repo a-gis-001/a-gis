@@ -1,11 +1,13 @@
 # Functions
 from ._read_to_text_docx import _read_to_text_docx
 from ._read_to_text_pdf import _read_to_text_pdf
+from ._read_to_text_pptx import _read_to_text_pptx
 from .delete import delete
 from .download import download
 from .find_and_replace import find_and_replace
 from .glob import glob
 from .hash import hash
+from .is_subdirectory import is_subdirectory
 from .is_url import is_url
 from .make_directory import make_directory
 from .open import open
