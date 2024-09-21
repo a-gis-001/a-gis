@@ -13,6 +13,7 @@ from .is_function import is_function
 from .is_package import is_package
 from .is_program import is_program
 from .list import list
+from .make_result import make_result
 from .parse_docstring import parse_docstring
 from .reformat import reformat
 from .replace_docstring import replace_docstring
