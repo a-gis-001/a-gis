@@ -98,7 +98,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
                             )
                         return
 
-                text = A_GIS.File.read_to_text(path=pathlib.Path(file_path))
+                text = A_GIS.File.read_to_text(
+                    path=pathlib.Path(file_path)
+                ).text
                 _, embedding, _ = A_GIS.Text.calculate_embedding(
                     lines=[text], nchunks=1
                 )

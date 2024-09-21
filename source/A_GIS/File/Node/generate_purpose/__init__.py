@@ -74,7 +74,7 @@ def generate_purpose(
                 parent=root_dir, sub=abs_file, allow_same=True
             ):
                 result = f"The requested file {file} is not in a subdirectory (.. not allowed)."
-            text = A_GIS.File.read_to_text(path=abs_file)
+            text = A_GIS.File.read_to_text(path=abs_file).text
             beginchar = min(max(0, int(beginchar)), len(text) - 1)
             endchar = min(max(0, int(endchar)), len(text) - 1)
             if endchar > beginchar:
@@ -208,7 +208,7 @@ def generate_purpose(
 
     existing_purpose = "FILE DOES NOT EXIST"
     if purpose_file_path.exists():
-        existing_purpose = A_GIS.File.read_to_text(path=purpose_file_path)
+        existing_purpose = A_GIS.File.read_to_text(path=purpose_file_path).text
     top_dir = directory.relative_to(root_dir)
 
     request = f"SHOW_TREE {str(top_dir)} 2 10"

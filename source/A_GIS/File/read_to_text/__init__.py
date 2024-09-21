@@ -1,4 +1,6 @@
-def read_to_text(*, path: type["pathlib.Path"] | str):
+import pathlib
+
+def read_to_text(*, path: pathlib.Path | str):
     """Read a file or URL, partitions content, and returns formatted plain text with double newlines separating sections.
 
     This function reads the contents of a given file path or URL and returns
@@ -17,13 +19,14 @@ def read_to_text(*, path: type["pathlib.Path"] | str):
             A string containing the plain text content of the file or the content retrieved from the URL, with double newlines between sections for visual separation. If no content is found, an empty string is returned.
     """
     import unstructured.partition.auto
-    import pathlib
+    import A_GIS.File.is_url
+    import A_GIS.Code.make_struct
 
-    if isinstance(path, pathlib.Path):
-        key = "filename"
-    else:
+    if not isinstance(path, pathlib.Path) or A_GIS.File.is_url(name=str(path)):
         key = "url"
+    else:
+        key = "filename"
 
     elements = unstructured.partition.auto.partition(**{key: str(path)})
 
-    return "\n\n".join(map(str, elements))
+    return A_GIS.Code.make_struct(text="\n\n".join(map(str, elements)))

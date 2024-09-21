@@ -1,4 +1,4 @@
-def make_result(**kwargs):
+def make_struct(**kwargs):
     """Create a dataclass instance from keyword arguments dynamically.
 
     This function dynamically generates a dataclass based on the provided

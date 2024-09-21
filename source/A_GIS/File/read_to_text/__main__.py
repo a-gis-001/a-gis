@@ -10,5 +10,5 @@ for z in sys.argv[1:]:
     else:
         path=pathlib.Path(z)
     print(
-        A_GIS.File.read_to_text(path=path)
+        A_GIS.File.read_to_text(path=path).text
     )
