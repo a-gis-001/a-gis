@@ -9,7 +9,7 @@ def generate_purpose(
 
     This function generates a purpose statement that declares purpose and
     contents of a given directory, based on the directory's structure and
-    the contents of files like `_purpose.md`. It uses an AI chatbot to parse
+    the contents of files like `_leaf.node.md`. It uses an AI chatbot to parse
     requests for showing directory tree structures or reading specific parts
     of files within the directory. The function iteratively communicates
     with the chatbot until a final summary is reached, up to a specified
@@ -27,7 +27,7 @@ def generate_purpose(
             chatbot's requests. If None, the `directory` itself is used as the root
             directory.
         overwrite_existing (bool, optional):
-            A flag indicating whether to overwrite the existing `_purpose.md` file
+            A flag indicating whether to overwrite the existing `_leaf.node.md` file
             in the target directory. Defaults to False.
 
     Returns:
@@ -74,7 +74,7 @@ def generate_purpose(
                 parent=root_dir, sub=abs_file, allow_same=True
             ):
                 result = f"The requested file {file} is not in a subdirectory (.. not allowed)."
-            text = A_GIS.File.read_to_text(file=abs_file)
+            text = A_GIS.File.read_to_text(path=abs_file)
             beginchar = min(max(0, int(beginchar)), len(text) - 1)
             endchar = min(max(0, int(endchar)), len(text) - 1)
             if endchar > beginchar:
@@ -120,7 +120,7 @@ def generate_purpose(
     system_prompt = f"""
     You are a interpretation AI tasked with generating the purpose of a directory
     in a file system based on any files currently in that directory. This purpose
-    is stored in a special file called `_purpose.md`.
+    is stored in a special file called `_leaf.node.md`.
 
     You have tools at your disposal which you call using a <request> block.
 
@@ -158,9 +158,9 @@ def generate_purpose(
     example, instead of putting "`xyz.py` in directory `uvw`", put
     "file `uvw/xyz.py`".
 
-    Do not refer to the `_purpose.md` file in your <output> description. You can use
+    Do not refer to the `_leaf.node.md` file in your <output> description. You can use
     its contents as a way to help you understand the previous thoughts on the purpose
-    of the directory, but your main job is to update the `_purpose.md` file with an
+    of the directory, but your main job is to update the `_leaf.node.md` file with an
     updated purpose statement.
 
     Do not refer to the '.' directory. Your purpose statement should have a H2 heading,
@@ -204,17 +204,17 @@ def generate_purpose(
         temperature=0.7,
     )
 
-    purpose_file_path = (directory / "_purpose.md").resolve()
+    purpose_file_path = (directory / "_leaf.node.md").resolve()
 
     existing_purpose = "FILE DOES NOT EXIST"
     if purpose_file_path.exists():
-        existing_purpose = A_GIS.File.read_to_text(file=purpose_file_path)
+        existing_purpose = A_GIS.File.read_to_text(path=purpose_file_path)
     top_dir = directory.relative_to(root_dir)
 
     request = f"SHOW_TREE {str(top_dir)} 2 10"
     contents = parse_request(request)
     message = f"""
-Current purpose statement '{str(top_dir)}/_purpose.md':
+Current purpose statement '{str(top_dir)}/_leaf.node.md':
 {existing_purpose}
 
 Initial SHOW_TREE request:
@@ -244,6 +244,6 @@ Please assign a purpose to the '{str(top_dir)}' directory.
 
     # Overwrite the existing file.
     if overwrite_existing:
-        A_GIS.File.write(file=directory / "_purpose.md", content=purpose)
+        A_GIS.File.write(file=directory / "_leaf.node.md", content=purpose)
 
     return purpose
