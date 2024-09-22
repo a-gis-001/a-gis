@@ -1,10 +1,11 @@
-def get_schema(*, func):
+def get_schema(*, func_path: str):
     import inspect
     import typing
     import A_GIS.Code.Docstring.init
+    import A_GIS.resolve_function
 
     # Get the function name
-    func_name = func.__name__
+    func = A_GIS.resolve_function(func_path=func_path)
 
     # Get the function description (docstring)
     docstring = A_GIS.Code.Docstring.init(text=func.__doc__)
@@ -62,7 +63,7 @@ def get_schema(*, func):
     return {
         "type": "function",
         "function": {
-            "name": func_name,
+            "name": func_path,
             "description": description,
             "parameters": {
                 "type": "object",

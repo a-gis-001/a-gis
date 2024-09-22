@@ -16,9 +16,8 @@ def generate_purpose(
     maximum number of iterations.
 
     Args:
-        directory (type:
-            pathlib.Path): The path to the target directory for which the summary
-            should be generated.
+        directory (pathlib.Path): The path to the target directory for which
+            the summary should be generated.
         max_iterations (int, optional):
             The maximum number of iterations allowed for the chatbot to reach a
             final summary. Defaults to 10.

@@ -9,8 +9,6 @@ def list(*, package_name="A_GIS", filters=["_", "tests"]):
         package_name (str, optional): The name of the package to search within. Defaults to "A_GIS".
         filters (list[str], optional): A list of strings that module and sub-package names should not start with.
                                        Defaults to ["_", "tests"].
-    Raises:
-        None
 
     Returns:
         dict: A dictionary mapping full module/sub-package names to their file paths within the specified package, excluding any
