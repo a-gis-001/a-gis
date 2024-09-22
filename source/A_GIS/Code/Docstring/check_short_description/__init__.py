@@ -39,7 +39,7 @@ def check_short_description(*, short_description: str):
         errors.append("Not capitalized.")
 
     # Check starts with verb.
-    if not A_GIS.Text.starts_with_verb(sentence=short_description):
+    if not A_GIS.Text.starts_with_verb(sentence=short_description).result:
         errors.append(f"Does not start with a verb.")
 
     # Check simplest form of verb.

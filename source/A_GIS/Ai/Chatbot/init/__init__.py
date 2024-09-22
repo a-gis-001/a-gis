@@ -7,11 +7,14 @@ def init(
     num_predict=5000,
     num_ctx=10000,
     temperature=0.5,
+    messages=[],
+    tools=[],
 ) -> type["A_GIS.Ai.Chatbot._Chatbot"]:
     """
     Initializes and returns a chatbot model based on the specified provider.
 
-    Redirects to init_from_<provider> where <provider> is
+    Redirects to init_from_<provider> where <provider>.
+
     Args:
         model (str): The model name or identifier to be initialized.
         provider (ProviderLiteral): The provider from which to initialize the model. Defaults to 'ollama'.
@@ -19,8 +22,6 @@ def init(
     Returns:
         A_GIS.Ai.Chatbot.BaseModel: An instance of the chatbot model initialized from the specified provider.
 
-    Raises:
-        ValueError: If the specified provider is not recognized.
     """
     import A_GIS.Ai.Chatbot._Chatbot
 
@@ -45,5 +46,5 @@ def init(
         num_ctx=num_ctx,
         temperature=temperature,
         _send_chat=_send_chat,
-        messages=[],
+        messages=messages,
     )

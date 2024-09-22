@@ -9,9 +9,6 @@ def get_before_tag(*, text: str, tag: str):
         text (str): The input string to search for the tag in.
         tag (str): The specific tag to find within the text.
 
-    Raises:
-        None
-
     Returns:
         str: The part of the original text that precedes the specified tag, or
              the original text if the tag is not found.

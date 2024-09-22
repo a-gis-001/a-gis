@@ -11,45 +11,64 @@ def generate(
     num_predict=2000,
     mirostat=2,
     reformat: bool = False,
+    substitute_imports: bool = False,
     __tracking_hash=None,
 ) -> type["A_GIS.Code.Docstring._Docstring"]:
-    """Generate docstring for code using AI model.
+    """Generate high-quality Python code documentation using AI.
 
-    The generated docstring is put into the Docstring object format.
+    The system prompt includes guidelines for creating a high-quality
+    docstring, including instructions on how to structure the docstring
+    and what should be included in it. The AI model is trained using
+    this prompt, which ensures that the generated documentation aligns
+    with established standards and best practices.
 
     Args:
         name (str):
-            The name of the function for which to generate the docstring.
+            The name of the Python function or method for which a
+            docstring needs to be generated. This argument serves as a
+            reference point for generating a suitable system prompt.
         code (str):
-            The Python code snippet for which to generate the docstring.
+            The Python code for which a docstring needs to be generated.
         model (str, optional):
-            The AI model to use for generating the docstring. Defaults to 'deepseek-
-            coder:33b'.
+            The AI model used for generating the documentation. Defaults
+            to "deepseek-coder:33b".
         temperature (float, optional):
-            The temperature parameter for controlling randomness in the AI's
-            response. Defaults to 0.5.
+            A parameter controlling the randomness of the AI's
+            responses. It influences the creativity and coherence of the
+            generated docstring. Defaults to 0.5.
         num_ctx (int, optional):
-            The number of context tokens to use when generating the docstring.
-            Defaults to 10000.
+            The number of context tokens used by the AI model for
+            generating a response. Defaults to 10000.
         num_predict (int, optional):
-            The maximum number of predicted tokens to generate in the AI's response.
-            Defaults to 1000.
-        mirostat (int, optional):
-            The mirostat mode parameter for controlling how the AI generates its
-            responses. Defaults to 2.
+            The maximum length of the generated docstring. Defaults to
+            2000.
+        mirostat (float, optional):
+            A parameter controlling the decay rate of temperature during
+            generation. It influences how quickly the model cools down
+            and stops generating responses. Defaults to 2.
         reformat (bool, optional):
-            If True, reformats the generated docstring to follow standard Python
-            formatting rules. Defaults to False.
+            If True, reformats the generated docstring according to
+            additional rules defined by the function. If False, does not
+            apply any further formatting. Defaults to False.
+        substitute_imports (bool, optional):
+            If True, substitutes certain import statements in the code
+            with equivalent ones for improved generation of docstrings.
+            If False, uses the original import statements. Defaults to
+            False.
         __tracking_hash (str, optional):
-            An internal tracking hash for tracking function execution. Defaults to
-            None.
+            A unique hash used for tracking and debugging the function's
+            execution. It can be set to any value but is typically left
+            as None unless required for specific tracking purposes.
 
     Returns:
-        str:
-            generated Docstring object.
+        `A_GIS.Code.Docstring._Docstring`:
+            An instance of the `_Docstring` class, which represents a
+            Python code documentation object. This object contains
+            various attributes and methods related to the code's
+            documentation.
     """
 
-    import ollama
+    import A_GIS.Ai.Chatbot.init
     import A_GIS.Text.add_indent
     import A_GIS.Code.Docstring.clean
     import A_GIS.Text.get_after_tag
@@ -57,24 +76,37 @@ def generate(
     import A_GIS.Code.Docstring.init
     import A_GIS.Code.Docstring.fix_short_description
     import A_GIS.Code.Docstring.reformat
+    import A_GIS.Code.Unit.substitute_imports
 
     # Create the system prompt.
     system = f'''
-Given a Python function, generate and return a high-quality docstring
-following the Google docstring rules. Include the following elements.
+You are an expert Python documentation writer.
 
-    1. A one line summary at the beginning, less than 64 characters.
-    2. Describe the capability in more detail including requirements.
-    3. Arguments with full type specifications.
-    4. The return value and type.
-    5. If the return value is a dataclass "struct", describe each of
-       the member attributes.
+You will be given a Python code following "Code:" on a line by itself.
 
-REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
+You will reply with "Docstring:" on a line by itself, followed by
+a high-quality docstring. The guidelines for the docstring are:
 
-Here is an example.
+    1. Use Google formatting and rules as a baseline.
+    2. Include a short description sentence of less than 64 characters
+       on a line by itself.
+    3. Describe the capability in more detail, including requirements,
+       in the long description.
+    4. Arguments should have full type specifications.
+    5. The return values should have type and description.
+    6. If the return value is created by A_GIS.Code.make_struct, describe each of
+       the arguments which become attributes of the struct.
 
-## Code
+This is an example of a return value description for a dataclass.
+
+    Returns:
+        dataclass: with the following attributes
+            - text (str): A string representing the partitioned text content.
+            - path (str): The file path or URL from which the text was read.
+
+For example, you could be given this code block.
+
+Code:
 
     def make_directory(*, path: str = None, scoped_delete: bool = False):
         """Replace with docstring for A_GIS.File.make_directory"""
@@ -103,7 +135,9 @@ Here is an example.
 
         return _TempDir(path, scoped_delete)
 
-## Docstring
+And you would then reply with something similar to this docstring block:
+
+Docstring:
 
     Creates an optionally scoped directory object.
 
@@ -120,53 +154,34 @@ Here is an example.
             when the TempDir object is destroyed or when exiting a context manager block.
 
     Returns:
-        TempDir:
-            An instance of the TempDir class representing the created directory.
-
-If the return value is a dataclass, write the Returns block like this example.
-
-    Returns:
-        dataclass: with the following attributes
-            - text (str): A string representing the partitioned text content.
-            - path (str): The file path or URL from which the text was read.
+        _TempDir: with .path attribute containing the path
 
 '''
 
+    # Create the chatbot.
+    chatbot = A_GIS.Ai.Chatbot.init(
+        model=model,
+        temperature=temperature,
+        num_ctx=num_ctx,
+        num_predict=num_predict,
+        mirostat=mirostat,
+        system=system,
+    )
+
+    # Set up the user query.
     code = A_GIS.Code.replace_docstring(
         code=code, docstring=f"Replace with docstring for {name}"
     )
-    code = A_GIS.Code.Unit.substitute_imports(code=code).code
+    if substitute_imports:
+        code = A_GIS.Code.Unit.substitute_imports(code=code).code
 
     indented_code = A_GIS.Text.add_indent(text=code)
-    user = f"## Code\n    {indented_code}\n"
+    user = f"Code:\n\n{indented_code}\n\n"
 
-    # Set up the messages with system and user content. Assistant content does
-    # not seem to work so well.
-    messages = [
-        {
-            "role": "system",
-            "content": system,
-        },
-        {
-            "role": "user",
-            "content": user,
-        },
-    ]
-
-    # Retrieve the response.
-    response = ollama.chat(
-        model=model,
-        messages=messages,
-        options=ollama.Options(
-            temperature=temperature,
-            num_ctx=num_ctx,
-            num_predict=num_predict,
-            mirostat=mirostat,
-        ),
-    )
+    # Ask the bot and get the response.
+    response = chatbot.chat(message=user)
     text = response["message"]["content"]
-
-    text = A_GIS.Text.get_after_tag(text=text, tag="## Docstring")
+    text = A_GIS.Text.get_after_tag(text=text, tag="Docstring:")
 
     # Return the content after cleaning the text. We do some extra checks
     # here to make sure we didnt' remove too much and if so we return the
@@ -177,9 +192,7 @@ If the return value is a dataclass, write the Returns block like this example.
 
     # Three fix-up operations.
     docstring = A_GIS.Code.Docstring.init(text=text, reference_code=code)
-    docstring = A_GIS.Code.Docstring.fix_short_description(
-        docstring=docstring, model=model
-    )
+    docstring = A_GIS.Code.Docstring.fix_short_description(docstring=docstring)
     if reformat:
         docstring = A_GIS.Code.Docstring.reformat(docstring=docstring)
 

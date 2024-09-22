@@ -9,6 +9,7 @@ def get_info(*, model: str):
     has_tools = None
     available_models = A_GIS.Ai.Chatbot.list_models()
     available = model in available_models
+    output_tag = None
 
     if available:
         try:
@@ -30,4 +31,5 @@ def get_info(*, model: str):
         context_length=context_length,
         has_tools=has_tools,
         available_models=available_models,
+        output_tag=output_tag,
     )

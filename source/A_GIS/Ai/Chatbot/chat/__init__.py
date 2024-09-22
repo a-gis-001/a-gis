@@ -1,5 +1,9 @@
 def chat(
-    *, chatbot: type["A_GIS.Ai.Chatbot._Chatbot"], message: str, **kwargs
+    *,
+    chatbot: type["A_GIS.Ai.Chatbot._Chatbot"],
+    message: str,
+    keep_state: bool = False,
+    **kwargs,
 ):
     """Function to return a chatbot response to a message
 
@@ -21,5 +25,6 @@ def chat(
     return chatbot._send_chat(
         model=chatbot.model,
         messages=messages,
+        keep_state=keep_state,
         **chatbot.get_kwargs(**kwargs),
     )

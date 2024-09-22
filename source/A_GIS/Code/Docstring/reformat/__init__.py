@@ -45,18 +45,21 @@ def reformat(
 
     # Reformat the long description text using Text.reformat
     docstring.long_description = A_GIS.Text.reformat(
-        text=docstring.long_description, width=width
+        text=docstring.long_description, width=width - 4
     )
 
-    # Wrap and indent parameter descriptions using Text.reformat.
+    def rewrap_description(d):
+        return A_GIS.Text.reformat(text=d, width=width - 12)
+
+    # Wrap and indent parameter descriptions.
     for i in range(len(docstring.params)):
-        d = docstring.params[i].description
-        indent = A_GIS.Text.get_indent(line=d)
-        docstring.params[i].description = textwrap.fill(
-            d,
-            width=width - indent,
-            initial_indent=" " * indent,
-            subsequent_indent=" " * indent,
+        docstring.params[i].description = rewrap_description(
+            docstring.params[i].description
         )
+
+    # Wrap and indent return description.
+    docstring.returns.description = rewrap_description(
+        docstring.returns.description
+    )
 
     return docstring

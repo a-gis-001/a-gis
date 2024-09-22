@@ -1,36 +1,36 @@
 import pathlib
 
 def read_to_text(*, path: pathlib.Path | str, beginchar=0, endchar=-1):
-    """Read text from a given path, extracts a substring if specified, and returns the content as a structured dataclass object with path details.
+    """Read text content from a file or URL, optionally extracting a specified character range, and returns as a dataclass instance with text,.
 
-    A function that reads text from a given path and returns it as a
-    structured dataclass object.
+    A function that reads text content from a given file or URL and returns
+    it as a string with optional character range extraction. It also
+    determines whether the input is a file path or a URL and handles each
+    accordingly.
 
-    This function first determines whether the `path` provided is a URL or a
-    local file path using the helper function `is_url`. It then reads the
-    text content from the specified path, optionally extracting a substring
-    between `beginchar` and `endchar`. The extracted text, along with the
-    original path and the indices specifying the substring range, are
-    encapsulated in a dataclass instance.
+    The function utilizes a nested `make_struct` function to create a
+    dataclass instance dynamically, which allows for flexible handling of
+    the returned data structure. Additionally, it uses an `is_url` helper
+    function to check if the input is a recognized URL.
 
     Args:
-        - path (pathlib.Path | str):
-            The file path or URL from which to read the text content. If a string,
-            it can be either a path or a URL.
-        - beginchar (int, optional):
-            The starting index of the substring to be extracted from the text
-            content. Defaults to 0.
-        - endchar (int, optional):
-            The ending index of the substring to be extracted from the text content.
-            Defaults to -1, which means the entire text is used.
+        path (pathlib.Path | str):
+            The file path or URL from which the text content should be read.
+        beginchar (int, optional):
+            The starting index of the character range in the text content to be
+            extracted. Defaults to 0.
+        endchar (int, optional):
+            The ending index of the character range in the text content to be
+            extracted. Defaults to -1, which indicates no character range and means
+            the entire text will be used.
 
     Returns:
         dataclass:
-            A 'Result' dataclass instance with the following attributes:
-            - text (str): The extracted substring of the text content.
-            - path (str): The resolved file path as a string.
-            - beginchar (int): The starting index of the extracted substring within the text content.
-            - endchar (int): The ending index of the extracted substring within the text content.
+            An instance of the 'Result' dataclass with the following attributes:
+            - text (str): The extracted substring from the read content, starting at `beginchar` and ending at `endchar`.
+            - path (str): The resolved file path or URL from which the text was read.
+            - beginchar (int): The starting index of the character range that was extracted.
+            - endchar (int): The ending index of the character range that was extracted.
     """
     import unstructured.partition.auto
     import A_GIS.File.is_url
