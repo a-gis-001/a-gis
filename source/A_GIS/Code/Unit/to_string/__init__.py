@@ -14,9 +14,6 @@ def to_string(
         unit (type["A_GIS.Code.Unit._Unit"]): An instance of `A_GIS.Code.Unit._Unit` that represents a code unit.
         start_index (int, optional): The starting number for line numbers. Default is 0.
 
-    Raises:
-        None
-
     Returns:
         str: A string representation of the code unit with line numbers and special markers.
     """

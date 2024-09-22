@@ -5,7 +5,7 @@ def generate(
     *,
     name: str,
     code: str,
-    model="wizardlm2:7b",
+    model="deepseek-coder:33b",
     temperature=0.5,
     num_ctx=10000,
     num_predict=2000,
@@ -67,6 +67,8 @@ following the Google docstring rules. Include the following elements.
     2. Describe the capability in more detail including requirements.
     3. Arguments with full type specifications.
     4. The return value and type.
+    5. If the return value is a dataclass "struct", describe each of
+       the member attributes.
 
 REPLY WITH ONLY THE DOCSTRING, WITHOUT TRIPLE QUOTES OR BACKTICKS!
 
@@ -121,17 +123,22 @@ Here is an example.
         TempDir:
             An instance of the TempDir class representing the created directory.
 
+If the return value is a dataclass, write the Returns block like this example.
+
+    Returns:
+        dataclass: with the following attributes
+            - text (str): A string representing the partitioned text content.
+            - path (str): The file path or URL from which the text was read.
+
 '''
 
     code = A_GIS.Code.replace_docstring(
         code=code, docstring=f"Replace with docstring for {name}"
     )
+    code = A_GIS.Code.Unit.substitute_imports(code=code).code
+
     indented_code = A_GIS.Text.add_indent(text=code)
     user = f"## Code\n    {indented_code}\n"
-
-    import logging
-
-    logging.info("raw_input={user}")
 
     # Set up the messages with system and user content. Assistant content does
     # not seem to work so well.
@@ -158,7 +165,6 @@ Here is an example.
         ),
     )
     text = response["message"]["content"]
-    logging.info(f"raw_output={text}")
 
     text = A_GIS.Text.get_after_tag(text=text, tag="## Docstring")
 

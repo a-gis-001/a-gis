@@ -1,22 +1,22 @@
 import pathlib
 
 def read_to_text(*, path: pathlib.Path | str):
-    """Read a file or URL, partitions content, and returns formatted plain text with double newlines separating sections.
+    """Read text from a file or URL, partitions it, and structures the content into logical sections.
 
-    This function reads the contents of a given file path or URL and returns
-    it as a plain text string, formatted with double newlines between
-    sections for readability. It leverages the `unstructured.partition.auto`
-    utility to automatically partition the content into sections based on
-    the provided key (filename or url).
+    This function takes a file path or URL as input and uses the
+    `unstructured.partition.auto` module to partition the text into logical
+    sections. It then converts these sections into a dataclass instance
+    named 'Result'. If the input is recognized as a URL, it will handle the
+    retrieval of the text from the URL internally.
 
     Args:
-        path (type["pathlib.Path"] | str):
-            The file system path to a local file or a URL from which to read the
-            content.
+        path (pathlib.Path | str):
+            The file path or URL from which to read the text.
 
     Returns:
-        str:
-            A string containing the plain text content of the file or the content retrieved from the URL, with double newlines between sections for visual separation. If no content is found, an empty string is returned.
+        dataclass: with the following attributes
+            - text (str): A string representing the partitioned text content.
+            - path (str): The file path or URL from which the text was read.
     """
     import unstructured.partition.auto
     import A_GIS.File.is_url
@@ -28,5 +28,5 @@ def read_to_text(*, path: pathlib.Path | str):
         key = "filename"
 
     elements = unstructured.partition.auto.partition(**{key: str(path)})
-
-    return A_GIS.Code.make_struct(text="\n\n".join(map(str, elements)))
+    text = "\n\n".join(map(str, elements))
+    return A_GIS.Code.make_struct(text=text, path=str(path))
