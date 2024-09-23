@@ -24,8 +24,8 @@ def main():
     docstring = A_GIS.Code.Docstring.generate(name=name, code=code)
     print("docstring:\n", docstring)
 
-    #code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
-    #A_GIS.File.write(content=code, file=path)
+    code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
+    A_GIS.File.write(content=code, file=path)
 
 
 if __name__ == "__main__":

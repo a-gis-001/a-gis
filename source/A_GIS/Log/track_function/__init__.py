@@ -12,8 +12,6 @@ def track_function(func):
         callable: A wrapper function that logs the input and output of the
                   decorated function.
 
-    Raises:
-        None
     """
 
     import functools
@@ -41,9 +39,14 @@ def track_function(func):
 
         # Call the function.
         result = func(*args, **kwargs, __tracking_hash=tracking_hash)
+        # Convert the result to a dictionary if needed.
+        if hasattr(result, "__dict__"):
+            output = result.__dict__
+        else:
+            output = result
 
         # Log the output for returning result.
-        A_GIS.Log.append(tracking_hash_on_exit=tracking_hash, output=result)
+        A_GIS.Log.append(tracking_hash_on_exit=tracking_hash, output=output)
         return result
 
     return __wrapper

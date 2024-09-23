@@ -71,11 +71,11 @@ of the python docstring:
 Do not forget to provide your final response inside <output> tags.
         """
 
-        result = chatbot.chat(message=user, keep_state=True)
+        response = chatbot.chat(message=user, keep_state=True).response
 
         # Get the new suggestion.
         suggestion = A_GIS.Text.get_between_tags(
-            text=result["message"]["content"],
+            text=response["message"]["content"],
             begin_tag="<output>",
             end_tag="</output>",
         )

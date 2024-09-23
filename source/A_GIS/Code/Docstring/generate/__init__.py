@@ -179,7 +179,7 @@ Docstring:
     user = f"Code:\n\n{indented_code}\n\n"
 
     # Ask the bot and get the response.
-    response = chatbot.chat(message=user)
+    response = chatbot.chat(message=user).response
     text = response["message"]["content"]
     text = A_GIS.Text.get_after_tag(text=text, tag="Docstring:")
 

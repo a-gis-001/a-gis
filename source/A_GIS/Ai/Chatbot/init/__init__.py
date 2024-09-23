@@ -1,14 +1,15 @@
 def init(
     *,
     provider: type["A_GIS.Ai.Chatbot._Provider.types_allowed"] = "ollama",
-    model: str = "deepseek-coder",
+    model: str = "deepseek-coder:33b",
     system: str = "You are a helpful assistant.",
     mirostat=2,
     num_predict=5000,
     num_ctx=10000,
     temperature=0.5,
     messages=[],
-    tools=[],
+    tool_names=[],
+    keep_state: bool = False,
 ) -> type["A_GIS.Ai.Chatbot._Chatbot"]:
     """
     Initializes and returns a chatbot model based on the specified provider.
@@ -20,7 +21,7 @@ def init(
         provider (ProviderLiteral): The provider from which to initialize the model. Defaults to 'ollama'.
 
     Returns:
-        A_GIS.Ai.Chatbot.BaseModel: An instance of the chatbot model initialized from the specified provider.
+        A_GIS.Ai.Chatbot._Chatbot: An instance of the chatbot model initialized from the specified provider.
 
     """
     import A_GIS.Ai.Chatbot._Chatbot
@@ -47,4 +48,7 @@ def init(
         temperature=temperature,
         _send_chat=_send_chat,
         messages=messages,
+        tool_names=tool_names,
+        tools=[],
+        keep_state=keep_state,
     )

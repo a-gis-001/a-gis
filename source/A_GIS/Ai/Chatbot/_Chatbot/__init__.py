@@ -13,33 +13,21 @@ class _Chatbot:
     # Options that are set by init.
     provider: str
     system: str
+    keep_state: bool
     _send_chat: "typing.Any"
 
-    # Keep the state.
+    # List of messages.
     messages: list[dict]
 
-    def chat(self, message: str, *, keep_state: bool = False):
-        """Chat that can keep state."""
+    # Names of A_GIS.* functions to use as tools.
+    tool_names: list[str]
+    tools: list[dict]
+
+    def chat(self, *, message: str, **kwargs):
+        """Pass through to A_GIS.Ai.Chatbot.chat."""
         import A_GIS.Ai.Chatbot.chat
 
-        # Call the main chat.
-        if len(self.messages) == 0:
-            self.messages = [{"role": "system", "content": self.system}]
-
-        self.response = A_GIS.Ai.Chatbot.chat(chatbot=self, message=message)
-
-        # Keep the state.
-        if keep_state:
-            self.messages.append({"role": "user", "content": message})
-            self.messages.append(
-                {
-                    "role": "assistant",
-                    "content": self.response["message"]["content"],
-                }
-            )
-
-        # Return full response.
-        return self.response
+        return A_GIS.Ai.Chatbot.chat(chatbot=self, message=message, **kwargs)
 
     def get_kwargs(self, **kwargs):
         """
