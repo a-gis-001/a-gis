@@ -141,7 +141,7 @@ def list(args: bool = True):
     import A_GIS.Code.list
 
     console = rich.console.Console(width=WIDTH)
-    for f in A_GIS.Code.list(filters=["tests"]):
+    for f in A_GIS.Code.list(ignore=["tests"]).result:
         console.print(f)
 
 
