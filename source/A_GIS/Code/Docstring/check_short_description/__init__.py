@@ -1,16 +1,24 @@
 def check_short_description(*, short_description: str):
-    """Check that the short description meets standards
+    """Validate a short description against specific criteria.
 
-    The standards are as follows.
+    This function performs a series of checks to ensure that the
+    provided `short_description` adheres to a set of formatting
+    guidelines for documentation. The guidelines include, but are not
+    limited to, string type, maximum length (64 characters), proper
+    ending with a period, absence of trailing whitespace, capitalization
+    at the beginning of the sentence, and the requirement that it starts
+    with a verb in its simplest form.
 
-    - Is a string.
-    - No more than 64 characters.
-    - Starts with a verb.
-    - Starts with the simplest stem of that verb.
-    - Starts with capitalization.
-    - Ends with a period.
-    - No whitespace at the end.
+    Args:
+        short_description (str):
+            A string representing the text to be validated.
 
+    Returns:
+        list[str]:
+            A list of error messages if the `short_description` fails
+            any of the checks. If all checks pass, the function returns
+            an empty list indicating that the `short_description` is
+            valid.
     """
     import A_GIS.Text.get_root_word
     import A_GIS.Text.starts_with_verb
