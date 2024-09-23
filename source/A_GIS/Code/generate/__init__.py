@@ -19,8 +19,7 @@ An A_GIS functional unit is just a function, by itself in a file, with the follo
 4. Each function should be short, 10 lines or less. The function body can define nested functions
    which do not count towards the 10 line limit.
 5. Imports must be absolute without renames, e.g. `import matplotlib.pyplot` and NOT
-   `import matplotlib.pyplot as plt` or `import matplotlib.pyplot
-`.
+   `import matplotlib.pyplot as plt` or `import matplotlib.pyplot`.
 
 You are the primary code developer for a new A_GIS functional unit and will
 create a short concise functional unit, given a request from your manager.
