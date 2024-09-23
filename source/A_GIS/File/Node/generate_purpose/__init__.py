@@ -168,13 +168,13 @@ def generate_purpose(
 
     ## Purpose
 
-    To store documents related to William Wieselquist's professional
+    To store documents related to John Doe's professional
     profile, career development, and research activities.
 
     ## Key Contents
 
-    - `waw_cv-2024.docx`: latest CV
-    - `waw_cv-2024.pdf`: PDF version of his CV
+    - `jfd_cv-2024.docx`: latest CV
+    - `jfd_cv-2024.pdf`: PDF version of his CV
     - `works.bib`: bibliography file of research publications
 
     Be concise like the example! Instead of "contains his latest CV with work experience"

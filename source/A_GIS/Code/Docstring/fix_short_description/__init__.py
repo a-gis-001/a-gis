@@ -2,23 +2,36 @@ def fix_short_description(
     *,
     docstring: type["A_GIS.Code.Docstring._Docstring"],
     model: str = "reflection",
-    max_iterations: int = 10,
+    max_iterations: int = 6,
 ) -> str:
-    """Improve function's short description using AI, if needed.
+    """Edit docstring short descriptions for conformity.
 
-    This function fixes the short description of a function's docstring
-    using AI-generated suggestions. It checks the existing short
-    description for any issues and suggests corrections through an AI
-    model. The AI model is only engaged when issues are identified or
-    when `force_ai` is set to True.
+    This function iteratively interacts with an AI chatbot to refine the
+    'short description' field within a given docstring until it meets
+    specified criteria or reaches the maximum number of attempts. The
+    function takes into account the current state of the short
+    description, identifies any issues, and uses the chatbot to generate
+    a new suggestion that is concise, accurate, and properly formatted.
 
     Args:
         docstring (A_GIS.Code.Docstring._Docstring):
-            The docstring object of the function.
+            An object representing the docstring to be edited. It must
+            have attributes for `short_description`, `reference_code`,
+            and potentially other information used during the refinement
+            process.
+        model (str, optional):
+            The AI model to use for generating the short description
+            suggestion. Defaults to "reflection".
+        max_iterations (int, optional):
+            The maximum number of iterations the function will attempt
+            to improve the short description before returning the
+            current best version. Defaults to 6.
 
     Returns:
-        str:
-            The updated docstring with a new or improved short description.
+        A_GIS.Code.Docstring._Docstring:
+            An updated instance of `_Docstring` with a potentially
+            improved `short_description` field based on the AI's
+            suggestions and the specified criteria.
     """
 
     import A_GIS.Code.Docstring.check_short_description
@@ -29,9 +42,9 @@ def fix_short_description(
     import A_GIS.Text.split_first_sentence
 
     # Turn the reference code into a directive.
-    reference = ""
+    reference_code = ""
     if docstring.reference_code:
-        reference = f"For reference, the code we are documenting is:\n{docstring.reference_code}"
+        reference_code = docstring.reference_code
 
     # Initialize and engage the chatbot for the short description suggestion.
     chatbot = A_GIS.Ai.Chatbot.init(
@@ -40,6 +53,14 @@ def fix_short_description(
         num_ctx=5000,
         num_predict=30,
         mirostat=2,
+        system="""
+You are an AI summarization bot that creates beautiful, concise purpose statements.
+Your task is to fix a Python docstring "short description", which is the first sentence
+of the description which is short (~50 characters) and appears as an annotation in
+many documentation resources. You will be given the current short description, the
+problems, and the entire docstring and function for reference. You can think and reflect
+but your new sentence should be the only thing between <output> </output> tags.
+""",
     )
 
     for iteration in range(1, max_iterations + 1):
@@ -50,23 +71,23 @@ def fix_short_description(
         if len(errors) == 0:
             return docstring
 
-        problems = ""
-        problems = (
-            "Attempt {iteration}/{max_iterations}. Fix these problems :\n"
-        )
-        problems += "\n".join(["    - " + x for x in errors])
+        problems = "\n".join(["    - " + x for x in errors])
 
         # Create user prompt.
         user = f"""
-Replace the current short description:
+The current short description:
 {docstring.short_description}
 
-of the python docstring:
+Has these problems:
+{problems}
+
+The reference code is:
+{reference_code}
+
+The full docstring is:
 {docstring}
 
-{reference}
-
-{problems}
+This is your {iteration}/{max_iterations} attempt.
 
 Do not forget to provide your final response inside <output> tags.
         """
@@ -103,5 +124,4 @@ Do not forget to provide your final response inside <output> tags.
         # Update the docstring only if it meets requirements.
         docstring.short_description = suggestion
 
-    # Return docstring.
     return docstring

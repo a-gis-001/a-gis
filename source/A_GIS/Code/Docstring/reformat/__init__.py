@@ -58,8 +58,9 @@ def reformat(
         )
 
     # Wrap and indent return description.
-    docstring.returns.description = rewrap_description(
-        docstring.returns.description
-    )
+    if docstring.returns:
+        docstring.returns.description = rewrap_description(
+            docstring.returns.description
+        )
 
     return docstring

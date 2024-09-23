@@ -1,4 +1,42 @@
 def get_schema(*, func_path: str):
+    """Generate a function's schema from its docstring and type hints.
+
+    This function analyzes a given function's documentation and type
+    hints to create a structured schema object. The schema includes the
+    function's name, description, and parameter information with types
+    and descriptions. It is useful for understanding how to call the
+    function and what parameters it expects.
+
+    Args:
+        func_path (str):
+            The path or identifier of the function for which the schema
+            should be generated.
+
+    Returns:
+        dict:
+            A dictionary representing the schema of the function. The
+            schema includes:
+
+            - "type": A string indicating that the schema represents a
+              function.
+            - "function": An object containing:
+                - "name": The name of the function as specified by
+                  `func_path`.
+                - "description": A combined description of the
+                  function, formatted with a short and long
+                  description from the function's docstring.
+                - "parameters": An object representing the
+                  parameters of the function. This includes:
+                    - "type": A string indicating the type of
+                      the parameter (e.g., "string",
+                      "integer", "number", "boolean",
+                      "array").
+                    - "description": A string describing the
+                      purpose and usage of the parameter.
+                - "required": An array of parameter names that do
+                  not have default values, meaning they are
+                  required for function invocation.
+    """
     import inspect
     import typing
     import A_GIS.Code.Docstring.init
