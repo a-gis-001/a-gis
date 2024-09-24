@@ -296,7 +296,7 @@ def distill(name: "unit name" = ""):
     """Distill a piece of code into its basic form"""
 
     if name == "":
-        names = A_GIS.Code.list(filters=["__main", "tests"])
+        names = A_GIS.Code.list(ignore=["__main", "tests"]).result.keys()
     else:
         names = [name]
 
