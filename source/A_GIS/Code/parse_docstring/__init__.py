@@ -47,12 +47,14 @@ def parse_docstring(
     tree = ast.parse(code)
 
     # Get the docstring of the first module-level entity
-    docstring = None
-    for x in tree.body:
-        try:
-            docstring = ast.get_docstring(x, clean=clean)
-        except BaseException:
-            pass
+    docstring = ast.get_docstring(tree)
+    if not docstring:
+        for x in tree.body:
+            try:
+                docstring = ast.get_docstring(x, clean=clean)
+                break
+            except BaseException:
+                pass
 
     if docstring is not None and only_description:
         docstring = docstring.lstrip().split("\n")[0]

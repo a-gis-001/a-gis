@@ -1,3 +1,5 @@
+"""A_GIS package root.
+"""
 # Functions
 from .catalog import catalog
 from .resolve_function import resolve_function

@@ -1,3 +1,5 @@
+"""Math utility functions.
+"""
 # Functions
 from .calculate_angle_between_vectors import calculate_angle_between_vectors
 

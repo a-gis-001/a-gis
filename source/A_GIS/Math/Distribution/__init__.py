@@ -1,3 +1,5 @@
+"""Manage probability distributions.
+"""
 # Functions
 from .init import init
 from .plot import plot

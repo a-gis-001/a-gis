@@ -1,3 +1,5 @@
+"""Global logging.
+"""
 # Functions
 from .append import append
 from .get_sublogger import get_sublogger

@@ -1,3 +1,5 @@
+"""Collection of file operations.
+"""
 # Functions
 from ._read_to_text_docx import _read_to_text_docx
 from ._read_to_text_pdf import _read_to_text_pdf

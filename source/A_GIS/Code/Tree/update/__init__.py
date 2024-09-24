@@ -1,6 +1,36 @@
 def update(*, tree: dict):
-    """Update the package files throughout the files listed in the tree to have
-    the correct format and content."""
+    """Update a tree structure, optionally generating package imports.
+
+    This function recursively processes a dictionary representing a tree
+    structure that defines Python package contents. It updates the tree
+    by calling itself on each nested item within the tree. If the top-
+    level tree contains a `_type` key with the value `"package"`, the
+    function will collect import statements for all functions, classes,
+    and sub-packages within the package. These import statements are
+    then written to a file specified by the `_file` key in the tree
+    dictionary. If no `_type` or `_file` is present, or if the `_type`
+    is not `"package"`, the function simply recurses through the tree
+    without generating any import statements.
+
+    After processing all nested items, if import statements were
+    collected, they are written to the specified file, optionally re-
+    formatting the code using `A_GIS.Code.reformat`. If no imports are
+    found, the function will write the original content of the file back
+    to the file after re-formatting.
+
+    Args:
+        tree (dict):
+            A dictionary representing the tree structure to be updated.
+            This should contain keys for `"_type"` and `"_file"` when
+            updating a package. The nested dictionaries represent
+            functions, classes, or sub-packages, each potentially
+            containing their own `_type` and `_file`.
+
+    Returns:
+        None:
+            The function updates the tree in place and writes to the
+            file system as needed.
+    """
     import A_GIS.File.write
     import A_GIS.File.read
     import A_GIS.Code.reformat
@@ -23,7 +53,11 @@ def update(*, tree: dict):
         update(tree=tree[name])
 
     if imports:
-        code = ""
+        existing = A_GIS.File.read(file=tree["_file"])
+        docstring = (
+            A_GIS.Code.parse_docstring(code=existing, clean=False) or ""
+        )
+        code = f'"""{docstring}\n"""\n'
         first = True
         for k, v in imports.items():
             if len(v) > 0:

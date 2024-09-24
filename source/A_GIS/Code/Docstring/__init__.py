@@ -1,3 +1,5 @@
+"""
+"""
 # Functions
 from .check_short_description import check_short_description
 from .clean import clean

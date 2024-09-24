@@ -1,3 +1,5 @@
+"""Wraps AI chatbots into a few key interfaces.
+"""
 # Functions
 from ._send_chat_groq import _send_chat_groq
 from ._send_chat_ollama import _send_chat_ollama

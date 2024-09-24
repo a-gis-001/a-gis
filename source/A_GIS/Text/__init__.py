@@ -1,3 +1,5 @@
+"""Text utility functions.
+"""
 # Functions
 from .add_indent import add_indent
 from .apply_patch import apply_patch

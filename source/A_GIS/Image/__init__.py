@@ -1,3 +1,5 @@
+"""Manage and manipulate images.
+"""
 # Functions
 from .glob import glob
 from .new import new
