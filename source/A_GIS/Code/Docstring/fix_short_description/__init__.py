@@ -92,7 +92,7 @@ This is your {iteration}/{max_iterations} attempt.
 Do not forget to provide your final response inside <output> tags.
         """
 
-        response = chatbot.chat(message=user, keep_state=True).response
+        response = chatbot.chat(message=user).response
 
         # Get the new suggestion.
         suggestion = A_GIS.Text.get_between_tags(

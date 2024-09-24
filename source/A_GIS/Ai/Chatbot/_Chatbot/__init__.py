@@ -3,6 +3,8 @@ import typing
 
 @dataclasses.dataclass
 class _Chatbot:
+    """Manage state for a chatbot."""
+
     # Options that could be overwritten in the chat.
     model: str
     mirostat: float
@@ -13,7 +15,6 @@ class _Chatbot:
     # Options that are set by init.
     provider: str
     system: str
-    keep_state: bool
     _send_chat: "typing.Any"
 
     # List of messages.
@@ -23,23 +24,36 @@ class _Chatbot:
     tool_names: list[str]
     tools: list[dict]
 
-    def chat(self, *, message: str, **kwargs):
-        """Pass through to A_GIS.Ai.Chatbot.chat."""
-        import A_GIS.Ai.Chatbot.chat
+    def __post_init__(self):
+        """Initialize tools and messages."""
+        import A_GIS.Code.get_schema
 
-        return A_GIS.Ai.Chatbot.chat(chatbot=self, message=message, **kwargs)
+        # Add the system message.
+        if len(self.messages) == 0 and self.system != "":
+            self.messages = [{"role": "system", "content": self.system}]
 
-    def get_kwargs(self, **kwargs):
-        """
-        Updates the input kwargs with default values from this _Chatbot instance
-        for any option not specified in the input.
+        # Expand the tools.
+        if len(self.tools) == 0:
+            for tool_name in self.tool_names:
+                self.tools.append(A_GIS.Code.get_schema(func_path=tool_name))
 
-        Args:
-            **kwargs: Arbitrary keyword arguments.
+    def chat(
+        self,
+        *,
+        message: str,
+        **kwargs,
+    ):
+        """Forwards to send chat."""
+        self.messages.append({"role": "user", "content": message})
+        return self._send_chat(
+            model=self.model,
+            messages=self.messages,
+            tools=self.tools,
+            **self._get_kwargs(**kwargs),
+        )
 
-        Returns:
-            dict: Updated keyword arguments with defaults from this instance.
-        """
+    def _get_kwargs(self, **kwargs):
+        """Forwards args."""
 
         # List of all options that can have default values from the instance.
         options = ["mirostat", "num_predict", "num_ctx", "temperature"]

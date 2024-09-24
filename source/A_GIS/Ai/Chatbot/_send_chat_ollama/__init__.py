@@ -9,6 +9,7 @@ def _send_chat_ollama(
     __tracking_hash=None,
     **kwargs,
 ):
+    """Send chatbot chat request through ollama."""
     import ollama
     import json
     import A_GIS.resolve_function

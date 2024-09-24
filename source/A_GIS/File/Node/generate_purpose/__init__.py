@@ -228,8 +228,8 @@ Please assign a purpose to the '{str(top_dir)}' directory.
     """
 
     for iteration in range(max_iterations):
-        result = chatbot.chat(message, keep_state=True)
-        requests = handle_requests(chatbot, result["message"]["content"])
+        response = chatbot.chat(message=message).response
+        requests = handle_requests(chatbot, response["message"]["content"])
         if requests == "":
             # No more requests mean the final purpose has been declared.
             break
