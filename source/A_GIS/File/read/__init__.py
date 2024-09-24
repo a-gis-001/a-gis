@@ -1,23 +1,25 @@
 def read(*, file: type["pathlib.Path"], binary: bool = False):
-    """Reads the content of a file
+    """Read a file's contents as text or binary data.
 
-    The function opens and reads the content from the specified file path.
-    It can read text or binary files based on the `binary` flag. If `binary`
-    is True, the file is opened in binary mode (i.e., 'rb'). Otherwise, it's
-    opened in text mode (i.e., 'r').
+    This function opens and reads the contents of a specified file in
+    either text (default) or binary mode based on the `binary` flag. It
+    is important to specify the correct mode to handle files with
+    special encoding or files that contain binary data.
 
     Args:
-        file (pathlib.Path): The path to the file that should be read.
-        binary (bool, optional): If True, the file is read in binary mode.
-                                 Defaults to False.
-
-    Raises:
-        FileNotFoundError: If the specified `file` does not exist.
-        IOError: If there's an issue opening or reading from the file.
+        file (pathlib.Path, optional):
+            The path to the file to be read. If None, a default file
+            path should be used.
+        binary (bool, optional):
+            A flag indicating whether to open the file in binary mode
+            ('rb', 'wb') or text mode ('r', 'w'). Defaults to False for
+            text mode.
 
     Returns:
-        str | bytes: The content of the file as a string (if `binary` is False) or
-                     bytes object (if `binary` is True).
+        str or bytes:
+            The contents of the file read into memory. If
+            `binary` is True, the content will be returned as bytes;
+            otherwise, it will be returned as a string.
     """
 
     mode = "r"

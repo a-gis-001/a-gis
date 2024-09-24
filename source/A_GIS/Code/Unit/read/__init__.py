@@ -18,7 +18,7 @@ def read(*, name: str):
     Args:
         name (str):
             The identifier for the code unit whose associated file content is to be
-            read.
+            read. For example, this file has unit name='A_GIS.Code.Unit.read'.
 
     Returns:
         dataclass:
