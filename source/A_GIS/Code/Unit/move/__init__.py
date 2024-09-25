@@ -3,13 +3,33 @@ def move(
     old: str,
     new: str,
 ):
-    """Move and rename an A_GIS code functional unit
+    """Move a unit within the A_GIS project structure.
 
-    This function requires the input old and new to be valid full
-    names, e.g. A_GIS.X.Y.z.
+    This function moves a specified unit from its current location to a
+    new location, updating all references to the unit in the process. It
+    ensures that the unit's codebase reflects its new name and location
+    across the entire project hierarchy.
 
-    The old one must exist.
+    Args:
+        old (str):
+            The original name of the unit (file or package) to be moved.
+        new (str):
+            The new name for the unit after it has been moved. This
+            should follow the naming conventions expected within the
+            A_GIS project.
 
+    Returns:
+        tuple[pathlib.Path, pathlib.Path]:
+            A tuple containing the original path of the unit before it
+            was moved and the new path where the unit has been
+            successfully moved to.
+
+    Raises:
+        ValueError:
+            If the new path already exists, if the new name does not
+            conform to the expected naming conventions, or if there are
+            any issues with the file paths or package structures during
+            the move operation.
     """
     import pathlib
     import shutil
@@ -18,12 +38,6 @@ def move(
     import A_GIS.Code.Unit.Name.check
     import A_GIS.Code.Tree.update_path_to_package
     import A_GIS.File.find_and_replace
-
-    # Check the input.
-    if not A_GIS.Code.Unit.Name.check(name=new):
-        raise ValueError(
-            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name be a proper functional unit name."
-        )
 
     # Get the necessary variables.
     old_path = A_GIS.Code.Unit.Name.to_path(name=old)
@@ -35,6 +49,14 @@ def move(
     new_path = A_GIS.Code.Unit.Name.to_path(name=new, check_exists=False)
     if new_path.exists():
         raise ValueError("Cannot move {old} to existing path {new_path}")
+
+    # Check the input.
+    unit_type = A_GIS.Code.guess_type(file=old_file)
+    check = A_GIS.Code.Unit.Name.check(name=new, unit_type=unit_type)
+    if not check.result:
+        raise ValueError(
+            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name should be a proper {unit_type} name (fixed_name={check.fixed_name})."
+        )
 
     # Replace in original old file.
     A_GIS.File.find_and_replace(

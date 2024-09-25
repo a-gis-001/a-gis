@@ -24,14 +24,15 @@ def is_package(*, code: str, filename: str = ""):
 
     import A_GIS.Code.distill
 
-    # True if file is named __init__.py
-    if filename == "__init__.py":
-        return True
+    # False if file is not named __init__.py
+    result = True
+    if filename != "__init__.py":
+        result = False
+    else:
+        # False if file has class or def at top level.
+        code0 = A_GIS.Code.distill(code=code)
+        for line in code0.split("\n"):
+            if line.startswith("class") or line.startswith("def"):
+                result = False
 
-    # True if file primarily contains imports
-    code0 = A_GIS.Code.distill(code=code)
-    for line in code0.split("\n"):
-        if not line.startswith("from"):
-            return False
-
-    return True
+    return result

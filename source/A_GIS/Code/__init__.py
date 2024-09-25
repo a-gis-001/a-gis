@@ -1,4 +1,4 @@
-"""
+"""Generic functions whose key input/output is a code string.
 """
 # Functions
 from ._distill_imports import _distill_imports

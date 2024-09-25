@@ -110,12 +110,13 @@ The guidelines for the docstring are:
     1. Use Google-style Python Docstrings.
     2. Include a short description sentence of less than 64 characters
        on a line by itself.
-    3. Describe the capability in more detail, including requirements,
-       in the long description.
-    4. Should have an "Args" and "Returns" sections.
-    5. Args and Returns should both have types.
-    6. Do not include a "Raises" section!
-    7. If the return value is created by A_GIS.Code.make_struct, put the type as
+    3. Then describe the capability in more detail for the long description.
+       The long description is one or more paragraphs, including requirements.
+       Do not describe the detailed argument types or return types here because
+       you will describe that in the "Args" and "Returns" sections.
+    4. Finish the docstring with an "Args", "Returns", and "Raises" sections.
+    5. "Args" and "Returns" should both have types.
+    6. If the return value is created by A_GIS.Code.make_struct, put the type as
        `dataclass` and describe each of the arguments as attributes of the struct.
 
 If a return value uses `A_GIS.Code.make_struct` then the function named arguments

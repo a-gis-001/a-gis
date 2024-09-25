@@ -1,23 +1,40 @@
 def guess_type(
     *, file: type["pathlib.Path"] = None, code: str = "", filename: str = ""
 ):
-    """Guesses the type of a given code snippet or file based on its content.
+    """Determine the type of a given file based on its content.
 
-    This function uses other helper functions to determine the type of a given
-    code snippet or file. It first checks if the code is a package, then it
-    checks for a class, function, program, and finally returns 'unknown' if no
-    matching type could be found.
+    This function attempts to determine the type of a file by analyzing
+    its content and filename. It can identify whether the file is a
+    package, class, function, or program. If no file is provided, it
+    will prompt the user for input from the console. The type of the
+    file is returned as a string.
 
     Args:
-        file (pathlib.Path, optional): The path to the Python file to analyze. If provided, the file will be read and its content will be used instead of the 'code' argument.
-        code (str, optional): A string containing the Python code to analyze. This is only used if 'file' is not provided.
-        filename (str, optional): The name of the file being analyzed. This is only used in conjunction with the 'code' argument.
-
-    Raises:
-        None
+        file (pathlib.Path, optional):
+            A pathlib.Path object representing the file to be analyzed.
+            If None, the function will attempt to open and read from the
+            user's input from the console.
+        code (str, optional):
+            The content of the file as a string. Defaults to an empty
+            string. This parameter is primarily for internal use when a
+            file object is not provided.
+        filename (str, optional):
+            The name of the file to be analyzed. Defaults to an empty
+            string. This parameter is primarily for internal use when a
+            file object is not provided.
 
     Returns:
-        str: A string representing the type of the code or file. Possible return values are 'package', 'class', 'function', 'program', and 'unknown'.
+        str:
+            A string indicating the type of the file content. It can be
+            one of the following:
+
+            - "package" if the file appears to be a Python package.
+            - "class" if the file contains a class definition.
+            - "function" if the file contains a function definition.
+            - "program" if the file is a script or executable code
+              with a filename.
+            - "unknown" if the file does not match any of the above
+              criteria.
     """
 
     import A_GIS.Code.is_class
