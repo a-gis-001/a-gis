@@ -66,7 +66,9 @@ def fix(*, name: str, unit_type: str = "function"):
         import A_GIS.Text.starts_with_verb
 
         part = part.lower()
-        if not A_GIS.Text.starts_with_verb(text=part.replace("_", " ")).result:
+        if not A_GIS.Text.starts_with_verb(
+            sentence=part.replace("_", " ")
+        ).result:
             if part.startswith("_"):
                 part = "_get" + part
             else:

@@ -1,5 +1,7 @@
 """
 """
 # Functions
+from .classify import classify
 from .generate_purpose import generate_purpose
-from .get_leaf import get_leaf
+from .get_root import get_root
+from .move import move

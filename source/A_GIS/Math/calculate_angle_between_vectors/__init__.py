@@ -17,6 +17,7 @@ def calculate_angle_between_vectors(*, a, b, previous_dir=[], sign=1.0):
     print('angle from x->y->x:',t1+t2)
     """
     import numpy
+    import A_GIS.Code.make_struct
 
     # Convert to numpy arrays
     na = numpy.linalg.norm(a)
@@ -49,4 +50,4 @@ def calculate_angle_between_vectors(*, a, b, previous_dir=[], sign=1.0):
     # Apply the sign to the angle
     signed_angle = angle_degrees * sign
 
-    return signed_angle, c
+    return A_GIS.Code.make_struct(signed_angle=signed_angle, b_minus_a=c)

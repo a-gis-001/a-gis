@@ -1,36 +1,43 @@
 import pathlib
 
 def read_to_text(*, path: pathlib.Path | str, beginchar=None, endchar=None):
-    """Read text content from a file or URL, optionally extracting a specified character range, and returns as a dataclass instance with text,.
+    """Read and partitions file or URL text using unstructured.
 
-    A function that reads text content from a given file or URL and returns
-    it as a string with optional character range extraction. It also
-    determines whether the input is a file path or a URL and handles each
-    accordingly.
-
-    The function utilizes a nested `make_struct` function to create a
-    dataclass instance dynamically, which allows for flexible handling of
-    the returned data structure. Additionally, it uses an `is_url` helper
-    function to check if the input is a recognized URL.
+    This function reads the contents of a file or URL provided by the
+    `path` argument and processes it with the
+    `unstructured.partition.auto` function to extract structured
+    elements. It then returns these elements along with the original
+    path and optional start and end indices for slicing the text
+    content. If the original text content is found to be identical to
+    the processed content, it returns the raw text instead.
 
     Args:
         path (pathlib.Path | str):
-            The file path or URL from which the text content should be read.
+            The file path or URL from which to read the text content.
+            This can be a `pathlib.Path` object or a string.
         beginchar (int, optional):
-            The starting index of the character range in the text content to be
-            extracted. Defaults to 0.
+            The zero-based starting index for slicing the processed text
+            content. If omitted, the entire processed text is returned.
         endchar (int, optional):
-            The ending index of the character range in the text content to be
-            extracted. Defaults to -1, which indicates no character range and means
-            the entire text will be used.
+            The zero-based ending index for slicing the processed text
+            content. If omitted or set to `None`, no end index is
+            applied, and the text will be sliced up to but not including
+            this index.
 
     Returns:
         dataclass:
-            An instance of the 'Result' dataclass with the following attributes:
-            - text (str): The extracted substring from the read content, starting at `beginchar` and ending at `endchar`.
-            - path (str): The resolved file path or URL from which the text was read.
-            - beginchar (int): The starting index of the character range that was extracted.
-            - endchar (int): The ending index of the character range that was extracted.
+            With the following attributes
+
+            - text (str): The extracted and partitioned text content
+              from `0` to `endchar`. If `beginchar` is specified, it
+              will slice from `beginchar` to `endchar`.
+            - path (str): The file path or URL as a string.
+            - beginchar (int | None, optional): The starting index for
+              slicing the text content. It can be either an integer or
+              `None`.
+            - endchar (int | None, optional): The ending index for
+              slicing the text content. It can be either an integer or
+              `None`.
     """
     import unstructured.partition.auto
     import A_GIS.File.is_url

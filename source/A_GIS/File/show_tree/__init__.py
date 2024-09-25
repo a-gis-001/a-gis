@@ -1,33 +1,56 @@
 def show_tree(
-    directory: type["pathlib.Path"],
+    directory: str,
     max_levels: int,
     num_per_dir: int,
     only_extensions: list = None,
     indent_chars: int = 4,
     ignore_dot_files: bool = True,
-    root_dir: type["pathlib.Path"] = None,
+    root_dir: str = None,
 ):
-    """Show a directory tree.
+    """Display a directory tree structure.
+
+    This function generates a textual representation of a directory
+    tree, including files and subdirectories, up to a specified maximum
+    number of levels (`max_levels`). It can optionally filter files by
+    their extensions (`only_extensions`) and ignore dot files (`.`). The
+    output respects the `num_per_dir` limit for the number of items
+    displayed per directory.
 
     Args:
         directory (pathlib.Path):
-            The root directory to start the tree.
+            The root directory from which to start building the tree.
         max_levels (int):
-            The recursive depth to show.
+            The maximum depth of directories to include in the output.
         num_per_dir (int):
-            The maximum number of entries to show per directory.
+            The maximum number of files or subdirectories displayed per
+            directory level.
         only_extensions (list, optional):
-            List of file extensions to include in the tree.
+            A list of file extensions to filter for display. If None,
+            all files are included.
         indent_chars (int, optional):
-            Number of spaces for indentation. Default is 4.
+            The number of spaces used for indentation in the output tree
+            structure. Defaults to 4.
+        ignore_dot_files (bool, optional):
+            A flag indicating whether to exclude dot files (`.`) from
+            the output. Defaults to True.
+        root_dir (pathlib.Path, optional):
+            The reference directory against which relative paths are
+            computed. If None, the provided `directory` is used as the
+            root.
 
     Returns:
         str:
-            A string representation of the directory tree.
+            A string representation of the directory tree, formatted
+            with indentation to show hierarchy and supplementary
+            information about shown and total files and extensions,
+            along with the number of shown subdirectories and the total
+            number of subdirectories within the specified depth.
     """
 
     import pathlib
+    import A_GIS.Code.make_struct
 
+    directory = pathlib.Path(directory)
     if root_dir and directory.relative_to(root_dir):
         top_dir = directory.relative_to(root_dir)
     else:
@@ -124,4 +147,6 @@ def show_tree(
     if not directory.is_dir():
         raise ValueError(f"{directory} is not a valid directory")
 
-    return str(top_dir) + "\n" + _show_tree(directory, 1)
+    return A_GIS.Code.make_struct(
+        tree=str(top_dir) + "\n" + _show_tree(directory, 1)
+    )

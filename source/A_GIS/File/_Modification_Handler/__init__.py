@@ -120,11 +120,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
 
             # Get the angle from null embedding.
             if embedding:
-                updates["angle"], _ = (
-                    A_GIS.Math.calculate_angle_between_vectors(
-                        a=self.null_embedding, b=embedding
-                    )
-                )
+                updates["angle"] = A_GIS.Math.calculate_angle_between_vectors(
+                    a=self.null_embedding, b=embedding
+                ).signed_angle
             else:
                 updates["angle"] = 0
 

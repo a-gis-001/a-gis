@@ -16,6 +16,7 @@ def _send_chat_ollama(
     import A_GIS.resolve_function
     import A_GIS.Code.make_struct
     import A_GIS.Ai.Chatbot.get_info
+    import A_GIS.Log.append
 
     # First round chat. If tools would be used, then will go to second round.
     response = ollama.chat(
@@ -25,6 +26,7 @@ def _send_chat_ollama(
         options=ollama.Options(**kwargs),
     )
     messages.append(response["message"])
+    A_GIS.Log.append(response)
 
     # Handle tool interaction.
     if A_GIS.Ai.Chatbot.get_info(model=model).has_tools:
@@ -60,6 +62,7 @@ def _send_chat_ollama(
                 options=ollama.Options(**kwargs),
             )
             messages.append(response["message"])
+            A_GIS.Log.append(response)
 
     # Return a results struct.
     return A_GIS.Code.make_struct(messages=messages, response=response)
