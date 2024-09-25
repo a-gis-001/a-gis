@@ -8,6 +8,7 @@ from .delete import delete
 from .download import download
 from .find_and_replace import find_and_replace
 from .glob import glob
+from .guess_year import guess_year
 from .hash import hash
 from .is_subdirectory import is_subdirectory
 from .is_url import is_url

@@ -1,6 +1,6 @@
 import pathlib
 
-def read_to_text(*, path: pathlib.Path | str, beginchar=None, endchar=None):
+def read_to_text(*, path: str, beginchar=None, endchar=None):
     """Read and partitions file or URL text using unstructured.
 
     This function reads the contents of a file or URL provided by the
@@ -46,9 +46,7 @@ def read_to_text(*, path: pathlib.Path | str, beginchar=None, endchar=None):
 
     # Decide whether we have a URL or a filename to call the unstructured
     # partition function with the right key.
-    if isinstance(path, pathlib.Path):
-        key = "filename"
-    elif A_GIS.File.is_url(name=path):
+    if A_GIS.File.is_url(name=path):
         key = "url"
     else:
         key = "filename"
