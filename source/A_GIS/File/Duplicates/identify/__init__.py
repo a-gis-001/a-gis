@@ -3,19 +3,31 @@ import typing
 def identify(
     *, directory: type["pathlib.Path"], recurse: bool = False
 ) -> typing.Dict[str, typing.List["pathlib.Path"]]:
-    """
-    Identify duplicate files in the specified directory, with an option to recurse through subdirectories.
+    """Find duplicate files within a directory.
 
-    This function computes the SHA-256 hash for each file in the specified directory. Files with the same hash are
-    identified as duplicates. The function returns a dictionary where each key is a file hash, and the value is a list
-    of file paths considered duplicates for that hash.
+    This function scans the specified directory and its subdirectories
+    (if `recurse` is True) to find all files, computes their hashes, and
+    identifies any duplicates. It returns a dictionary where each key is
+    a hash of a file, and the corresponding value is a list of paths to
+    files with that hash.
 
     Args:
-        directory (pathlib.Path): The path to the directory from which to identify duplicates.
-        recurse (bool): Whether to also search through subdirectories. Defaults to False.
+        directory (pathlib.Path):
+            The directory to scan for duplicate files. This is an
+            instance of `pathlib.Path`.
+        recurse (bool, optional):
+            If True, the function will search through all subdirectories
+            within the specified directory. Defaults to False, which
+            means it will only consider files in the specified directory
+            itself.
 
     Returns:
-        Dict[str, List[pathlib.Path]]: A dictionary mapping file hashes to lists of file paths that are duplicates.
+        dict[str, list[pathlib.Path]]:
+            A dictionary where each key is a unique hash of a file found
+            in the directory or its subdirectories. Each value is a list
+            of `pathlib.Path` objects representing all files with that
+            hash. An empty dictionary is returned if no duplicates are
+            found.
     """
     import pathlib
     import A_GIS.File.hash
@@ -30,7 +42,7 @@ def identify(
 
     for file in files:
         if file.is_file():
-            hash = A_GIS.File.hash(file)
+            hash = A_GIS.File.hash(file=file)
             if hash in seen_hashes:
                 if hash not in duplicates:
                     duplicates[hash] = [seen_hashes[hash]]
