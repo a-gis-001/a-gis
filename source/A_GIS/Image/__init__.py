@@ -4,6 +4,7 @@
 from .glob import glob
 from .new import new
 from .open import open
+from .parse_receipt import parse_receipt
 from .validate import validate
 
 # Packages
