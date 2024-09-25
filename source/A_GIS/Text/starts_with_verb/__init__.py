@@ -1,8 +1,35 @@
 def starts_with_verb(*, sentence: str, do_second_pass: bool = True):
-    """Check a sentence starts with a verb
+    """Determine if a sentence starts with a verb.
 
-    Uses natural language processing.
+    This function checks whether the first word or a rephrased version
+    of it in a given sentence is a verb by using the Natural Language
+    Toolkit (nltk) to tokenize the sentence and tag each token with its
+    part of speech (POS). It supports an optional second pass where it
+    attempts to transform the sentence structurally to better identify a
+    verb if the first word is not a verb or a pronoun.
 
+    Args:
+        sentence (str):
+            The sentence to be analyzed for the presence of a verb at
+            the beginning.
+        do_second_pass (bool, optional):
+            A flag indicating whether a second pass analysis should be
+            performed on the sentence. This second pass involves
+            rephrasing the first part of the sentence and checking again
+            for a verb. The default is True.
+
+    Returns:
+        dataclass:
+            With the following attributes
+
+            - result (bool): A boolean indicating whether the first
+              word or its rephrased version is a verb.
+            - pos_tags (list of tuples): A list of tuples containing
+              each token and its corresponding POS tag from the first
+              pass analysis.
+            - pos_tags2 (list of tuples, optional): A list of tuples
+              containing each token and its corresponding POS tag from
+              the second pass analysis if `do_second_pass` is True.
     """
     import nltk
     import A_GIS.Text.get_root_word
