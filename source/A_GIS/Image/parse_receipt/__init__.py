@@ -1,46 +1,42 @@
 def parse_receipt(*, image_file: str):
-    """Parse an image for receipt information.
+    """Parse an image to detect and extract receipt details.
 
-    This function takes a single parameter, `image_file`, which
-    specifies the path to an image file that is suspected to contain a
-    receipt. It uses AI chatbots to interpret the image and extract
-    structured data about the receipt. The function returns a structured
-    result containing information such as whether the image is a
-    receipt, the currency and amount of the transaction, the purpose of
+    This function takes a single parameter `image_file`, which is the
+    path to an image file that potentially represents a receipt. The
+    function uses AI chatbots to interpret the image content and extract
+    information about the receipt, such as whether it is indeed a
+    receipt, the amount and currency of the transaction, the purpose of
     the purchase, and the date of the transaction.
 
-    The function operates in the following steps:
+    The function interacts with three separate AI chatbot instances,
+    each specialized in different aspects of the receipt parsing
+    process:
 
-    1. Initializes a chatbot with a specific AI model to analyze the
-       image content.
-    2. Asks the chatbot to describe the contents of the image.
-    3. If the chatbot identifies the image as a receipt, it proceeds
-       to extract additional information using OCR (Optical Character
-       Recognition) and further interactions with the chatbot.
-    4. Extracts the total amount paid, the purpose of the purchase,
-       and the date of the transaction by querying the chatbot with
-       structured prompts.
-    5. Returns a structured result containing the extracted
-       information as a `dataclass` object.
+    1. The first chatbot (`A_GIS.Ai.Chatbot`) is initialized with a
+       model capable of describing the contents of the image. It
+       generates a description that is used by the subsequent
+       chatbots to perform more specific tasks.
+    2. The second and third chatbots are initialized with models that
+       can understand and process natural language content related to
+       receipts. They are used to extract the 'amount', 'currency',
+       'purpose', and 'date' from the image description.
 
-    Args:
-        image_file (str):
-            The path to the image file that needs to be analyzed for a
-            receipt.
+    The function returns an instance of a dataclass containing
+    structured information about the receipt, if detected. The dataclass
+    includes the following attributes:
+
+    - `result` (dict): A dictionary with keys 'is_receipt',
+      'currency', 'amount', 'purpose', and 'date'. These fields are
+      populated if the image is identified as a receipt.
+    - `image_file` (str): The path to the image file that was parsed.
+    - `image_desc` (str): A textual description of the image provided
+      by the first chatbot.
+    - `image_text` (str, optional): The OCR text extracted from the
+      image if it is identified as a receipt.
 
     Returns:
         dataclass:
-            A structured result object with the following attributes:
-
-            - result (dict): A dictionary containing keys
-              'is_receipt', 'currency', 'amount', 'purpose', and
-              'date'.
-            The values are boolean, str, float or None respectively.
-
-            - image_desc (str): A description of the image provided to
-              the chatbot.
-            - image_text (str, optional): The text extracted from the
-              receipt image by OCR, if applicable.
+            A structured object with attributes as described above.
     """
     import A_GIS.Ai.Chatbot.init
     import A_GIS.Code.make_struct
@@ -98,5 +94,8 @@ def parse_receipt(*, image_file: str):
         result.update(j5)
 
     return A_GIS.Code.make_struct(
-        result=result, image_desc=image_desc, image_text=image_text
+        result=result,
+        image_file=image_file,
+        image_desc=image_desc,
+        image_text=image_text,
     )
