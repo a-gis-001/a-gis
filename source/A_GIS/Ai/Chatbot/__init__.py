@@ -11,4 +11,3 @@ from .list_models import list_models
 
 # Classes
 from ._Chatbot import _Chatbot
-from ._Provider import _Provider

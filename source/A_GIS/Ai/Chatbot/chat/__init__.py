@@ -2,6 +2,7 @@ def chat(
     *,
     chatbot: type["A_GIS.Ai.Chatbot._Chatbot"],
     message: str,
+    images=[],
     **kwargs,
 ):
     """Send a message to start conversation with specified chatbot.
@@ -45,4 +46,4 @@ def chat(
     #   - messages: list of messages at exit
     #   - response: response to chat
     #   - tool_response: response to tool request (or None if no tools)
-    return chatbot.chat(message=message, **kwargs)
+    return chatbot.chat(message=message, images=images, **kwargs)

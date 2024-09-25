@@ -41,10 +41,13 @@ class _Chatbot:
         self,
         *,
         message: str,
+        images=[],
         **kwargs,
     ):
         """Forwards to send chat."""
-        self.messages.append({"role": "user", "content": message})
+        self.messages.append(
+            {"role": "user", "content": message, "images": images}
+        )
         return self._send_chat(
             model=self.model,
             messages=self.messages,

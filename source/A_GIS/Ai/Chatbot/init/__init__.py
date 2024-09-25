@@ -1,6 +1,6 @@
 def init(
     *,
-    provider: type["A_GIS.Ai.Chatbot._Provider.types_allowed"] = "ollama",
+    provider: type["A_GIS.Ai._Provider.types_allowed"] = "ollama",
     model: str = "deepseek-coder:33b",
     system: str = "You are a helpful assistant.",
     mirostat=2,
@@ -22,7 +22,7 @@ def init(
     Args:
         provider (str):
             The name of the chatbot provider to use. Must be one of the
-            values listed in `A_GIS.Ai.Chatbot._Provider.names_allowed`.
+            values listed in `A_GIS.Ai._Provider.names_allowed`.
             Defaults to "ollama".
         model (str):
             The name of the AI model to use for generating responses.
@@ -57,7 +57,7 @@ def init(
     import A_GIS.Ai.Chatbot._Chatbot
 
     # Check name is allowed.
-    names_allowed = A_GIS.Ai.Chatbot._Provider.names_allowed
+    names_allowed = A_GIS.Ai._Provider.names_allowed
     if provider not in names_allowed:
         raise ValueError(
             f"Provider={provider} not recognized! Should be one of: {names_allowed}"
