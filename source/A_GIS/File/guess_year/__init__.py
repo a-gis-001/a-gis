@@ -20,13 +20,18 @@ def guess_year(*, file: str):
               from the file's last modification time.
     """
     import A_GIS.Code.make_struct
+    import A_GIS.Code.guess_name
     import os
     import datetime
 
     # Get the last modification time
-    mod_time = os.path.getmtime(file_path)
+    mod_time = os.path.getmtime(file)
 
     # Convert it to a datetime object
-    mod_datetime = datetime.fromtimestamp(mod_time)
+    mod_datetime = datetime.datetime.fromtimestamp(mod_time)
 
-    return A_GIS.Code.make_struct(text=text, result=str(mod_datetime.year))
+    return A_GIS.Code.make_struct(
+        _caller=A_GIS.Code.guess_name(path=__file__),
+        file=file,
+        year=str(mod_datetime.year),
+    )

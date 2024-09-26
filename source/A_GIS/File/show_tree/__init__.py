@@ -1,50 +1,48 @@
 def show_tree(
     directory: str,
-    max_levels: int,
-    num_per_dir: int,
+    max_levels: int = 2,
+    num_per_dir: int = 10,
     only_extensions: list = None,
     indent_chars: int = 4,
     ignore_dot_files: bool = True,
     root_dir: str = None,
 ):
-    """Display a directory tree structure.
+    """Display the contents of a directory in a tree-like structure.
 
-    This function generates a textual representation of a directory
-    tree, including files and subdirectories, up to a specified maximum
-    number of levels (`max_levels`). It can optionally filter files by
-    their extensions (`only_extensions`) and ignore dot files (`.`). The
-    output respects the `num_per_dir` limit for the number of items
-    displayed per directory.
+    This function generates a textual representation of a directory's
+    contents, showing files and subdirectories up to a specified number
+    of levels deep. It supports filtering by file extensions and can be
+    configured to ignore dotfiles (hidden files starting with a dot).
 
     Args:
-        directory (pathlib.Path):
-            The root directory from which to start building the tree.
+        directory (str):
+            The path to the directory whose contents are to be
+            displayed.
         max_levels (int):
-            The maximum depth of directories to include in the output.
+            The maximum depth of directories to display. Default is 2.
         num_per_dir (int):
-            The maximum number of files or subdirectories displayed per
-            directory level.
-        only_extensions (list, optional):
-            A list of file extensions to filter for display. If None,
-            all files are included.
-        indent_chars (int, optional):
-            The number of spaces used for indentation in the output tree
-            structure. Defaults to 4.
-        ignore_dot_files (bool, optional):
-            A flag indicating whether to exclude dot files (`.`) from
-            the output. Defaults to True.
-        root_dir (pathlib.Path, optional):
-            The reference directory against which relative paths are
-            computed. If None, the provided `directory` is used as the
-            root.
+            The number of files and subdirectories to show for each
+            level. Default is 10.
+        only_extensions (list):
+            A list of file extensions to filter the displayed files by.
+            If None, all files are shown. Default is None.
+        indent_chars (int):
+            The number of spaces to indent subdirectories and files.
+            Default is 4.
+        ignore_dot_files (bool):
+            Whether to exclude dotfiles from the display. Default is
+            True.
+        root_dir (str):
+            The root directory relative to which the specified directory
+            is displayed. If not provided, the specified directory
+            becomes the root. Default is None.
 
     Returns:
-        str:
-            A string representation of the directory tree, formatted
-            with indentation to show hierarchy and supplementary
-            information about shown and total files and extensions,
-            along with the number of shown subdirectories and the total
-            number of subdirectories within the specified depth.
+        dataclass:
+            With the following attributes
+
+            - tree (str): A string representation of the directory
+              tree structure.
     """
 
     import pathlib

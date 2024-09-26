@@ -73,13 +73,18 @@ def generate_purpose(
                 parent=root_dir, sub=abs_file, allow_same=True
             ):
                 result = f"The requested file {file} is not in a subdirectory (.. not allowed)."
-            text = A_GIS.File.read_to_text(path=abs_file).text
-            beginchar = min(max(0, int(beginchar)), len(text) - 1)
-            endchar = min(max(0, int(endchar)), len(text) - 1)
-            if endchar > beginchar:
-                result = text[beginchar:endchar]
+            if abs_file.exists():
+                text = A_GIS.File.read_to_text(path=abs_file).text
+                beginchar = min(max(0, int(beginchar)), len(text) - 1)
+                endchar = min(max(0, int(endchar)), len(text) - 1)
+                if endchar > beginchar:
+                    result = text[beginchar:endchar]
+                else:
+                    result = f"Error: requested beginchar {beginchar} and endchar {endchar} do not make sense."
             else:
-                result = f"Error: requested beginchar {beginchar} and endchar {endchar} do not make sense."
+                result = (
+                    f"Error: the file requested {abs_file} does not exist."
+                )
         else:
             result = f"Error: Invalid request {request} should start with SHOW_TREE or READ_FILE."
 

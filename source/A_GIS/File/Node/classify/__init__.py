@@ -45,6 +45,8 @@ def classify(*, directory: str):
                 result = "branch"
             elif (directory / "_root.node.md").exists():
                 result = "root"
+            elif directory.is_relative_to(root):
+                result = "auxiliary"
 
     return A_GIS.Code.make_struct(
         directory=str(directory), exists=exists, root=root, result=result

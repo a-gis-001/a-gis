@@ -1,81 +1,97 @@
 import A_GIS.Log.track_function
 
 @A_GIS.Log.track_function
-def move(*, file: str, dest: str):
-    """Move a file within STACKS, maintaining naming conventions.
+def move(*, file: str, dest: str, __tracking_hash=None):
+    """Move a file within the STACKS file system.
 
-    This function moves a file to a specified destination path, ensuring
-    that the operation adheres to the STACKs directory naming
-    conventions based on the file's name and extension. It uses the
-    `A_GIS.File.Node` module to classify the file and determine the
-    appropriate subdirectory into which it should be moved. The function
-    also logs the operation using `A_GIS.Log.track_function`.
-
-    The `move` function performs the following steps:
-
-    1. Classifies the file to determine its category (root, leaf, or
-       branch).
-    2. If the file is in a root directory, it prompts the user to
-       select a fitting subdirectory.
-    3. If the file is in a leaf directory, it simply moves the file
-       to the specified destination.
-    4. If the file is on a branch, it creates a new subdirectory
-       within the destination path, named according to the file's
-       date, and moves the file there.
-    5. It generates a purpose for the moved file if no error occurs.
-    6. Returns a structured result indicating whether the operation
-       was successful or if an error occurred.
+    This function moves a given file to a new destination path, handling
+    different types of directories (root, leaf, and branch) and ensuring
+    that the move operation does not result in overwriting existing
+    files or moving files outside of STACKS-managed directories. It
+    returns a structured response with the outcome of the move
+    operation.
 
     Args:
         file (str):
-            The path to the source file that is to be moved.
+            Path to the source file that needs to be moved.
         dest (str):
-            The path where the file should be moved to.
+            Path to the destination directory where the file should be
+            moved.
 
     Returns:
         dataclass:
-            With the following attributes
+            A structured object containing the following attributes:
 
-            - error (str, optional): A message indicating any errors
-              encountered during the operation or a success
-              confirmation if no errors occurred.
+            - error (str): An error message if an issue occurs during
+              the move operation,
+            otherwise an empty string indicating success.
+
             - dest (str): The path to the destination directory where
-              the file was moved to.
+              the file was moved.
             - file (str): The path to the source file that was moved.
-            - classify (str): The classification result ('root',
-              'leaf', or 'branch') of the source file's directory
-              structure.
+            - new_file (str): The path to the file after it has been
+              moved to the new location.
+            - classify (str): A classification of the destination
+              directory type, which can be "root", "leaf", or
+              "branch".
+
+    Raises:
+        ValueError:
+            If the `dest` path is not a valid STACKS directory or if an
+            attempt is made to move the file outside the STACKS
+            structure.
     """
     import pathlib
     import A_GIS.File.Node.classify
     import A_GIS.File.Node.generate_purpose
     import A_GIS.File.Node.generate_dirname
     import A_GIS.File.guess_year
+    import os
 
     file = pathlib.Path(file).resolve()
     dest = pathlib.Path(dest).resolve()
 
     classify = A_GIS.File.Node.classify(directory=str(dest))
+    print(classify)
     error = ""
     if classify.result == "root":
         error = f"Will not move {file} to root directory {dest}! Find a fitting subdirectory."
     else:
+        dest_file = file.name.replace(" ", "_")
+        new_file = dest / dest_file
+
         if classify.result == "leaf":
-            os.move(file, dest)
+            # If the destination is a leaf we have to make sure we don't
+            # overwrite a file.
+            i = 0
+            while new_file.exists():
+                i += 1
+                dest_file = dest_file.stem + f"_{i}" + dest_file.suffix
+                new_file = dest / dest_file
+            os.rename(file, new_file)
+
         elif classify.result == "branch":
-            year = A_GIS.File.guess_year(file=file).year
+            # We need to generate a new directory name.
+            year = A_GIS.File.guess_year(file=str(file)).year
+            content = A_GIS.File.read_to_text(
+                path=str(file), beginchar=0, endchar=999
+            ).text
             dirname = A_GIS.File.Node.generate_dirname(
-                file=file, prefix=year + "-"
+                message=f"Generate a short subdirectory name inside directory {dest} "
+                + "to contain a file named {str(file)} with first 1000 characters: {content}",
+                prefix=year + "-",
             ).dirname
             dest = dest / dirname
-            os.makedirs(dest)
-            os.move(file, dest)
+            if not dest.exists():
+                os.makedirs(dest)
+            os.rename(file, new_file)
         else:
-            error = f"{file} is not in a STACKS directory!"
-
-        if error == "":
-            A_GIS.File.Node.generate_purpose(directory=dest)
+            error = f"{file} is not in a STACKS directory and cannot be moved!"
 
     return A_GIS.Code.make_struct(
-        error=error, dest=str(dest), file=str(file), classify=classify.result
+        error=error,
+        dest=str(dest),
+        file=str(file),
+        new_file=str(new_file),
+        classify=classify.result,
     )

@@ -52,6 +52,8 @@ def get_schema(*, func_path: str):
     )
     params_dict = {}
     for param in docstring.params:
+        if param.arg_name.startswith("_"):
+            continue
         params_dict[param.arg_name] = {
             "type": param.type_name,
             "description": param.description,
@@ -66,6 +68,9 @@ def get_schema(*, func_path: str):
     required_params = []
 
     for param_name, param in signature.parameters.items():
+        if param_name.startswith("_"):
+            continue
+
         # Define parameter schema
         param_schema = {
             "type": "string"  # Default to string if no type hint is provided

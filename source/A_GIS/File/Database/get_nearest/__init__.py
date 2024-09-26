@@ -1,52 +1,66 @@
 def get_nearest(
-    *, target_path, collection, num: int = 5, ignore_list=[], keep_list=[]
+    *,
+    target_path: str,
+    collection_name: str,
+    database_name: str,
+    num: int = 5,
+    ignore_list=[],
+    keep_list=[],
 ):
-    """Retrieve `num` closest items by vector similarity.
+    """Find nearest documents by vector similarity in MongoDB.
 
-    This function finds the nearest items in a MongoDB collection to a
-    given target item's embedding vector. It considers a set of
-    criteria, including an optional ignore list and a keep list, to
-    filter out documents before calculating their similarity to the
-    target. The function returns a structured result containing the
-    `num` closest items sorted by their distance from the target's
-    embedding vector.
+    This function retrieves a collection from a specified database
+    within A_GIS and calculates the similarity of each document's
+    embedding to the target's embedding using the Haversine formula
+    (implemented by `A_GIS.Math.calculate_angle_between_vectors`). It
+    returns a struct containing the `num` nearest documents, sorted by
+    their distance from the target's embedding, along with information
+    about the target path and whether it exists.
 
     Args:
         target_path (str):
-            The path identifier of the target item within the
+            The target document's path for which to find the nearest
+            neighbors.
+        collection_name (str):
+            The name of the MongoDB collection to search within.
+        database_name (str):
+            The name of the MongoDB database from which to retrieve the
             collection.
-        collection (MongoDB collection object):
-            The collection from which to retrieve the nearest items.
         num (int, optional):
-            The number of closest items to return. Defaults to 5.
-        ignore_list (list of str, optional):
-            A list of strings (patterns) that, if matched with a
-            document's path, will cause the document to be ignored.
-        keep_list (list of str, optional):
-            A list of strings (patterns) that must be matched with a
-            document's path for the document to be considered.
+            The number of nearest neighbor documents to return. Defaults
+            to 5.
+        ignore_list (list, optional):
+            A list of strings to filter out documents whose paths
+            contain these strings.
+        keep_list (list, optional):
+            A list of strings that, if not present in a document's path,
+            will include that document in the search results.
 
     Returns:
         dataclass:
             With the following attributes
 
-            - nearest (list of tuples): A sorted list of tuples
-              containing two elements; the first is the absolute value
-              of the signed angle between the target and each item's
-              embedding vector, and the second is the document's path.
-            - target_path (str): The path identifier of the target
-              item.
+            - nearest (list of tuples): A list of tuples containing
+              two elements. The first is the absolute value of the
+              signed angle between the target and the document's
+              embeddings, and the second is the path of the document.
+              These are sorted by the angle in ascending order.
+            - target_path (str): The path of the target document.
             - target_exists (bool): A boolean indicating whether the
-              target item exists at the specified path.
+              target document exists at its specified path.
     """
     import math
     import A_GIS.Math.calculate_angle_between_vectors
     import A_GIS.Code.make_struct
     import os
+    import A_GIS.File.Database.get_collection
 
     target_exists = os.path.exists(target_path)
     target_path = str(target_path)
     if target_exists:
+        collection = A_GIS.File.Database.get_collection(
+            name=collection_name, from_database=database_name
+        )
         target = collection.find_one({"_id": target_path})
         nearest = []
         if target:
@@ -92,4 +106,9 @@ def get_nearest(
             nearest=nearest,
             target_path=target_path,
             target_exists=target_exists,
+            collection_name=collection_name,
+            database_name=database_name,
+            num=num,
+            ignore_list=ignore_list,
+            keep_list=keep_list,
         )
