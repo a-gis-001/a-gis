@@ -1,43 +1,47 @@
 import pathlib
 
 def read_to_text(*, path: str, beginchar=None, endchar=None):
-    """Read and partitions file or URL text using unstructured.
+    """Read a file and extract its text content.
 
-    This function reads the contents of a file or URL provided by the
-    `path` argument and processes it with the
-    `unstructured.partition.auto` function to extract structured
-    elements. It then returns these elements along with the original
-    path and optional start and end indices for slicing the text
-    content. If the original text content is found to be identical to
-    the processed content, it returns the raw text instead.
+    unstructured's capabilities.
+
+    This function reads the contents of a file specified by `path` and
+    processes it to produce a structured text output. It can handle both
+    local file paths and URLs, automatically determining which method to
+    use based on the input. The text content is then optionally
+    partitioned using unstructured's partition function, which can be
+    particularly useful for processing documents with complex layouts.
+    The user can specify a range of characters to extract from the
+    processed text by providing `beginchar` and `endchar` as optional
+    arguments. If an error occurs during the reading or processing, it
+    is caught and stored in the return value.
 
     Args:
-        path (pathlib.Path | str):
-            The file path or URL from which to read the text content.
-            This can be a `pathlib.Path` object or a string.
+        path (str):
+            The file path or URL of the document to read and process.
         beginchar (int, optional):
-            The zero-based starting index for slicing the processed text
-            content. If omitted, the entire processed text is returned.
+            The starting index from which to extract text from the
+            processed content. If omitted, the entire processed text is
+            returned.
         endchar (int, optional):
-            The zero-based ending index for slicing the processed text
-            content. If omitted or set to `None`, no end index is
-            applied, and the text will be sliced up to but not including
-            this index.
+            The ending index at which to stop extracting text from the
+            processed content. If omitted or set to None, no upper limit
+            is applied to the extraction.
 
     Returns:
         dataclass:
             With the following attributes
 
-            - text (str): The extracted and partitioned text content
-              from `0` to `endchar`. If `beginchar` is specified, it
-              will slice from `beginchar` to `endchar`.
-            - path (str): The file path or URL as a string.
-            - beginchar (int | None, optional): The starting index for
-              slicing the text content. It can be either an integer or
-              `None`.
-            - endchar (int | None, optional): The ending index for
-              slicing the text content. It can be either an integer or
-              `None`.
+            - text (str): The extracted text from the processed
+              content, within the specified range.
+            - path (str): The file path or URL of the original
+              document.
+            - beginchar (int): The starting index of the extracted
+              text range.
+            - endchar (int): The ending index of the extracted text
+              range.
+            - error (str): A string containing any error that occurred
+              during processing.
     """
     import unstructured.partition.auto
     import A_GIS.File.is_url
@@ -52,26 +56,28 @@ def read_to_text(*, path: str, beginchar=None, endchar=None):
         key = "filename"
         path = pathlib.Path(path).resolve()
 
-    # Get the elements from unstructured.
-    elements = unstructured.partition.auto.partition(**{key: str(path)})
+    text = ""
+    error = ""
+    try:
+        # Get the elements from unstructured.
+        elements = unstructured.partition.auto.partition(**{key: str(path)})
 
-    # Join the elements with simple double newlines.
-    text = "\n\n".join(
-        map(lambda x: x.text if hasattr(x, "text") else str(x), elements)
-    )
+        # Join the elements with simple double newlines.
+        text = "\n\n".join(
+            map(lambda x: x.text if hasattr(x, "text") else str(x), elements)
+        )
 
-    # Special condition to replace the text processed by unstructured into the original
-    # format.
-    if key == "filename":
-        try:
+        # Special condition to replace the text processed by unstructured into the original
+        # format.
+        if key == "filename":
             raw_text = A_GIS.File.read(file=path)
             raw_stext = re.sub("\\s+", " ", raw_text).strip()
             if raw_stext.isprintable():
                 stext = re.sub("\\s+", " ", text).strip()
                 if raw_stext == stext:
                     text = raw_text
-        except BaseException:
-            pass
+    except BaseException as e:
+        error = str(e)
 
     # Return relevant info a struct. We transform the path to a string to make sure
     # the struct can be transformed to a dict or JSON easily.
@@ -80,4 +86,5 @@ def read_to_text(*, path: str, beginchar=None, endchar=None):
         path=str(path),
         beginchar=beginchar,
         endchar=endchar,
+        error=error,
     )
