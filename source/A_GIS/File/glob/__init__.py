@@ -1,4 +1,4 @@
-def glob(*, paths, glob_args):
+def glob(*, paths, glob_args="*"):
     """Recursively glob files and directories in one flat list."""
     import pathlib
 

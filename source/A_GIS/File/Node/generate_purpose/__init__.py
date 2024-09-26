@@ -1,6 +1,6 @@
 def generate_purpose(
     *,
-    directory: type["path.Pathlib"],
+    directory: str,
     max_iterations=10,
     root_dir=None,
     overwrite_existing: bool = False,
@@ -40,7 +40,10 @@ def generate_purpose(
     import A_GIS.File.show_tree
     import A_GIS.File.is_subdirectory
 
-    if not root_dir:
+    directory = pathlib.Path(directory)
+    if root_dir:
+        root_dir = pathlib.Path(root_dir)
+    else:
         root_dir = directory
 
     def parse_request(request):
@@ -248,6 +251,8 @@ Please assign a purpose to the '{str(top_dir)}' directory.
 
     # Overwrite the existing file.
     if overwrite_existing:
-        A_GIS.File.write(file=directory / "_leaf.node.md", content=purpose)
+        A_GIS.File.write(
+            file=str(directory) / "_leaf.node.md", content=purpose
+        )
 
     return purpose

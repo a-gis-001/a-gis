@@ -39,11 +39,14 @@ def _send_chat_ollama(
 
                     # We only support A_GIS functions which return something
                     # which converts to a dict.
-                    fn_res: str = json.dumps(
-                        A_GIS.resolve_function(func_path=fn_name)(
-                            **fn_args
-                        ).__dict__
-                    )
+                    try:
+                        fn_res: str = json.dumps(
+                            A_GIS.resolve_function(func_path=fn_name)(
+                                **fn_args
+                            ).__dict__
+                        )
+                    except BaseException as e:
+                        fn_res = f"Error executing function {fn_name} with arguments {fn_args}: {e}"
 
                     # Add the tool call result to the messages.
                     messages.append(

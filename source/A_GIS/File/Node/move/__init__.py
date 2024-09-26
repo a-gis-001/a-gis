@@ -2,44 +2,66 @@ import A_GIS.Log.track_function
 
 @A_GIS.Log.track_function
 def move(*, file: str, dest: str, __tracking_hash=None):
-    """Move a file within the STACKS file system.
+    """Move a file within the STACKS system while handling conflicts.
 
-    This function moves a given file to a new destination path, handling
-    different types of directories (root, leaf, and branch) and ensuring
-    that the move operation does not result in overwriting existing
-    files or moving files outside of STACKS-managed directories. It
-    returns a structured response with the outcome of the move
-    operation.
+    The `move` function takes two mandatory parameters, `file` and
+    `dest`, which define the source and destination paths for the file
+    movement operation. It optionally accepts a `__tracking_hash`
+    parameter for internal logging purposes. The function ensures that
+    the file exists within the STACKS root directory and that the
+    destination is also within the same root. It classifies the
+    destination, ensures that no files with the same name exist at the
+    destination, and then moves the file accordingly.
+
+    The function performs the following steps:
+
+    1. Validates the existence of the source file within the STACKS
+       root directory.
+    2. Validates that both the source file and the destination are
+       inside the same STACKS root directory.
+    3. Creates the destination if it does not already exist.
+    4. Classifies the destination, handling different types of
+       classifications ("leaf", "branch", or "root").
+    5. Generates a unique filename for the destination if necessary,
+       to avoid overwriting existing files.
+    6. Moves the source file to the new destination while creating
+       any required subdirectories.
+    7. Optionally generates a purpose for the directory containing
+       the new file.
+
+    On failure, the function catches exceptions and returns an error
+    message along with the original file, destination, and new
+    destination paths. If the operation is successful, it returns a
+    struct with the error set to `None`, the destination path, the new
+    destination path, the original file path, and the new file path, as
+    well as the classification of the destination.
 
     Args:
         file (str):
-            Path to the source file that needs to be moved.
+            The path to the file that is to be moved.
         dest (str):
-            Path to the destination directory where the file should be
+            The path to the destination directory where the file will be
             moved.
+        __tracking_hash (hash, optional):
+            A hash value used for tracking purposes within the logging
+            system.
 
     Returns:
         dataclass:
-            A structured object containing the following attributes:
+            With the following attributes
 
-            - error (str): An error message if an issue occurs during
-              the move operation,
-            otherwise an empty string indicating success.
-
+            - error (str): A string describing any error encountered
+              during the operation or `None` if no error occurred.
             - dest (str): The path to the destination directory where
-              the file was moved.
-            - file (str): The path to the source file that was moved.
-            - new_file (str): The path to the file after it has been
-              moved to the new location.
-            - classify (str): A classification of the destination
-              directory type, which can be "root", "leaf", or
-              "branch".
-
-    Raises:
-        ValueError:
-            If the `dest` path is not a valid STACKS directory or if an
-            attempt is made to move the file outside the STACKS
-            structure.
+              the file was moved to.
+            - new_dest (str): The full path to the new destination
+              file after moving.
+            - file (str): The original path of the file before it was
+              moved.
+            - new_file (str): The full path to the file after it was
+              moved.
+            - classify (str): The classification of the destination
+              directory ('leaf', 'branch', or 'root').
     """
     import pathlib
     import A_GIS.File.Node.classify
@@ -70,6 +92,11 @@ def move(*, file: str, dest: str, __tracking_hash=None):
         if not dest.is_relative_to(root):
             raise ValueError(
                 f"Error: destination {dest} must be inside STACKS root {root}!"
+            )
+        inbox = pathlib.Path(root) / "_inbox"
+        if dest.is_relative_to(inbox):
+            raise ValueError(
+                f"Error: destination {dest} cannot be inside the inbox {inbox}"
             )
 
         # Create destination.
@@ -122,6 +149,9 @@ def move(*, file: str, dest: str, __tracking_hash=None):
                 new_file = new_dest / dest_file
 
             os.rename(file, new_file)
+            A_GIS.File.Node.generate_purpose(
+                directory=str(new_file.parent), overwrite_existing=True
+            )
 
     except Exception as e:
         error = str(e)
