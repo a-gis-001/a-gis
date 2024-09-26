@@ -243,7 +243,7 @@ Please assign a purpose to the '{str(top_dir)}' directory.
             message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
 
     # Extract the final purpose statement and reformat to be pretty.
-    purpose = extract_purpose(result["message"]["content"])
+    purpose = extract_purpose(response["message"]["content"])
     purpose = A_GIS.Text.reformat(text=purpose)
 
     # Overwrite the existing file.

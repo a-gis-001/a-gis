@@ -16,5 +16,5 @@ else:
 
 purpose = A_GIS.File.Node.generate_purpose(directory=current_dir, overwrite_existing=True)
 
-print(f"Purpose written to {current_dir}/_purpose.md\n")
+print(f"Purpose written to {current_dir}/_leaf.node.md\n")
 print(purpose)

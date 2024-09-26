@@ -4,50 +4,64 @@ def get_nearest(
     collection_name: str,
     database_name: str,
     num: int = 5,
-    ignore_list=[],
+    max_angle: float = 8,
+    ignore_list=["_inbox"],
     keep_list=[],
 ):
-    """Find nearest documents by vector similarity in MongoDB.
+    """Find nearest document in a database collection by embedding.
 
-    This function retrieves a collection from a specified database
-    within A_GIS and calculates the similarity of each document's
-    embedding to the target's embedding using the Haversine formula
-    (implemented by `A_GIS.Math.calculate_angle_between_vectors`). It
-    returns a struct containing the `num` nearest documents, sorted by
-    their distance from the target's embedding, along with information
-    about the target path and whether it exists.
+    This function searches for the `num` closest documents to a target
+    document within a specified collection and database, based on their
+    vector embeddings. The closeness is determined by calculating the
+    angle between the embedding vectors of the target and each document.
+    The function filters out documents in the `ignore_list` and only
+    includes those in the `keep_list`.
+
+    The nearest documents are sorted by their distance to the target,
+    and the top `num` results are returned as a structured object. This
+    allows for easy access to both the nearest documents' information
+    and the parameters used for the search.
 
     Args:
         target_path (str):
-            The target document's path for which to find the nearest
-            neighbors.
+            The path of the target document within the collection.
         collection_name (str):
-            The name of the MongoDB collection to search within.
+            The name of the collection from which to find the nearest
+            documents.
         database_name (str):
-            The name of the MongoDB database from which to retrieve the
-            collection.
+            The name of the database containing the collection.
         num (int, optional):
-            The number of nearest neighbor documents to return. Defaults
-            to 5.
+            The number of nearest documents to return. Defaults to 5.
+        max_angle (float, optional):
+            The maximum angle (in radians) between embedding vectors for
+            a document to be considered 'nearest'. Defaults to 8
+            radians.
         ignore_list (list, optional):
-            A list of strings to filter out documents whose paths
-            contain these strings.
+            A list of paths or patterns to ignore when searching for
+            nearest documents. Defaults to ['_inbox'].
         keep_list (list, optional):
-            A list of strings that, if not present in a document's path,
-            will include that document in the search results.
+            A list of paths or patterns to only consider when searching
+            for nearest documents. It overrides the `ignore_list`.
 
     Returns:
-        dataclass:
-            With the following attributes
+        make_struct:
+            A structured object with the following attributes:
 
-            - nearest (list of tuples): A list of tuples containing
-              two elements. The first is the absolute value of the
-              signed angle between the target and the document's
-              embeddings, and the second is the path of the document.
-              These are sorted by the angle in ascending order.
+            - nearest (list of tuples): A sorted list of tuples
+              containing the calculated angle and path of the nearest
+              documents.
             - target_path (str): The path of the target document.
-            - target_exists (bool): A boolean indicating whether the
-              target document exists at its specified path.
+            - target_exists (bool): Whether the target document exists
+              at its specified path.
+            - collection_name (str): The name of the collection from
+              which the nearest documents were found.
+            - database_name (str): The name of the database containing
+              the collection.
+            - num (int): The number of nearest documents to return.
+            - ignore_list (list of str): The list of paths or patterns
+              used to filter out documents.
+            - keep_list (list of str): The list of paths or patterns
+              that were used to only consider certain documents.
     """
     import math
     import A_GIS.Math.calculate_angle_between_vectors
@@ -94,10 +108,13 @@ def get_nearest(
                 # Calculate angle.
                 e1 = doc.get("embedding")
                 if e1 and et:
-                    angle = A_GIS.Math.calculate_angle_between_vectors(
-                        a=e1, b=et
-                    ).signed_angle
-                    nearest.append([math.fabs(angle), doc_path])
+                    angle = math.fabs(
+                        A_GIS.Math.calculate_angle_between_vectors(
+                            a=e1, b=et
+                        ).signed_angle
+                    )
+                    if angle < max_angle:
+                        nearest.append([angle, doc_path])
 
         # Get num nearest.
         nearest = sorted(nearest, key=lambda x: abs(x[0]))[:num]
