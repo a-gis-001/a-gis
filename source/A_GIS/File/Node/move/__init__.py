@@ -118,7 +118,7 @@ def move(*, file: str, dest: str, __tracking_hash=None):
         else:
             dest_file = file.name.replace(" ", "_")
             new_dest = dest
-            new_file = dest / dest_file
+            new_file = new_dest / dest_file
 
             if classification == "leaf":
                 # If the destination is a leaf we have to make sure we don't
@@ -136,8 +136,12 @@ def move(*, file: str, dest: str, __tracking_hash=None):
                     path=str(file), beginchar=0, endchar=999
                 ).text
                 dirname = A_GIS.File.Node.generate_dirname(
-                    message=f"Generate a short subdirectory name inside directory {dest} "
-                    + "to contain a file named {str(file)} with first 1000 characters: {content}",
+                    message=f"""Generate a short name within {dest} to contain a
+                    file named {str(file)} with this content (first 1000 characters only):
+                    {content}. Use the content of the file preferentially to arrive at a
+                    name. The name should be 5 or more keywords that differentiate this
+                    document from others. If you can identify the title of the document,
+                    it may be an excellent source of words.""",
                     prefix=year + "-",
                 ).dirname
 
@@ -148,13 +152,13 @@ def move(*, file: str, dest: str, __tracking_hash=None):
 
                 new_file = new_dest / dest_file
 
-            os.rename(file, new_file)
             A_GIS.File.Node.generate_purpose(
-                directory=str(new_file.parent), overwrite_existing=True
+                directory=str(new_dest), overwrite_existing=True
             )
+            os.rename(file, new_file)
 
     except Exception as e:
-        error = str(e)
+        error = "caught here " + str(e)
 
     return A_GIS.Code.make_struct(
         error=error,

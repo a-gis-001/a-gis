@@ -4,7 +4,7 @@ def get_nearest(
     collection_name: str,
     database_name: str,
     num: int = 5,
-    max_angle: float = 8,
+    min_similarity: float = 0.7,
     ignore_list=["_inbox"],
     keep_list=[],
 ):
@@ -32,10 +32,8 @@ def get_nearest(
             The name of the database containing the collection.
         num (int, optional):
             The number of nearest documents to return. Defaults to 5.
-        max_angle (float, optional):
-            The maximum angle (in radians) between embedding vectors for
-            a document to be considered 'nearest'. Defaults to 8
-            radians.
+        min_similarity (float, optional):
+            The minimum similarity to collect, between 0 and 1. Default to 0.7.
         ignore_list (list, optional):
             A list of paths or patterns to ignore when searching for
             nearest documents. Defaults to ['_inbox'].
@@ -108,16 +106,18 @@ def get_nearest(
                 # Calculate angle.
                 e1 = doc.get("embedding")
                 if e1 and et:
-                    angle = math.fabs(
-                        A_GIS.Math.calculate_angle_between_vectors(
-                            a=e1, b=et
-                        ).signed_angle
+                    similarity = math.cos(
+                        math.fabs(
+                            A_GIS.Math.calculate_angle_between_vectors(
+                                a=e1, b=et
+                            ).signed_angle
+                        )
                     )
-                    if angle < max_angle:
-                        nearest.append([angle, doc_path])
+                    if similarity > min_similarity:
+                        nearest.append([similarity, doc_path])
 
         # Get num nearest.
-        nearest = sorted(nearest, key=lambda x: abs(x[0]))[:num]
+        nearest = sorted(nearest, key=lambda x: abs(x[0]), reverse=True)[:num]
 
         return A_GIS.Code.make_struct(
             nearest=nearest,

@@ -1,4 +1,9 @@
-def generate_dirname(*, message: str, prefix: str = "", suffix=""):
+import A_GIS.Log.track_function
+
+@A_GIS.Log.track_function
+def generate_dirname(
+    *, message: str, prefix: str = "", suffix="", __tracking_hash=None
+):
     """Create a directory name from user input.
 
     This function initializes an AI chatbot with specific system
@@ -46,7 +51,7 @@ def generate_dirname(*, message: str, prefix: str = "", suffix=""):
     If you are given the parent directory, your subdirectory name should
     should not repeat data from this path.
     1. 30 characters or less.
-    2. No numbers or dates.
+    2. No years or dates.
     3. Use '-' to separate words.
     4. Use all lower case.
     You will first brainstorm possible names. Then you will choose the best name.
@@ -59,18 +64,42 @@ def generate_dirname(*, message: str, prefix: str = "", suffix=""):
     chat = chatbot.chat(
         message=message
         + """\nReply with a JSON formatted list with 5 possible directory
-    names, e.g. ["name1","name2","name3","name4","name5"]""",
+    names, e.g. ["name1","name2","name3","name4","name5"].""",
         format="json",
     )
-    try:
-        possible_dirnames = json.loads(chat.response["message"]["content"])
+    try_list = (
+        chat.response["message"]["content"]
+        .replace("```json", "")
+        .replace("```", "")
+    )
+
+    # Try 3 times to convert to JSON.
+    for i in range(3):
+        try:
+            possible_dirnames = json.loads(try_list)
+            break
+        except BaseException as e:
+            possible_dirnames = []
+            pass
         chat = chatbot.chat(
-            message="Choose the most specific but correct directory name from this list: ["
+            message=f"This list '{try_list}' was supposed to be in JSON format. Please try again to emit JSON with the same data.",
+            format="json",
+        )
+        try_list = (
+            chat.response["message"]["content"]
+            .replace("```json", "")
+            .replace("```", "")
+        )
+
+    try:
+        chat = chatbot.chat(
+            message="Choose the most specific descriptive directory name from this list: ["
             + (", ".join(possible_dirnames))
             + "]. Reply with a single name!"
         )
         dirname = chat.response["message"]["content"]
         dirname = A_GIS.Text.slugify(name=dirname)
+        dirname = dirname.replace("_+", "-")
         if len(dirname) > 255:
             raise ValueError(
                 f"Directory name {dirname} is too long (>255 characters)."

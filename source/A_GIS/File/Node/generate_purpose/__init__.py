@@ -252,7 +252,7 @@ Please assign a purpose to the '{str(top_dir)}' directory.
     # Overwrite the existing file.
     if overwrite_existing:
         A_GIS.File.write(
-            file=str(directory) / "_leaf.node.md", content=purpose
+            file=str(directory / "_leaf.node.md"), content=purpose
         )
 
     return purpose

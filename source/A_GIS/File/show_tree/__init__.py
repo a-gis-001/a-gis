@@ -5,44 +5,55 @@ def show_tree(
     only_extensions: list = None,
     indent_chars: int = 4,
     ignore_dot_files: bool = True,
+    ignore_dirs=[],
     root_dir: str = None,
 ):
-    """Display the contents of a directory in a tree-like structure.
+    """Show a directory's contents as a hierarchical tree.
 
-    This function generates a textual representation of a directory's
-    contents, showing files and subdirectories up to a specified number
-    of levels deep. It supports filtering by file extensions and can be
-    configured to ignore dotfiles (hidden files starting with a dot).
+    This function generates a text representation of the file system
+    starting from a specified directory and recursively traversing
+    subdirectories up to a maximum number of levels, with optional
+    filters for file extensions and directories to ignore. It returns a
+    structured string that includes counts of files by extension and a
+    summary of shown versus total files and subdirectories.
 
     Args:
         directory (str):
-            The path to the directory whose contents are to be
-            displayed.
+            The path to the root directory to be displayed.
         max_levels (int):
-            The maximum depth of directories to display. Default is 2.
+            The maximum number of levels deep to traverse into
+            subdirectories. Default is 2.
         num_per_dir (int):
-            The number of files and subdirectories to show for each
-            level. Default is 10.
+            The maximum number of files or subdirectories to show for
+            each directory level. Default is 10.
         only_extensions (list):
-            A list of file extensions to filter the displayed files by.
-            If None, all files are shown. Default is None.
+            A list of file extensions to include when displaying files.
+            If None, all file extensions will be displayed. Default is
+            None.
         indent_chars (int):
-            The number of spaces to indent subdirectories and files.
+            The number of spaces to use for indentation at each level.
             Default is 4.
         ignore_dot_files (bool):
-            Whether to exclude dotfiles from the display. Default is
-            True.
+            Whether to exclude hidden files (those starting with a dot).
+            Default is True.
+        ignore_dirs (list):
+            A list of directory names to ignore. Any directory
+            containing all of the specified names will be skipped.
+            Default is an empty list.
         root_dir (str):
-            The root directory relative to which the specified directory
-            is displayed. If not provided, the specified directory
-            becomes the root. Default is None.
+            The root directory from which to calculate the relative
+            paths of subdirectories. If not provided, the current
+            directory is used as the root. Default is None.
 
     Returns:
         dataclass:
             With the following attributes
 
-            - tree (str): A string representation of the directory
-              tree structure.
+            - tree (str): A string representing the directory tree
+              structure with optional counts and suppressed
+              information.
+            - path (str): The path to the root directory that was
+              displayed in the tree.
     """
 
     import pathlib
@@ -66,7 +77,19 @@ def show_tree(
             items = [item for item in items if not item.name.startswith(".")]
 
         files = [item for item in items if item.is_file()]
-        dirs = [item for item in items if item.is_dir()]
+        dirs0 = [item for item in items if item.is_dir()]
+
+        # Filter directories.
+        def keep(dir0, ignore_dirs):
+            for i in ignore_dirs:
+                if i in dir0.parts:
+                    return False
+            return True
+
+        dirs = []
+        for dir0 in dirs0:
+            if keep(dir0, ignore_dirs):
+                dirs.append(dir0)
 
         total_counts = {}
         for item in files:

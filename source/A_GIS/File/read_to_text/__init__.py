@@ -79,6 +79,8 @@ def read_to_text(*, path: str, beginchar=None, endchar=None):
     except BaseException as e:
         error = str(e)
 
+    text = text.encode("utf-8").decode("utf-8", errors="ignore")
+
     # Return relevant info a struct. We transform the path to a string to make sure
     # the struct can be transformed to a dict or JSON easily.
     return A_GIS.Code.make_struct(
