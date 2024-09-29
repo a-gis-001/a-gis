@@ -1,9 +1,5 @@
-import pathlib
-
 def read_to_text(*, path: str, beginchar=None, endchar=None):
     """Read a file and extract its text content.
-
-    unstructured's capabilities.
 
     This function reads the contents of a file specified by `path` and
     processes it to produce a structured text output. It can handle both
@@ -46,18 +42,15 @@ def read_to_text(*, path: str, beginchar=None, endchar=None):
     import unstructured.partition.auto
     import A_GIS.File.is_url
     import A_GIS.Code.make_struct
+    import pathlib
     import re
 
     # Decide whether we have a URL or a filename to call the unstructured
     # partition function with the right key.
-    if A_GIS.File.is_url(name=path):
-        key = "url"
-    else:
-        key = "filename"
-        path = pathlib.Path(path).resolve()
+    key = "url" if A_GIS.File.is_url(path) else "filename"
+    path = pathlib.Path(path).resolve() if key == "filename" else path
 
-    text = ""
-    error = ""
+    text, error = "", ""
     try:
         # Get the elements from unstructured.
         elements = unstructured.partition.auto.partition(**{key: str(path)})
@@ -79,6 +72,7 @@ def read_to_text(*, path: str, beginchar=None, endchar=None):
     except BaseException as e:
         error = str(e)
 
+    # Do this to prevent non-unicode characters in the final text.
     text = text.encode("utf-8").decode("utf-8", errors="ignore")
 
     # Return relevant info a struct. We transform the path to a string to make sure
