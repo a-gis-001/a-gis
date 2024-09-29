@@ -92,11 +92,12 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
                     lists["angle"] = existing_entry.get("angle_list", [])
                     lists["bytes"] = existing_entry.get("bytes_list", [])
                     if lists["sha256"][-1] == updates["sha256"]:
-                        if self.logger:
-                            self.logger.debug(
-                                f"No changes detected in {file_path}, skipping update."
-                            )
-                        return
+                        if lists["angle"][-1]!=0.0:
+                            if self.logger:
+                                self.logger.debug(
+                                    f"No changes detected in {file_path}, skipping update."
+                                )
+                            return
 
                 text = A_GIS.File.read_to_text(
                     path=pathlib.Path(file_path)
@@ -105,10 +106,13 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
                     lines=[text], nchunks=1
                 )
                 embedding = list(embedding.flatten())
+
                 if len(self.null_embedding) != len(embedding):
                     if self.logger:
                         self.logger.warning(
-                            f"Embedding for {file_path} inconsistent size compared to null embedding. Probably you have changed embeddings and are using an old database."
+                            f"Embedding for {file_path} inconsistent size compared to "+
+                            "null embedding. Probably you have changed embeddings and "+
+                            "are using an old database."
                         )
                     return
 

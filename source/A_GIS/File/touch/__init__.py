@@ -18,6 +18,7 @@ def touch(*, path: type["pathlib.Path"], content_if_empty: str = ""):
     """
     import A_GIS.File.read
     import A_GIS.File.write
+    import pathlib
 
     # Create directories and create the file.
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -28,6 +29,9 @@ def touch(*, path: type["pathlib.Path"], content_if_empty: str = ""):
         content = A_GIS.File.read(file=path)
         if content.strip() == "":
             A_GIS.File.write(content=content_if_empty, file=path)
+
+    # Update modification time.
+    pathlib.Path(path).touch()
 
     # Return the path.
     return path
