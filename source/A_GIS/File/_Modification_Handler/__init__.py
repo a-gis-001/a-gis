@@ -92,7 +92,7 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
                     lists["angle"] = existing_entry.get("angle_list", [])
                     lists["bytes"] = existing_entry.get("bytes_list", [])
                     if lists["sha256"][-1] == updates["sha256"]:
-                        if lists["angle"][-1]!=0.0:
+                        if lists["angle"][-1] != 0.0:
                             if self.logger:
                                 self.logger.debug(
                                     f"No changes detected in {file_path}, skipping update."
@@ -110,9 +110,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
                 if len(self.null_embedding) != len(embedding):
                     if self.logger:
                         self.logger.warning(
-                            f"Embedding for {file_path} inconsistent size compared to "+
-                            "null embedding. Probably you have changed embeddings and "+
-                            "are using an old database."
+                            f"Embedding for {file_path} inconsistent size compared to "
+                            + "null embedding. Probably you have changed embeddings and "
+                            + "are using an old database."
                         )
                     return
 

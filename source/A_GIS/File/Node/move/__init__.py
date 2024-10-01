@@ -152,10 +152,13 @@ def move(*, file: str, dest: str, __tracking_hash=None):
 
                 new_file = new_dest / dest_file
 
+            # Move the file.
+            os.rename(file, new_file)
+
+            # After the move, regenerate the purpose.
             A_GIS.File.Node.generate_purpose(
                 directory=str(new_dest), overwrite_existing=True
             )
-            os.rename(file, new_file)
 
     except Exception as e:
         error = "caught here " + str(e)
