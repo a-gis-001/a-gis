@@ -2,9 +2,10 @@ import requests
 import pathlib
 
 def download(
-    session: requests.Session,
+    *,
     url: str,
     output_folder: pathlib.Path,
+    session: requests.Session = None,
     start_from_scratch: bool = False,
 ):
     """
@@ -18,6 +19,9 @@ def download(
     """
     import tqdm
     import os
+
+    if session is None:
+        session = requests.Session()
 
     filename = pathlib.Path(url.rsplit("/", 1)[1])
     output_path = output_folder / filename
