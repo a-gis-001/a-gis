@@ -78,7 +78,7 @@ def get_context(*, dirname: str, _root: str = None):
         # Traverse the directories from bottom to top (root_dir).
         dir = target_dir
         level = 4
-        while dir.parent != root_dir:
+        while dir != root_dir:
 
             # First we could hit a leaf.
             target_file = dir / "_leaf.node.md"
@@ -104,6 +104,7 @@ def get_context(*, dirname: str, _root: str = None):
 
             # Then we could hit multiple trunks.
             target_file = dir / "_trunk.node.md"
+            print(target_file)
             if target_file.exists():
                 level = 1
                 trunk_dirs.append(str(dir.relative_to(root_dir)))
