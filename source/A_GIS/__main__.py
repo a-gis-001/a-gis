@@ -151,29 +151,36 @@ cli.add_command(list)
 # Define the docstring command.
 @click.command()
 @A_GIS.Cli.register
-def docstring(name: "unit name", *, model: "model name" = "wizardlm2:7b"):
+def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS root" = "source/A_GIS", model: "model name" = "wizardlm2:7b"):
     """Use AI to replace a docstring"""
 
     # Get the path and name.
-    name, path = A_GIS.Cli.get_name_and_path(arg=name)
-    console = rich.console.Console(width=WIDTH)
-    console.print(f"Replacing docstring for unit name={name} at path={path} ...")
+    if name=="ALL":
+        status = A_GIS.Code.Unit.get_git_status(root=root)
+        names = [name for name in status.staged_names if not name == 'A_GIS']
+    else:
+        names = [name]
 
-    # Generate a docstring.
-    code = A_GIS.File.read(file=path)
-    docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model, reformat=True)
-    panel = rich.panel.Panel(
-        str(docstring), title=f"new docstring", expand=True, border_style="bold cyan"
-    )
-    console.print(panel)
+    for name in names:
+        name, path = A_GIS.Cli.get_name_and_path(arg=name)
+        console = rich.console.Console(width=WIDTH)
+        console.print(f"Replacing docstring for unit name={name} at path={path} ...")
 
-    # Write the new docstring into the file.
-    console.print(f"Writing new docstring to {path} ...")
-    code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
-    A_GIS.File.write(content=code, file=path)
+        # Generate a docstring.
+        code = A_GIS.File.read(file=path)
+        docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model, reformat=True)
+        panel = rich.panel.Panel(
+            str(docstring), title=f"new docstring", expand=True, border_style="bold cyan"
+        )
+        console.print(panel)
+
+        # Write the new docstring into the file.
+        console.print(f"Writing new docstring to {path} ...")
+        code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
+        A_GIS.File.write(content=code, file=path)
 
     # Update all the files, doing formatting and performing checks.
-    root = A_GIS.Code.find_root(path=path)
+    root = A_GIS.Code.find_root(path=root)
     panel = A_GIS.Cli.update_and_show_git_status(root=root)
     console.print(panel)
 
@@ -329,6 +336,35 @@ def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just genera
     console.print(panel)
 
 cli.add_command(commit)
+
+
+# Define the status command.
+@click.command()
+@A_GIS.Cli.register
+def status(*, root: "path to A_GIS root" = "source/A_GIS"):
+    """Show git status"""
+
+    # Show current status.
+    console = rich.console.Console(width=WIDTH)
+    status = A_GIS.Code.Unit.get_git_status(root=root)
+    output_text = rich.text.Text.from_ansi("\n".join(status.staged_names))
+    panel = rich.panel.Panel(
+        output_text,
+        title=f"staged",
+        expand=True,
+        border_style="bold green",
+    )
+    console.print(panel)
+    output_text = rich.text.Text.from_ansi("\n".join(status.modified_names))
+    panel = rich.panel.Panel(
+        output_text,
+        title=f"modified",
+        expand=True,
+        border_style="bold red",
+    )
+    console.print(panel)
+
+cli.add_command(status)
 
 # This is always a main.
 cli()

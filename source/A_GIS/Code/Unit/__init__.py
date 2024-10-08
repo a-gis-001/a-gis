@@ -8,6 +8,7 @@ from ._parse_first_pass import _parse_first_pass
 from ._wrap_single_block import _wrap_single_block
 from .check import check
 from .get import get
+from .get_git_status import get_git_status
 from .move import move
 from .read import read
 from .substitute_imports import substitute_imports
