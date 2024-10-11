@@ -15,6 +15,7 @@ def decompose(*, image: "A_GIS.Image._Image") -> "decompose._Plot":
     """
 
     import dataclasses  # Encapsulating the import as it's used only here
+    import A_GIS.Image._Image
 
     @dataclasses.dataclass
     class _Text:

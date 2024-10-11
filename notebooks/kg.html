@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "United States of America", "label": "United States of America", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCALE", "label": "SCALE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kairos Hermes Prototype Reactor Analysis", "label": "Kairos Hermes Prototype Reactor Analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Geometry (side)", "label": "Geometry (side)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Archives of publicly available models, reports, and journal papers for users", "label": "Archives of publicly available models, reports, and journal papers for users", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tools for understanding impacts of nuclear data gaps", "label": "Tools for understanding impacts of nuclear data gaps", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Advancing the State-of-the-Art in Simulation-Based Analysis of Nuclear Reactors", "label": "Advancing the State-of-the-Art in Simulation-Based Analysis of Nuclear Reactors", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Scaling and Integration of Simulation Methods for Nuclear Reactor Physics", "label": "Scaling and Integration of Simulation Methods for Nuclear Reactor Physics", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Shift high-performance Monte Carlo integration", "label": "Shift high-performance Monte Carlo integration", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Modernization of nuclear data and results storage formats", "label": "Modernization of nuclear data and results storage formats", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ORIGEN activation, depletion, decay calculations (run in secondsinstant feedback)", "label": "ORIGEN activation, depletion, decay calculations (run in secondsinstant feedback)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "International Collaboration for Advanced Reactor Physics and Multiphysics Analysis", "label": "International Collaboration for Advanced Reactor Physics and Multiphysics Analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Insights in minutes of runtime: xenon feedback, fast/thermal spectra", "label": "Insights in minutes of runtime: xenon feedback, fast/thermal spectra", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Molten Saltfueled Reactor Modeling Capability", "label": "Molten Saltfueled Reactor Modeling Capability", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Free annual SCALE Users Group Workshop", "label": "Free annual SCALE Users Group Workshop", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Fission rate (side)", "label": "Fission rate (side)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Integrated uncertainty quantification and parametric studies", "label": "Integrated uncertainty quantification and parametric studies", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "U.S. Nuclear Regulatory Commission (NRC)", "label": "U.S. Nuclear Regulatory Commission (NRC)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DOE Nuclear Criticality Safety Program (NCSP)", "label": "DOE Nuclear Criticality Safety Program (NCSP)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DOE NNSA", "label": "DOE NNSA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Oak Ridge National Laboratory (ORNL)", "label": "Oak Ridge National Laboratory (ORNL)", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kairos Hermes Prototype Reactor", "label": "Kairos Hermes Prototype Reactor", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Polaris", "label": "Polaris", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ENDF/B-VII.1 and ENDF/B-VIII.0 nuclear data", "label": "ENDF/B-VII.1 and ENDF/B-VIII.0 nuclear data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCALE 6.3", "label": "SCALE 6.3", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Google Group user forum", "label": "Google Group user forum", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ORNL Experts", "label": "ORNL Experts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Users group slides", "label": "Users group slides", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": " SCALE", "label": " SCALE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HALEU/HBU/ATF", "label": "HALEU/HBU/ATF", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "United States", "label": "United States", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "America", "label": "America", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Apple Inc.", "label": "Apple Inc.", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "USA", "label": "USA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tim Cook", "label": "Tim Cook", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Apple Watch", "label": "Apple Watch", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "heart health", "label": "heart health", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UC Berkeley", "label": "UC Berkeley", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "benefits of apples", "label": "benefits of apples", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "/Users/ww5/Downloads/_top/2024_10-SCALE_Overview.txt", "label": "/Users/ww5/Downloads/_top/2024_10-SCALE_Overview.txt", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": " SCALE Manual", "label": " SCALE Manual", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "_top/2024_10-SCALE_Overview.txt", "label": "_top/2024_10-SCALE_Overview.txt", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "20162021", "label": "20162021", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6.3 features", "label": "6.3 features", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HALEU/HBU/ATF material properties", "label": "HALEU/HBU/ATF material properties", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Additional uncertainty propagation capability", "label": "Additional uncertainty propagation capability", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Code speedups through method improvements", "label": "Code speedups through method improvements", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "5-fold speedup in Polaris", "label": "5-fold speedup in Polaris", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nuclide inventory sensitivity to nuclear data", "label": "Nuclide inventory sensitivity to nuclear data", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Molten saltfueled reactor modeling capability", "label": "Molten saltfueled reactor modeling capability", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Manual ported to new format", "label": "Manual ported to new format", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCALE team", "label": "SCALE team", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Next SCALE 7.0", "label": "Next SCALE 7.0", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCALE 7.0", "label": "SCALE 7.0", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCALE vision", "label": "SCALE vision", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Accuracy first, speed second", "label": "Accuracy first, speed second", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Always consider uncertainty", "label": "Always consider uncertainty", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ease-of-use is important and requires constant evolution and communication with users", "label": "Ease-of-use is important and requires constant evolution and communication with users", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Publish models, results, and scripts", "label": "Publish models, results, and scripts", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Achieve true reproducibility and transparency", "label": "Achieve true reproducibility and transparency", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Provide comprehensive assessment of nuclear data quality through validation across", "label": "Provide comprehensive assessment of nuclear data quality through validation across", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Criticality safety", "label": "Criticality safety", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Radiation shielding", "label": "Radiation shielding", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Spent fuel inventory and decay heat", "label": "Spent fuel inventory and decay heat", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Reactor physics/operation", "label": "Reactor physics/operation", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Isotope production", "label": "Isotope production", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Leadership", "label": "Leadership", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Development/Testing/Analysis", "label": "Development/Testing/Analysis", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Product Owners", "label": "Product Owners", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Director", "label": "Director", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Will Wieselquist", "label": "Will Wieselquist", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rob Lefebvre", "label": "Rob Lefebvre", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "STDCOMP", "label": "STDCOMP", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "FULCRUM", "label": "FULCRUM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Germina Procop", "label": "Germina Procop", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Sandra Poarch", "label": "Sandra Poarch", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Matt Jessee", "label": "Matt Jessee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "POLARIS", "label": "POLARIS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Bob Grove", "label": "Bob Grove", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Doug Bowen", "label": "Doug Bowen", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Ugur Mertyurek", "label": "Ugur Mertyurek", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SAMPLER", "label": "SAMPLER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jordan McDonnell", "label": "Jordan McDonnell", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TSUNAMI", "label": "TSUNAMI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AMPX", "label": "AMPX", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Kursat Bekar", "label": "Kursat Bekar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CSAS", "label": "CSAS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Jesse Brown", "label": "Jesse Brown", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DATA", "label": "DATA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Cihangir Celik", "label": "Cihangir Celik", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MAVRIC", "label": "MAVRIC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Seth Johnson", "label": "Seth Johnson", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "OMNIBUS", "label": "OMNIBUS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Steve Skutnik", "label": "Steve Skutnik", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ORIGAMI", "label": "ORIGAMI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "B.K. Jeon", "label": "B.K. Jeon", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ORIGEN", "label": "ORIGEN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Tarek Ghaddar", "label": "Tarek Ghaddar", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TITAN", "label": "TITAN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Rike Bostelmann", "label": "Rike Bostelmann", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TRITON", "label": "TRITON", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nuclear Regulatory Commission", "label": "Nuclear Regulatory Commission", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "Nuclear Energy Institute", "label": "Nuclear Energy Institute", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "National Nuclear Safety Administration", "label": "National Nuclear Safety Administration", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "World Association of Nuclear Operators", "label": "World Association of Nuclear Operators", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "International Atomic Energy Agency", "label": "International Atomic Energy Agency", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "International Nuclear Safety Organization", "label": "International Nuclear Safety Organization", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "United States Nuclear Regulatory Commission", "label": "United States Nuclear Regulatory Commission", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "6f00e82c-d1df-4034-b701-4997f2fa9454", "label": "6f00e82c-d1df-4034-b701-4997f2fa9454", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "900c4c18-14a8-4947-be7f-ae74202c235a", "label": "900c4c18-14a8-4947-be7f-ae74202c235a", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "United States of America", "label": "INITIATED", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Kairos Hermes Prototype Reactor Analysis", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Geometry (side)", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Archives of publicly available models, reports, and journal papers for users", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Tools for understanding impacts of nuclear data gaps", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Advancing the State-of-the-Art in Simulation-Based Analysis of Nuclear Reactors", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Scaling and Integration of Simulation Methods for Nuclear Reactor Physics", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Shift high-performance Monte Carlo integration", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Modernization of nuclear data and results storage formats", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "ORIGEN activation, depletion, decay calculations (run in secondsinstant feedback)", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "International Collaboration for Advanced Reactor Physics and Multiphysics Analysis", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Insights in minutes of runtime: xenon feedback, fast/thermal spectra", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Molten Saltfueled Reactor Modeling Capability", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Free annual SCALE Users Group Workshop", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Fission rate (side)", "width": 1}, {"arrows": "to", "from": "SCALE", "label": "PART_OF", "to": "Integrated uncertainty quantification and parametric studies", "width": 1}, {"arrows": "to", "from": "U.S. Nuclear Regulatory Commission (NRC)", "label": "SPONSOR_OF", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "DOE Nuclear Criticality Safety Program (NCSP)", "label": "SPONSOR_OF", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "DOE NNSA", "label": "SPONSOR_OF", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "Oak Ridge National Laboratory (ORNL)", "label": "LOCATION_OF", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "Kairos Hermes Prototype Reactor", "label": "ANALYZED_BY", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "Polaris", "label": "USED_IN", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "ENDF/B-VII.1 and ENDF/B-VIII.0 nuclear data", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "ENDF/B-VII.1 and ENDF/B-VIII.0 nuclear data", "label": "USED_IN", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "Google Group user forum", "label": "USED_FOR", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "ORNL Experts", "label": "TAUGHT_TO", "to": "SCALE", "width": 1}, {"arrows": "to", "from": "Users group slides", "label": "CONTAINS", "to": "SCALE", "width": 1}, {"arrows": "to", "from": " SCALE", "label": "PART_OF", "to": "HALEU/HBU/ATF", "width": 1}, {"arrows": "to", "from": "Shift high-performance Monte Carlo integration", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Modernization of nuclear data and results storage formats", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "United States", "label": "LOCATED_IN", "to": "America", "width": 1}, {"arrows": "to", "from": "Apple Inc.", "label": "HEADQUARTERED_IN", "to": "USA", "width": 1}, {"arrows": "to", "from": "Tim Cook", "label": "CEO_OF", "to": "Apple Inc.", "width": 1}, {"arrows": "to", "from": "Apple Watch", "label": "PRODUCED_BY", "to": "Apple Inc.", "width": 1}, {"arrows": "to", "from": "heart health", "label": "MONITORED_BY", "to": "Apple Watch", "width": 1}, {"arrows": "to", "from": "UC Berkeley", "label": "LOCATED_IN", "to": "USA", "width": 1}, {"arrows": "to", "from": "benefits of apples", "label": "STUDIED_BY", "to": "UC Berkeley", "width": 1}, {"arrows": "to", "from": "/Users/ww5/Downloads/_top/2024_10-SCALE_Overview.txt", "label": "CONTAINS", "to": " SCALE Manual", "width": 1}, {"arrows": "to", "from": "/Users/ww5/Downloads/_top/2024_10-SCALE_Overview.txt", "label": "CONTAINS", "to": "_top/2024_10-SCALE_Overview.txt", "width": 1}, {"arrows": "to", "from": "20162021", "label": "DEVELOPED_IN", "to": "6.3 features", "width": 1}, {"arrows": "to", "from": "HALEU/HBU/ATF material properties", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Additional uncertainty propagation capability", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Code speedups through method improvements", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "5-fold speedup in Polaris", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Nuclide inventory sensitivity to nuclear data", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Molten saltfueled reactor modeling capability", "label": "FEATURE_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "Manual ported to new format", "label": "PERFORMED_BY", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Next SCALE 7.0", "label": "NEXT_VERSION_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "SCALE 7.0", "label": "NEXT_VERSION_OF", "to": "SCALE 6.3", "width": 1}, {"arrows": "to", "from": "SCALE vision", "label": "FEATURE_OF", "to": "SCALE 7.0", "width": 1}, {"arrows": "to", "from": "Accuracy first, speed second", "label": "GUIDING_PRINCIPLE_FOR", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Always consider uncertainty", "label": "GUIDING_PRINCIPLE_FOR", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Ease-of-use is important and requires constant evolution and communication with users", "label": "GUIDING_PRINCIPLE_FOR", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Publish models, results, and scripts", "label": "RECOMMENDS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Achieve true reproducibility and transparency", "label": "ASPECT_OF", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Provide comprehensive assessment of nuclear data quality through validation across", "label": "RECOMMENDS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Criticality safety", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Radiation shielding", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Spent fuel inventory and decay heat", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Reactor physics/operation", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Isotope production", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Leadership", "label": "PART_OF", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Development/Testing/Analysis", "label": "PART_OF", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Product Owners", "label": "PART_OF", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Director", "label": "PART_OF", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Will Wieselquist", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Rob Lefebvre", "label": "LEADS", "to": "STDCOMP", "width": 1}, {"arrows": "to", "from": "Rob Lefebvre", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Rob Lefebvre", "label": "LEADS", "to": "FULCRUM", "width": 1}, {"arrows": "to", "from": "Germina Procop", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Sandra Poarch", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Matt Jessee", "label": "ADVISES", "to": "POLARIS", "width": 1}, {"arrows": "to", "from": "Matt Jessee", "label": "ADVISES", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Bob Grove", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Doug Bowen", "label": "LEADS", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Ugur Mertyurek", "label": "LEADS", "to": "SAMPLER", "width": 1}, {"arrows": "to", "from": "Ugur Mertyurek", "label": "ADVISES", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Jordan McDonnell", "label": "LEADS", "to": "TSUNAMI", "width": 1}, {"arrows": "to", "from": "Jordan McDonnell", "label": "LEADS", "to": "AMPX", "width": 1}, {"arrows": "to", "from": "Kursat Bekar", "label": "ADVISES", "to": "CSAS", "width": 1}, {"arrows": "to", "from": "Jesse Brown", "label": "LEADS", "to": "DATA", "width": 1}, {"arrows": "to", "from": "Cihangir Celik", "label": "ADVISES", "to": "MAVRIC", "width": 1}, {"arrows": "to", "from": "Seth Johnson", "label": "LEADS", "to": "OMNIBUS", "width": 1}, {"arrows": "to", "from": "Steve Skutnik", "label": "ADVISES", "to": "ORIGAMI", "width": 1}, {"arrows": "to", "from": "B.K. Jeon", "label": "ADVISES", "to": "ORIGEN", "width": 1}, {"arrows": "to", "from": "Tarek Ghaddar", "label": "LEADS", "to": "TITAN", "width": 1}, {"arrows": "to", "from": "Rike Bostelmann", "label": "LEADS", "to": "TRITON", "width": 1}, {"arrows": "to", "from": "Nuclear Regulatory Commission", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "Nuclear Energy Institute", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "National Nuclear Safety Administration", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "World Association of Nuclear Operators", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "International Atomic Energy Agency", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "International Nuclear Safety Organization", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}, {"arrows": "to", "from": "United States Nuclear Regulatory Commission", "label": "VALIDATION_ACross", "to": "SCALE team", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
