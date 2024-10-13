@@ -1,7 +1,7 @@
 def find_lines(
     *,
     image,
-    xy_scale=[1, 1],
+    wh_scale=[1, 1],
     screen_fraction=0.5,
     binary_threshold=230,
     hough_threshold=100,
@@ -17,14 +17,17 @@ def find_lines(
     import A_GIS.Code.make_struct
 
     # Convert image to binary
-    binary = A_GIS.Image.create_binary(image=image, threshold=binary_threshold).image
+    binary = A_GIS.Image.create_binary(
+        image=image, threshold=binary_threshold
+    ).image
     data = numpy.array(binary)
 
     height, width = data.shape[:2]
     lx = int(width * screen_fraction)
     ly = int(height * screen_fraction)
-    dx = 5 + xy_scale[0]  # Increased kernel size for better detection of extended lines
-    dy = 5 + xy_scale[1]
+    # Increased kernel size for better detection of extended lines
+    dx = 5 + wh_scale[0]
+    dy = 5 + wh_scale[1]
 
     # Detect horizontal lines
     horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (int(dx), 1))
@@ -43,7 +46,9 @@ def find_lines(
 
     # Apply dilation to extend lines
     dilation_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    lines_mask = cv2.dilate(lines_mask, dilation_kernel, iterations=dilation_iterations)
+    lines_mask = cv2.dilate(
+        lines_mask, dilation_kernel, iterations=dilation_iterations
+    )
 
     # Edge detection using Canny on the combined line mask
     edges = cv2.Canny(lines_mask, lower_canny_threshold, upper_canny_threshold)
@@ -54,8 +59,10 @@ def find_lines(
         1,
         numpy.pi / 180,
         threshold=hough_threshold,
-        minLineLength=min(lx, ly) // 2,  # Reduced minLineLength to detect more lines
-        maxLineGap=max(dx, dy) * 2,  # Increased maxLineGap to connect fragmented lines
+        # Reduced minLineLength to detect more lines
+        minLineLength=min(lx, ly) // 2,
+        # Increased maxLineGap to connect fragmented lines
+        maxLineGap=max(dx, dy) * 2,
     )
 
     # Draw the detected lines on the original image for visualization
@@ -71,7 +78,7 @@ def find_lines(
         lines=lines,
         edges=edges,
         lines_mask=lines_mask,
-        _xy_scale=xy_scale,
+        _wh_scale=wh_scale,
         _screen_fraction=screen_fraction,
         _binary_threshold=binary_threshold,
         _hough_threshold=hough_threshold,

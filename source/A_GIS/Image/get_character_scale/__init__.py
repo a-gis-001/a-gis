@@ -25,7 +25,7 @@ def get_character_scale(
 
     debug_images = []
     min_areas = []
-    xy_scales = []
+    wh_scales = []
     widths = []
     heights = []
     min_areas.append(min_area)
@@ -38,8 +38,8 @@ def get_character_scale(
 
         for contour in character_contours:
             _, _, w, h = cv2.boundingRect(contour)
-        widths.append(w)
-        heights.append(h)
+            widths.append(w)
+            heights.append(h)
 
         # Visualize detected characters
         d = numpy.array(image)
@@ -56,15 +56,17 @@ def get_character_scale(
             min_area *= min_area_multiplier
 
         debug_images.append(d)
-        xy_scales.append([avg_width, avg_height])
+        wh_scales.append([avg_width, avg_height])
         min_areas.append(min_area)
         if math.fabs(min_areas[-1] / min_areas[-2] - 1) < tolerance:
             break
 
     return A_GIS.Code.make_struct(
-        xy_scale=xy_scales[-1],
-        xy_scales=xy_scales,
+        wh_scale=wh_scales[-1],
+        wh_scales=wh_scales,
         binary_image=binary,
+        widths=widths,
+        heights=heights,
         debug_images=debug_images,
         min_areas=min_areas,
         _min_area=min_area,
