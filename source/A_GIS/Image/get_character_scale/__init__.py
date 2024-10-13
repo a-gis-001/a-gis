@@ -42,7 +42,7 @@ def get_character_scale(
         heights.append(h)
 
         # Visualize detected characters
-        d = cv2.cvtColor(numpy.array(image), cv2.COLOR_GRAY2BGR)
+        d = numpy.array(image)
         for contour in character_contours:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(d, (x, y), (x + w, y + h), (0, 255, 0), 1)

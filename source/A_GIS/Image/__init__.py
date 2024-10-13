@@ -8,6 +8,7 @@ from .glob import glob
 from .new import new
 from .open import open
 from .parse_receipt import parse_receipt
+from .remove_by_mask import remove_by_mask
 from .show import show
 from .validate import validate
 

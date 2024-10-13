@@ -8,11 +8,16 @@ def show(
     grid=False,
     nticks=5,
     nlabels=2,
+    show=True,
+    dpi=400,
     **kwargs,
 ):
     """Show an image for convenience and profit."""
     import numpy
     import matplotlib.pyplot
+    import io
+    import PIL
+    import A_GIS.Code.make_struct
 
     # Ensure valid values for nticks and nticklabels
     if nticks <= 0:
@@ -69,5 +74,19 @@ def show(
             which="both", linestyle=":", linewidth=0.5, color="gray", alpha=0.5
         )
 
-    matplotlib.pyplot.imshow(image, **kwargs)
-    matplotlib.pyplot.show()
+    # Adjust margins while keeping ticks and labels
+    fig.subplots_adjust(left=0.02, right=0.98, top=0.98, bottom=0.02)  # Adjust to reduce whitespace
+    ax.margins(0, 0)  # Remove additional axes margins
+
+    # Display the image with reduced margins
+    ax.imshow(image, **kwargs)
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format='jpeg', bbox_inches='tight', pad_inches=0.1, dpi=dpi)  # Save without excess padding
+    buf.seek(0)
+    plot_image = PIL.Image.open(buf)
+
+    if show:
+        matplotlib.pyplot.show()
+
+    return A_GIS.Code.make_struct(image=plot_image, figure=fig, _image=image)
