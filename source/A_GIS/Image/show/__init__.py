@@ -31,7 +31,10 @@ def show(
         raise ValueError("nlabels must be greater than 1.")
 
     # Set up plot with modified axes based on character size
-    fig, ax = matplotlib.pyplot.subplots(figsize=(figsize, figsize))
+    w,h = image.size
+    pw = w*figsize/h
+    ph = figsize
+    fig, ax = matplotlib.pyplot.subplots(figsize=(pw, ph))
 
     data = numpy.array(image)
 
@@ -74,10 +77,6 @@ def show(
             alpha=0.2,
         )
 
-    # Adjust margins while keeping ticks and labels
-    fig.subplots_adjust(
-        left=0.02, right=0.98, top=0.98, bottom=0.02
-    )  # Adjust to reduce whitespace
     ax.margins(0, 0)  # Remove additional axes margins
 
     # Display the image with reduced margins
@@ -85,7 +84,7 @@ def show(
 
     buf = io.BytesIO()
     fig.savefig(
-        buf, format="jpeg", bbox_inches="tight", pad_inches=0.1, dpi=dpi
+        buf, format="jpeg", bbox_inches="tight", pad_inches=0.0, dpi=dpi
     )  # Save without excess padding
     buf.seek(0)
     plot_image = PIL.Image.open(buf)
