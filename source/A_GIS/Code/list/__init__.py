@@ -4,38 +4,42 @@ def list(
     ignore=["_", "tests"],
     functions_only: bool = False,
 ):
-    """Retrieve package modules and sub-packages with filtering.
+    """Retrieve modules and sub-packages within a package.
 
-    This function retrieves all modules and sub-packages from a given
-    Python package, as specified by `package_name`. It filters out any
-    modules or sub-packages that match the patterns in the `ignore`
-    list. Additionally, if `functions_only` is True, it will only
-    include items identified as functions using `A_GIS.Code.guess_type`.
-    The resulting data structure contains the full names and paths of
-    the included modules and packages.
+    The `list` function takes three optional parameters that allow you
+    to specify the package to list, a list of names to ignore during the
+    listing process, and a flag to consider only functions within the
+    package. It returns a structured representation of the found modules
+    and sub-packages.
 
     Args:
         package_name (str, optional):
-            The name of the package to list. Defaults to "A_GIS".
-        ignore (list, optional):
-            A list of patterns to exclude from the listing. Defaults to
-            ["_", "tests"].
+            The name of the package to be listed. Defaults to "A_GIS".
+        ignore (list of str, optional):
+            A list of names to be ignored during the listing process.
+            Defaults to ["_", "tests"].
         functions_only (bool, optional):
-            If True, only include items that are identified as
-            functions. Defaults to False.
+            If True, only functions within the package will be listed.
+            Defaults to False.
 
     Returns:
         dataclass:
             With the following attributes
 
-            - result (dict): A dictionary mapping full module names to
-              their paths.
-            - package_name (str): The name of the package from which
-              modules and sub-packages were listed.
-            - ignore (list): A list of patterns that were used to
-              exclude certain items.
-            - ignored (list): A list of full module names that were
-              excluded based on the `ignore` patterns.
+            - result (dict): A dictionary with module or sub-package
+              names as keys and their corresponding file paths as
+              values.
+            - package_name (str): The name of the root package whose
+              contents are being listed.
+            - ignore (list of str): A list of names that were ignored
+              during the listing process.
+            - ignored (list of str): A list of names that were found
+              but were ignored due to the `ignore` parameter.
+
+    Raises:
+        ValueError:
+            If a module or sub-package cannot be found using the
+            provided file path.
     """
 
     import importlib
