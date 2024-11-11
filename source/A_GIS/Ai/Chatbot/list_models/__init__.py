@@ -1,4 +1,4 @@
-def list_models():
+def list_models(*, only_with_tools: bool = False):
     """Return a list of installed OLLaMA model names.
 
     This function interfaces with the OLLaMA library to obtain a list of
@@ -12,5 +12,14 @@ def list_models():
             OLLaMA models.
     """
     import ollama
+    import A_GIS.Ai.Chatbot.get_info
 
-    return [entry["model"] for entry in ollama.list()["models"]]
+    all_models = [entry["model"] for entry in ollama.list()["models"]]
+    models = []
+    for model in all_models:
+        if only_with_tools:
+            if not A_GIS.Ai.Chatbot.get_info(model=model).has_tools:
+                continue
+        models.append(model)
+
+    return models
