@@ -31,8 +31,8 @@ def show(
         raise ValueError("nlabels must be greater than 1.")
 
     # Set up plot with modified axes based on character size
-    w,h = image.size
-    pw = w*figsize/h
+    w, h = image.size
+    pw = w * figsize / h
     ph = figsize
     fig, ax = matplotlib.pyplot.subplots(figsize=(pw, ph))
 
