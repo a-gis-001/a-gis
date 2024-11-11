@@ -11,6 +11,7 @@ from .get import get
 from .get_git_status import get_git_status
 from .move import move
 from .read import read
+from .recommend import recommend
 from .substitute_imports import substitute_imports
 from .to_string import to_string
 from .touch import touch
@@ -19,5 +20,6 @@ from .touch import touch
 from ._Unit import _Unit
 
 # Packages
+from . import Example
 from . import Name
 from . import Test
