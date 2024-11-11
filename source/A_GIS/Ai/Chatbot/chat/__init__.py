@@ -5,40 +5,43 @@ def chat(
     images=[],
     **kwargs,
 ):
-    """Send a message to start conversation with specified chatbot.
+    """Start a conversation with an AI chatbot.
 
-    This function allows users to engage in a chat session with an AI
-    chatbot by sending a message and receiving a response. The chatbot's
-    class must be an instance of `A_GIS.Ai.Chatbot._Chatbot`, which is
-    expected to have a method called `chat` that takes a message and
-    optional keyword arguments (`**kwargs`) and returns a response. The
-    response is encapsulated within a dataclass containing the following
-    attributes:
-
-    Chatbots are created with `A_GIS.Ai.Chatbot.init` and support either
-    functional `A_GIS.Ai.Chatbot.chat(chatbot=chatbot,message=message)`
-    calls or object-oriented `chatbot.chat(message=message)` calls.
+    This function facilitates communication with an instance of the
+    `Chatbot` class, allowing the user to send both text and image
+    content for processing. The chatbot responds with text, potentially
+    interacts with tools if applicable, and returns a structured
+    response containing all relevant information.
 
     Args:
         chatbot (A_GIS.Ai.Chatbot._Chatbot):
-            An instance of the AI chatbot class that will handle the
+            An instance of the AI chatbot that will handle the
             conversation.
         message (str):
-            The text message to send to the chatbot.
-        **kwargs:
-            Additional keyword arguments that may be used by the chatbot
-            to process the message.
+            The text message to be sent to the chatbot for processing
+            and response.
+        images (list(str), optional):
+            A list of image file paths or URLs to be sent alongside the
+            message. If an empty list, no images are sent.
+        **kwargs (dict, optional):
+            Additional keyword arguments that may be accepted by the
+            chatbot for processing.
 
     Returns:
         dataclass:
-            A named tuple with the following attributes:
+            A structured response object with the following attributes:
 
-            - messages (list of str): All messages exchanged during
-              the conversation.
-            - response (str): The final response from the chatbot.
-            - tool_response (Optional[str]): Additional response if
-              the chatbot is also a tool, or `None`.
+            - messages (list(str)): A list of all messages exchanged
+              between the user and the chatbot during this session,
+              including any images sent.
+            - response (str): The text response from the chatbot based
+              on the message and images provided.
+            - tool_response (str|None, optional): The response from
+              any tools invoked by the chatbot as part of processing
+              the message or images. This will be `None` if no tools
+              were used.
     """
+    import copy
 
     # Return the response of the chat. Note that the chatbot's messages sent
     # as an argument are modified.
@@ -46,4 +49,7 @@ def chat(
     #   - messages: list of messages at exit
     #   - response: response to chat
     #   - tool_response: response to tool request (or None if no tools)
-    return chatbot.chat(message=message, images=images, **kwargs)
+    chatbot2 = copy.deepcopy(chatbot)
+    response = chatbot2.chat(message=message, images=images, **kwargs)
+    response.chatbot = chatbot2
+    return response
