@@ -164,7 +164,7 @@ def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS ro
     for name in names:
         name, path = A_GIS.Cli.get_name_and_path(arg=name)
         console = rich.console.Console(width=WIDTH)
-        console.print(f"Replacing docstring for unit name={name} at path={path} ...")
+        console.print(f"Replacing docstring for [bold]{name}[/bold] at path={path} ...")
 
         # Generate a docstring.
         code = A_GIS.File.read(file=path)
@@ -175,7 +175,7 @@ def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS ro
         console.print(panel)
 
         # Write the new docstring into the file.
-        console.print(f"Writing new docstring to {path} ...")
+        console.print(f"Writing new docstring to path={path} ...")
         code = A_GIS.Code.replace_docstring(code=code, docstring=docstring)
         A_GIS.File.write(content=code, file=path)
 
@@ -196,7 +196,7 @@ def touch(name: "unit name"):
 
     # Touch the file.
     console = rich.console.Console(width=WIDTH)
-    console.print(f"Touching name={name}")
+    console.print(f"Touching [bold]{name}[/bold]")
     path = A_GIS.Code.Unit.touch(name=name)
 
     # Update all the files, doing formatting and performing checks.
@@ -273,27 +273,25 @@ def logserver(port: "port to use" = 9999):
 cli.add_command(logserver)
 
 
-# Define the rate command.
+# Define the add command.
 @click.command()
 @A_GIS.Cli.register
-def rate(name: "unit name"):
-    """Use AI to rate a code component"""
+def add(name: "unit name"):
+    """Wrapper around git add"""
 
     # Get the path and name.
     name, path = A_GIS.Cli.get_name_and_path(arg=name)
     console = rich.console.Console(width=WIDTH)
-    console.print(f"Rating unit name={name} at path={path} ...")
+    path0 = str(path.parent)
+    root = A_GIS.Code.find_root(path=path)
+    console.print(f"Adding to staged package/unit [bold]{name}[/bold] at path={path0} ...")
 
-    # Generate a rate.
-    code = A_GIS.File.read(file=path)
-    rate = A_GIS.Code.Docstring.fix_short_description(name=name, code=code)
-    panel = rich.panel.Panel(
-        rate, title=f"Rating", expand=True, border_style="bold cyan"
-    )
+    A_GIS.Cli.run_git(mode='add',args=[str(path0)])
+    panel = A_GIS.Cli.update_and_show_git_status(root=root)
     console.print(panel)
 
 
-cli.add_command(rate)
+cli.add_command(add)
 
 
 # Define the distill command.
@@ -322,7 +320,6 @@ def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just genera
 
     # Show current status.
     root = A_GIS.Code.find_root(path=root)
-    os.chdir(root)
     console = rich.console.Console(width=WIDTH)
     console.print(f"Generating commit message for A_GIS at root={root} ...")
     panel = A_GIS.Cli.update_and_show_git_status(root=root)
