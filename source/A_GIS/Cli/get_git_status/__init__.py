@@ -1,41 +1,26 @@
 def get_git_status(*, root: str):
-    """Get the git status of a specified directory.
+    """Return the status of a Git repository.
 
-    This function runs a 'git status' command for a given root directory and returns
-    the result as a styled rich Text object within a Panel. The output is also formatted to remove tabs.
+    This function interacts with the Git version control system to
+    obtain the current status of changes, stashes, and other
+    modifications within a repository located at the given `root`
+    directory. It executes the 'git status' command and returns the
+    output as a string or bytes object, depending on how the result is
+    encoded by `A_GIS.Cli.run_git`.
 
     Args:
-        root (str): The root directory where the git status should be checked.
-
-    Raises:
-        None
+        root (str):
+            The path to the Git repository for which the status is to be
+            retrieved.
 
     Returns:
-        rich.panel.Panel: A styled panel containing the git status output for the specified directory.
+        :
+            str or bytes: A string or bytes object representing the
+            output of the 'git status' command, including all lines of
+            status information from the Git repository at the specified
+            `root` directory.
     """
 
-    import subprocess
-    import rich
+    import A_GIS.Cli.run_git
 
-    command = ["git", "-c", "color.ui=always", "status", f"{root}"]
-    completed_process = subprocess.run(
-        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-    )
-
-    # Get the command output
-    command_output = completed_process.stdout
-    lines = command_output.splitlines()
-    stripped_lines = [line.rstrip() for line in lines]
-    command_output = "\n".join(stripped_lines)
-
-    command_output = command_output.replace("\t", "    ")
-    # Create a Text object with the command output for styling
-    output_text = rich.text.Text.from_ansi(command_output)
-    panel = rich.panel.Panel(
-        output_text,
-        title=f"git status {root}",
-        expand=True,
-        border_style="bold cyan",
-    )
-
-    return panel
+    return A_GIS.Cli.run_git(mode="status", args=[str(root)])
