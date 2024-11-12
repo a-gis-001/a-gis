@@ -19,7 +19,7 @@ def get_name_and_path(arg: str = ""):
         tuple: A tuple containing two elements - the unit name and
                its corresponding path.
     """
-
+    import pathlib
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.Code.Unit.Name.init_from_path
 
