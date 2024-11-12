@@ -9,6 +9,11 @@ def diff(*, initial: str, final: str):
     encapsulated within an instance of a struct created by
     `A_GIS.Code.make_struct`.
 
+    In a notebook, you can display html like this:
+
+    from IPython.display import display, HTML
+    display(HTML(result.html))
+
     Args:
         initial (str):
             The original text or content to compare against.
