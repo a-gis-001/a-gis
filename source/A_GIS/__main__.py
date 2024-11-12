@@ -326,7 +326,7 @@ def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just genera
     console.print(panel)
 
     # Get the commit message.
-    message = A_GIS.Code.Commit.generate_message(do_commit=not dry_run)
+    message = A_GIS.Code.CommitMessage.generate(do_commit=not dry_run)
     panel = rich.panel.Panel(
         message, title=f"commit message", expand=True, border_style="bold cyan"
     )
