@@ -79,6 +79,6 @@ def generate(*, do_commit=False, diff_args: list = ["--staged"], **kwargs):
     remaining_text = A_GIS.Text.reformat(text=remaining_text).strip()
     message = f"{first_sentence}\n\n{remaining_text}\n"
     if do_commit:
-        A_GIS.Cli.run_git(mode="commmit", args=["-m", message])
+        A_GIS.Cli.run_git(mode="commit", args=["-m", message])
 
     return message

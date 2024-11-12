@@ -44,37 +44,37 @@ def run_git(
     import subprocess
     import A_GIS.Code.make_struct
 
-    command = ["git"]
-    if return_panel:
-        command.extend(["-c", "color.ui=always"])
-    command.extend([mode, *args])
+    # Assemble the git command.
+    command = [
+        "git",
+        *(("-c", "color.ui=always") if return_panel else ()),
+        mode,
+        *args,
+    ]
 
+    # Run the command.
     completed_process = subprocess.run(
         command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
     )
 
-    # Get the command output
-    command_output = completed_process.stdout
-    lines = command_output.splitlines()
-    stripped_lines = [line.rstrip() for line in lines]
-    command_output = "\n".join(stripped_lines)
+    # Get a cleaned up version of the output.
+    command_output = "\n".join(
+        line.rstrip() for line in completed_process.stdout.splitlines()
+    ).replace("\t", "    ")
 
-    command_output = command_output.replace("\t", "    ")
-
+    # Assemble the panel, if requested.
     panel = None
     if return_panel:
         import rich
 
-        # Create a Text object with the command output for styling
-        output_text = rich.text.Text.from_ansi(command_output)
-        args_str = " ".join(args)
         panel = rich.panel.Panel(
-            output_text,
-            title=f"git {mode} {args_str}",
+            rich.text.Text.from_ansi(command_output),
+            title=f"git {mode} {' '.join(args)}",
             expand=True,
             border_style="bold cyan",
         )
 
+    # Return the output.
     return A_GIS.Code.make_struct(
         panel=panel,
         output=command_output,
