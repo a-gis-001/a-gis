@@ -27,3 +27,7 @@ from . import Commit
 from . import Docstring
 from . import Tree
 from . import Unit
+
+
+#Temporary add from A_GIS.Code.Tree.update_path_to_package
+from .get_source import get_source
