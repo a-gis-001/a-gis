@@ -24,7 +24,7 @@ def get_source(*, entity, depth=0, max_depth=2):
             A dictionary with keys as the identifiers of the modules or
             functions and values as strings containing the source code
             or error messages.
-        
+
             - If `entity` is a module, the dictionary will have keys
               as the names of classes, functions, and methods within
               that module, and their corresponding source codes.
@@ -43,6 +43,7 @@ def get_source(*, entity, depth=0, max_depth=2):
     import inspect
     import ast
     import importlib
+
     sources = {}
 
     try:
@@ -52,7 +53,7 @@ def get_source(*, entity, depth=0, max_depth=2):
     except ModuleNotFoundError:
         try:
             # If not a module, split the entity into module and function parts
-            module_name, func_name = entity.rsplit('.', 1)
+            module_name, func_name = entity.rsplit(".", 1)
             module = importlib.import_module(module_name)
         except ModuleNotFoundError as e:
             return {entity: f"Module not found: {e}"}
@@ -82,11 +83,15 @@ def get_source(*, entity, depth=0, max_depth=2):
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Name):  # Direct function call
                     called_functions.append(node.func.id)
-                elif isinstance(node.func, ast.Attribute):  # Method or attribute access
+                elif isinstance(
+                    node.func, ast.Attribute
+                ):  # Method or attribute access
                     # Handle cases like `obj.method` or `module.func`
                     try:
-                        if hasattr(node.func.value, 'id'):
-                            called_functions.append(f"{node.func.value.id}.{node.func.attr}")
+                        if hasattr(node.func.value, "id"):
+                            called_functions.append(
+                                f"{node.func.value.id}.{node.func.attr}"
+                            )
                     except AttributeError:
                         pass
         return called_functions
@@ -102,25 +107,35 @@ def get_source(*, entity, depth=0, max_depth=2):
             for called in get_called_functions(func_source):
                 try:
                     # Try to parse `module.function` format
-                    if '.' in called:
-                        called_module_name, called_func_name = called.rsplit('.', 1)
+                    if "." in called:
+                        called_module_name, called_func_name = called.rsplit(
+                            ".", 1
+                        )
                         try:
-                            called_module = importlib.import_module(called_module_name)
+                            called_module = importlib.import_module(
+                                called_module_name
+                            )
                         except ModuleNotFoundError:
                             # Module not found, skip this function
-                            sources[called] = f"Module {called_module_name} not found."
+                            sources[called] = (
+                                f"Module {called_module_name} not found."
+                            )
                             continue
-                        retrieve_sources(called_func_name, called_module, depth + 1)
+                        retrieve_sources(
+                            called_func_name, called_module, depth + 1
+                        )
                     else:
                         # Handle standalone functions if available
                         retrieve_sources(called, module, depth + 1)
                 except Exception as e:
-                    # Handle functions that are not accessible or can't be imported
+                    # Handle functions that are not accessible or can't be
+                    # imported
                     sources[called] = f"Unable to retrieve source: {e}"
         except Exception as e:
             sources[func_name] = f"Unable to retrieve source: {e}"
 
-    # Start the recursive source retrieval from the main function or entire module
+    # Start the recursive source retrieval from the main function or entire
+    # module
     if func_name:
         retrieve_sources(func_name, module, depth)
     else:

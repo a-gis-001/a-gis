@@ -63,8 +63,6 @@ def recurse(
                     tree[entry.name]["_type"] = "package"
                 # Add file annotations.
                 for x in tree:
-                    if x.startswith("_"):
-                        continue
                     tree[x]["_file"] = str(pkg_file)
                 pkg_tree.update(**tree)
 

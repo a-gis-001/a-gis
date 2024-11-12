@@ -1,6 +1,4 @@
-def generate_message(
-    *, do_commit=False, diff_args: list = ["--staged"], **kwargs
-):
+def generate(*, do_commit=False, diff_args: list = ["--staged"], **kwargs):
     """Generate a commit message based on git diff.
 
     This function leverages an AI chatbot to parse the output of a git diff and
@@ -24,7 +22,7 @@ def generate_message(
         if `do_commit` is True.
     """
 
-    import A_GIS.Code.Commit.get_git_diff
+    import A_GIS.Cli.run_git
     import A_GIS.Ai.Chatbot.init
     import textwrap
 
@@ -61,11 +59,12 @@ def generate_message(
         **kwargs,
     )
 
-    message = A_GIS.Code.Commit.get_git_diff(args=diff_args)
-    if message == "":
+    git_diff_output = A_GIS.Cli.run_git(mode="diff", args=diff_args).output
+    if git_diff_output == "":
         raise ValueError(f"git diff with args={diff_args} was empty!")
-    response = coder.chat(message=message).response
-    content = response["message"]["content"]
+    content = coder.chat(message=git_diff_output).response["message"][
+        "content"
+    ]
 
     output = A_GIS.Text.get_between_tags(
         text=content, begin_tag="<output>", end_tag="</output>"
@@ -80,14 +79,6 @@ def generate_message(
     remaining_text = A_GIS.Text.reformat(text=remaining_text).strip()
     message = f"{first_sentence}\n\n{remaining_text}\n"
     if do_commit:
-        import subprocess
-
-        command = ["git", "commit", "-m", message]
-        completed_process = subprocess.run(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-        )
+        A_GIS.Cli.run_git(mode="commmit", args=["-m", message])
 
     return message

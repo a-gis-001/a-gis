@@ -8,6 +8,7 @@ from .extract_python import extract_python
 from .find_root import find_root
 from .generate import generate
 from .get_schema import get_schema
+from .get_source import get_source
 from .guess_name import guess_name
 from .guess_type import guess_type
 from .highlight import highlight
@@ -23,11 +24,7 @@ from .replace_docstring import replace_docstring
 from .replace_from_imports import replace_from_imports
 
 # Packages
-from . import Commit
+from . import CommitMessage
 from . import Docstring
 from . import Tree
 from . import Unit
-
-
-#Temporary add from A_GIS.Code.Tree.update_path_to_package
-from .get_source import get_source

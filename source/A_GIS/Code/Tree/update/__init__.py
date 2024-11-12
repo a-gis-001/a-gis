@@ -23,10 +23,10 @@ def update(*, tree: dict):
     is_package = False
     if "_type" in tree:
         if tree["_type"] == "package":
-            is_package=True
+            is_package = True
             imports = {"Functions": [], "Classes": [], "Packages": []}
     for name in tree:
-        if name.startswith('_'):
+        if name in set(["_type", "_file"]):
             continue
         if is_package:
             if tree[name]["_type"] == "package":

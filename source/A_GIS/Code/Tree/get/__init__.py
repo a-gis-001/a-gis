@@ -40,7 +40,6 @@ def get(
         def __init__(self):
             self.hierarchy = {}
             self.current_scope = self.hierarchy
-            self.hierarchy["_imports"] = []
 
         def visit_ClassDef(self, node):
             if ignore_class.match(node.name):
@@ -64,16 +63,6 @@ def get(
             for child_node in node.body:
                 self.visit(child_node)
             self.current_scope = previous_scope
-
-        def visit_Import(self, node):
-            for alias in node.names:
-                self.hierarchy["_imports"].append(alias.name)
-
-        def visit_ImportFrom(self, node):
-            module = node.module if node.module else ""
-            for alias in node.names:
-                import_name = f"{module}.{alias.name}" if module else alias.name
-                self.hierarchy["_imports"].append(import_name)
 
     nodes = ast.parse(code)
     hierarchy_visitor = __HierarchyVisitor()
