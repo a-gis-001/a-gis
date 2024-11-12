@@ -6,33 +6,35 @@ def get(
     ignore_class=re.compile("^__"),
     ignore_function=re.compile("^__"),
 ) -> dict:
-    """Extract a hierarchical structure of Python code.
+    """Extract Python code hierarchy of classes and functions.
 
     This function takes a string containing Python code and returns a
-    dictionary representing the hierarchy of classes and functions
-    defined in the code. It uses the `ast` module to parse the code and
-    traverses the abstract syntax tree (AST) to build the hierarchy.
-    Classes and functions that match the provided regular expression
-    patterns (`ignore_class` and `ignore_function`) are ignored.
+    nested dictionary representing the hierarchy of classes and
+    functions defined in the code. The hierarchy is constructed by
+    traversing the abstract syntax tree (AST) of the code using a custom
+    `NodeVisitor` class. Classes and functions that match the provided
+    regular expressions are ignored during this process.
 
     Args:
         code (str):
             A string containing Python code to be parsed.
         ignore_class (re.Pattern, optional):
-            A compiled regular expression pattern used to ignore classes
-            whose names match this pattern. Defaults to ignoring all
-            classes starting with double underscores.
+            A compiled regular expression pattern used to filter out
+            classes from the hierarchy. Defaults to `re.compile("^__")`,
+            which ignores all classes starting with double underscores.
         ignore_function (re.Pattern, optional):
-            A compiled regular expression pattern used to ignore
-            functions whose names match this pattern. Defaults to
-            ignoring all functions starting with double underscores.
+            A compiled regular expression pattern used to filter out
+            functions from the hierarchy. Defaults to
+            `re.compile("^__")`, which ignores all functions starting
+            with double underscores.
 
     Returns:
         dict:
-            A dictionary representing the hierarchical structure of
-            classes and functions in the provided code. The dictionary
-            includes an "_imports" key listing all imported modules or
-            objects.
+            A nested dictionary representing the hierarchical structure
+            of classes and functions in the provided code. Each class
+            and function is represented as a key in the dictionary, with
+            its value being another dictionary containing its type
+            (`_type`) and any nested structures.
     """
     import ast
 

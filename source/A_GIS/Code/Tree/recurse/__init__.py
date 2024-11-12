@@ -61,6 +61,7 @@ def recurse(
                         path=pathlib.Path(entry), _root0=_root0
                     )
                     tree[entry.name]["_type"] = "package"
+
                 # Add file annotations.
                 for x in tree:
                     tree[x]["_file"] = str(pkg_file)
