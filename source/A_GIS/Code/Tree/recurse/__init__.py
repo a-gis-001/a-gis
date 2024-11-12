@@ -4,23 +4,29 @@ def recurse(
     ignore_list: set[str] = {"tests"},
     _root0: type["pathlib.Path"] = None,
 ) -> dict:
-    """
-    Generate a hierarchical dictionary of code structures within a directory.
+    """Build a package tree by recursively traversing a directory.
 
-    The function traverses a directory and its subdirectories to build a tree
-    of the Python code present in each. It skips directories and files specified
-    in the ignore list and processes Python files and packages.
+    This function recursively explores a given directory and constructs
+    a dictionary representing the directory's package structure. It
+    ignores specified directories and files starting with double
+    underscores (`__`). For each directory, it checks for an
+    `__init__.py` file to determine if it is a package. If found, it
+    further recurses into that directory to build its sub-structure.
 
     Args:
-        path: A pathlib.Path object representing the directory to traverse.
-        ignore_list: An optional set of strings representing directory or file names
-                     to ignore during traversal.
+        path (pathlib.Path):
+            The root directory path to start the recursion.
+        ignore_list (set[str], optional):
+            A set of directory names to be ignored during the traversal.
+            Defaults to `{"tests"}`.
+        _root0 (pathlib.Path, optional):
+            The initial root path used internally for recursive calls.
+            Defaults to `None`.
 
     Returns:
-        A dictionary representing the hierarchical structure of the code.
-        Directories and Python files are keys, with their respective structures
-        or content as values.
-
+        dict:
+            A dictionary representing the package structure with
+            directory and file information.
     """
     import A_GIS.File.read
     import A_GIS.Code.Tree.get
@@ -57,6 +63,8 @@ def recurse(
                     tree[entry.name]["_type"] = "package"
                 # Add file annotations.
                 for x in tree:
+                    if x.startswith("_"):
+                        continue
                     tree[x]["_file"] = str(pkg_file)
                 pkg_tree.update(**tree)
 
