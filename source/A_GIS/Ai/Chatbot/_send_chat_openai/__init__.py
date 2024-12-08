@@ -10,7 +10,7 @@ def _send_chat_openai(
     api_key = os.environ.get("OPENAI_API_KEY")
     client = openai.OpenAI(api_key=api_key)
 
-    available_models = ["gpt-4-turbo-preview", "gpt-3.5-turbo"]
+    available_models = ["gpt-4o", "gpt-4o-mini"]
     openai_model = ""
     for available_model in available_models:
         if available_model.startswith(model):
