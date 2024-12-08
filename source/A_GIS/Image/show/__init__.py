@@ -11,11 +11,13 @@ def show(
     show=True,
     dpi=400,
     close=True,
+    boxes=None,
     **kwargs,
 ):
     """Show an image for convenience and profit."""
     import numpy
     import matplotlib.pyplot
+    import matplotlib.patches
     import io
     import PIL
     import A_GIS.Code.make_struct
@@ -60,8 +62,8 @@ def show(
     ax.set_ylabel(ylabel)
 
     # Add a light dotted grid for minor ticks and darker grid for major ticks
+    radius = math.sqrt(wh_scale[0] * wh_scale[1])
     if grid:
-        radius = math.sqrt(wh_scale[0] * wh_scale[1])
         ax.grid(
             which="major",
             linestyle="-",
@@ -78,6 +80,34 @@ def show(
         )
 
     ax.margins(0, 0)  # Remove additional axes margins
+
+    # Draw bounding boxes if provided
+    if boxes is not None:
+        for box in boxes:
+            ul_x, ul_y = box[0]  # Upper-left corner coordinates
+            lr_x, lr_y = box[1]  # Lower-right corner coordinates
+            color = box[2]
+            linewidth = box[3] if len(box) >= 4 else 0.1 * radius
+            bw = lr_x - ul_x
+            bh = lr_y - ul_y
+            sw = wh_scale[0]
+            sh = wh_scale[1]
+            ax.plot(
+                ul_x * sw,
+                ul_y * sh,
+                marker="o",
+                color=color,
+                markersize=5 * linewidth,
+            )
+            rect = matplotlib.patches.Rectangle(
+                (ul_x * sw, ul_y * sh),
+                bw * sw,
+                bh * sh,
+                linewidth=linewidth,
+                edgecolor=color,
+                facecolor="none",
+            )
+            ax.add_patch(rect)
 
     # Display the image with reduced margins
     ax.imshow(image, **kwargs)
