@@ -5,6 +5,7 @@ def download(
     *,
     url: str,
     output_folder: pathlib.Path,
+    filename: pathlib.Path = None,
     session: requests.Session = None,
     start_from_scratch: bool = False,
 ):
@@ -19,11 +20,32 @@ def download(
     """
     import tqdm
     import os
+    import mimetypes
+    # Update inputs.
+    output_folder = pathlib.Path(output_folder)
+
+    # Get filename or derive from URL
+    if filename is None:
+        filename = pathlib.Path(url.rsplit("/", 1)[1])
+    filename = pathlib.Path(filename)
 
     if session is None:
         session = requests.Session()
 
-    filename = pathlib.Path(url.rsplit("/", 1)[1])
+
+    if not filename.suffix:
+        # Get the correct extension if it's missing
+        try:
+            get_resp = session.get(url, stream=True, timeout=10)
+            get_resp.raise_for_status()
+            content_type = get_resp.headers.get("Content-Type")
+            if content_type:
+                ext = mimetypes.guess_extension(content_type.split(";")[0])
+                if ext:
+                    filename = filename.with_suffix(ext)
+        except requests.exceptions.RequestException as e:
+            print(f"Warning: Failed to determine file extension. {e}")
+
     output_path = output_folder / filename
     headers = {}
     mode = "wb"
