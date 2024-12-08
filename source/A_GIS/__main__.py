@@ -221,26 +221,24 @@ cli.add_command(touch)
 def name(description: "unit description", tries: "number of tries" = 3):
     """Generate a new name from a description"""
 
-    # Try three times.
     console = rich.console.Console(width=WIDTH)
     console.print(
         f"Initiating AI name generation with description='{description}' tries={tries}"
     )
+
+    # Try a few times.
     names = []
     for i in range(tries):
-        name = A_GIS.Code.Unit.Name.generate(description=description, temperature=1.5)
+        x = A_GIS.Code.Unit.Name.generate(description=description)
         console.print(f"AI generated name={name}")
-        if len(name) > len("A_GIS."):
-            names.append(name)
-        else:
-            console.print(f"Discarding name={name} for improper format")
+        if len(x.names) > 0:
+            names = x.names
+            break
 
-    console.print(f"Entering final name selection with suggestions={names}")
-    name = A_GIS.Code.Unit.Name.generate(
-        description=description, suggestions=names, temperature=0.5
-    )
-    console.print(f"name={name}")
-
+    if len(names)==0:
+        console.print("Could not get AI to give a valid name!")
+    else:
+        console.print(f"name={name}")
 
 cli.add_command(name)
 

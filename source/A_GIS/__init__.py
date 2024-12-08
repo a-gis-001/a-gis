@@ -8,6 +8,7 @@ from .resolve_function import resolve_function
 from . import Ai
 from . import Cli
 from . import Code
+from . import Conversation
 from . import Data
 from . import Document
 from . import File
