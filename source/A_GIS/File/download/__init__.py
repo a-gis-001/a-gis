@@ -21,6 +21,7 @@ def download(
     import tqdm
     import os
     import mimetypes
+
     # Update inputs.
     output_folder = pathlib.Path(output_folder)
 
@@ -31,7 +32,6 @@ def download(
 
     if session is None:
         session = requests.Session()
-
 
     if not filename.suffix:
         # Get the correct extension if it's missing
