@@ -46,11 +46,11 @@ def get_info(*, model: str):
             data = ollama.show(model=model)
             pattern = r"context_length['\"]\s*:\s*(\d+),"
             match = re.search(
-                pattern, str(data["model_info"]).replace("\n", " ")
+                pattern, str(data).replace("\n", " ")
             )
             if match:
                 context_length = int(match.group(1))
-            has_tools = data["template"].find(".Tools") >= 0
+            has_tools = str(data).index(".Tools") >= 0
 
         except BaseException:
             pass
