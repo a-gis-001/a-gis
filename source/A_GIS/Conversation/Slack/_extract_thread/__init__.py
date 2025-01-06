@@ -12,21 +12,24 @@ def _extract_thread(*, conversations, entry, model="qwq:latest"):
     def extract_indices(text):
         import re
 
-        pattern = r"\n\s*parts:\s*([0-9, \-]+)"
+        pattern = r"parts:\s*([0-9, \-]+)"
         match = re.search(pattern, text.lower())
 
         indices = []
         if match:
             indices_str = match.group(1)
             indices = [int(x.strip()) for x in indices_str.split(",")]
+        indices.append(0)
+        indices = sorted(set(indices))
         return indices
 
     chatbot = A_GIS.Ai.Chatbot.init(
-        model=model, num_ctx=10000, num_predict=10000
-    )
-
-    r = chatbot.chat(
-        message=f"""You will be shown a conversation on a messaging app split
+        model=model,
+        num_ctx=10000,
+        num_predict=10000,
+        mirostat=2,
+        temperature=0.5,
+        system=f"""You will be shown a conversation on a messaging app split
 into 'Parts'. Each part belongs to one 'thread'. There may be multiple 'threads' in the
 conversation, for example someone is talking about a problem compiling and someone else
 is asking about how to login to a specific machine.
@@ -80,16 +83,21 @@ part numbers of the thread which includes Part 0. For example:
     PARTS: -2,0,3
 
 Note, part 0 should always be in the list.
-
     """
     )
 
     text = ""
     for i, f in enumerate(conversations):
-        text += "## Part " + str(i - entry) + "\n" + f + "\n"
-    r2 = chatbot.chat(message=text)
-    x = r2.response["message"]["content"]
+        text += "\n## Part " + str(i - entry) + "\n" + f + "\n"
+    text +="---\nRemember that the your final line must be 'PARTS:', followed by the comma-separated parts of the thread related to part 0. Part 0 should always in the list."
+    print(text)
+    r = chatbot.chat(message=text)
+    x = r.response["message"]["content"]
+    print('---')
+    print(x)
+    print('---')
     o_indices = extract_indices(x)
+    print('PARTS:',o_indices)
     indices = numpy.array(o_indices) + entry
 
     return A_GIS.Code.make_struct(

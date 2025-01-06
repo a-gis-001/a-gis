@@ -138,7 +138,6 @@ def load_data(*, directory, channel, date, adjacent_range=[-0.5, 0.5]):
 
     if file_this.exists():
         messages_this = load_messages(file_this)
-        print(messages_this)
 
         if search_prev:
             file_prev, date_prev = find_adjacent(d0, channel, date, -1)
