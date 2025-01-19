@@ -27,6 +27,7 @@ import rich_click as click
 import rich.traceback
 import socket
 import subprocess
+import sys
 
 rich.traceback.install()
 
@@ -136,14 +137,40 @@ cli.add_command(catalog)
 # Define the list command.
 @click.command()
 @A_GIS.Cli.register
-def list(args: bool = True):
+@click.option("--color", type=bool, default=None, help="Force color output (default: auto-detect)")
+def list(tests: bool = False, mains: bool = False, local: bool = False, color: bool = None):
     """Show a list of all of A_GIS"""
     import A_GIS.Code.list
 
-    console = rich.console.Console(width=WIDTH)
-    for f in A_GIS.Code.list(ignore=["tests"]).result:
-        console.print(f)
+    # Auto-detect color support: enabled for TTY, disabled for redirected output
+    if color is None:
+        color = sys.stdout.isatty()
 
+    ignore=[]
+    if not tests:
+        ignore.append('tests')
+    if not mains:
+        ignore.append('__main__')
+    if not local:
+        ignore.append('_')
+
+    console = rich.console.Console(width=WIDTH, force_terminal=color)
+    for f in A_GIS.Code.list(ignore=ignore).result:
+        parts = f.split('.')  # Split by dots for qualified names
+        colored_text = rich.console.Text()
+
+        for i,part in enumerate(parts):
+            if part.islower():
+                colored_text.append(part, style="green")
+            elif part.startswith("_"):
+                colored_text.append(part, style="orange")
+            else:
+                colored_text.append(part)
+
+            if i < len(parts) - 1:
+                colored_text.append(".", style="white")
+
+        console.print(colored_text)
 
 cli.add_command(list)
 
