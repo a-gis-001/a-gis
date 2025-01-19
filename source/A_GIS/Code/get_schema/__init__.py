@@ -48,7 +48,9 @@ def get_schema(*, func_path: str):
     # Get the function description (docstring)
     docstring = A_GIS.Code.Docstring.init(text=func.__doc__)
     description = (
-        docstring.short_description + "\n\n" + docstring.long_description
+        docstring.short_description
+        + "\n\n"
+        + (docstring.long_description or "")
     )
     params_dict = {}
     for param in docstring.params:

@@ -83,21 +83,21 @@ part numbers of the thread which includes Part 0. For example:
     PARTS: -2,0,3
 
 Note, part 0 should always be in the list.
-    """
+    """,
     )
 
     text = ""
     for i, f in enumerate(conversations):
         text += "\n## Part " + str(i - entry) + "\n" + f + "\n"
-    text +="---\nRemember that the your final line must be 'PARTS:', followed by the comma-separated parts of the thread related to part 0. Part 0 should always in the list."
+    text += "---\nRemember that the your final line must be 'PARTS:', followed by the comma-separated parts of the thread related to part 0. Part 0 should always in the list."
     print(text)
     r = chatbot.chat(message=text)
     x = r.response["message"]["content"]
-    print('---')
+    print("---")
     print(x)
-    print('---')
+    print("---")
     o_indices = extract_indices(x)
-    print('PARTS:',o_indices)
+    print("PARTS:", o_indices)
     indices = numpy.array(o_indices) + entry
 
     return A_GIS.Code.make_struct(

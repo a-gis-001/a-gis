@@ -45,9 +45,7 @@ def get_info(*, model: str):
         try:
             data = ollama.show(model=model)
             pattern = r"context_length['\"]\s*:\s*(\d+),"
-            match = re.search(
-                pattern, str(data).replace("\n", " ")
-            )
+            match = re.search(pattern, str(data).replace("\n", " "))
             if match:
                 context_length = int(match.group(1))
             has_tools = str(data).index(".Tools") >= 0

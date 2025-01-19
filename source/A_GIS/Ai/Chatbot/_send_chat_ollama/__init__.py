@@ -18,7 +18,7 @@ def _send_chat_ollama(
     import A_GIS.Ai.Chatbot.get_info
     import A_GIS.Log.append
 
-    format = kwargs.pop('format', None)
+    format = kwargs.pop("format", None)
 
     # First round chat. If tools would be used, then will go to second round.
     response = ollama.chat(
