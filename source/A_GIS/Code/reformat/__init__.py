@@ -1,7 +1,8 @@
 def reformat(*, code: str) -> str:
     """Formats Python code using the autopep8 and black libraries.
 
-    This function takes a string of Python code as input, applies formatting with autopep8 and black, and returns the resulting formatted code.
+    This function takes a string of Python code as input, applies formatting with
+    autopep8 and black, and returns the resulting formatted code.
 
     Args:
         code (str): The Python code to be formatted.
