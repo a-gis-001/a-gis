@@ -14,9 +14,9 @@ def is_url(name: str):
               False otherwise.
     """
 
-    from urllib.parse import urlparse
+    import urllib
 
-    parsed_name = urlparse(str(name))
+    parsed_name = urllib.parse.urlparse(str(name))
     return bool(parsed_name.scheme) and parsed_name.scheme in [
         "http",
         "https",

@@ -27,7 +27,7 @@ def download(
     import hashlib
     import requests
     import tqdm
-    from requests.adapters import HTTPAdapter
+    import requests
 
     base = "https://huggingface.co"
 
@@ -37,11 +37,11 @@ def download(
             if max_retries:
                 self.session.mount(
                     "https://cdn-lfs.huggingface.co",
-                    HTTPAdapter(max_retries=max_retries),
+                    requests.adapters.HTTPAdapter(max_retries=max_retries),
                 )
                 self.session.mount(
                     "https://huggingface.co",
-                    HTTPAdapter(max_retries=max_retries),
+                    requests.adapters.HTTPAdapter(max_retries=max_retries),
                 )
             if (
                 os.getenv("HF_USER") is not None
