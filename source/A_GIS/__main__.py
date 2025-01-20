@@ -245,7 +245,7 @@ cli.add_command(touch)
 # Define the absorb command.
 @click.command()
 @A_GIS.Cli.register
-def absorb(file: "function to absorb"):
+def absorb(file: "function to absorb", *, model: "model name" = "qwq"):
     """Absorb a function into A_GIS"""
 
     console = rich.console.Console(width=WIDTH)
@@ -259,7 +259,7 @@ def absorb(file: "function to absorb"):
         )
         return
 
-    x = A_GIS.Code.Unit.Name.generate(description=code)
+    x = A_GIS.Code.Unit.Name.generate(description=code, model=model)
     if len(x.names)>0:
         found=False
         for name in x.names:

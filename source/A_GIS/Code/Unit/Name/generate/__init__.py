@@ -11,6 +11,7 @@ def generate(
     """Generate an A_GIS functional unit name using AI."""
     import ollama
     import re
+    import textwrap
     import A_GIS.catalog
     import A_GIS.Log.append
     import A_GIS.Text.add_indent
@@ -64,18 +65,6 @@ the description of the function calls for deleting, synonyms could be 'clear',
 
 Be careful about introducing unnecessary hierarchy for synonymous concepts.
 
-Shorter is better but you never respond with an empty result!
-
-You should think and discuss with yourself as much as necessary, but in the
-end you should emit 5 ranked function names with 1. being the best function name.
-Prefix your final list with FINAL LIST: in all capitals. For example:
-
-FINAL LIST:
-1. A_GIS.Code.simplify
-2. A_GIS.Code.reduce
-3. A_GIS.Code.optimize
-4. A_GIS.Code.Unit.simplify
-5. A_GIS.Code.Unit.Name.simplify
 """
 
     chatbot = A_GIS.Ai.Chatbot.init(
@@ -88,43 +77,48 @@ FINAL LIST:
     )
     x = chatbot.chat(
         message=f"""
-    Generate 5 synonomous names for a function that: {description}
-    Don't forget to put the final list after
-    FINAL LIST:
+Brainstorm at least 10 names for the following function:
+{description}
     """
+    )
+
+    x = chatbot.chat(
+        message=textwrap.dedent(
+            """
+        Now emit in JSON a list of at least 5 names, ranked in order of quality with
+        the first being the most fitting name according to the rules. Prefer generic to specific
+        categories for submodules. Avoid duplicating words in the hierarchy.
+         The JSON should be a simple list:
+        {
+            "names": ["A_GIS.X.y", "A_GIS.U.V.w"]
+        }
+        """
+        ),
+        format="json",
     )
 
     # Parse out the content and return a result
     content = x.response["message"]["content"]
 
-    try:
-        # Check if 'FINAL LIST:' exists in the content
-        i = content.index("FINAL LIST:")
-    except ValueError:
-        print("Error: 'FINAL LIST:' not found in the content.")
-        matches = []
-    else:
-        # If 'FINAL LIST:' is found, continue with the search
-        matches = re.findall(r"(A_GIS\.[A-Za-z_\.]+)", content[i:])
+    import json
 
-    if matches:
-        # Process the matches if any are found
-        names = []
+    error = ""
+    names = []
+    matches = None
+    try:
+        matches = json.loads(content)["names"]
         for match in matches:
             try:
                 # Attempt to fix the name (you can customize error handling in
                 # the fix method as well)
-                fixed_name = A_GIS.Code.Unit.Name.fix(name=match)
-                names.append(fixed_name)
+                name = A_GIS.Code.Unit.Name.fix(name=match)
+                names.append(name)
             except Exception as e:
-                print(f"Error fixing name '{match}': {e}")
-    else:
-        print("Warning: No matches found after 'FINAL LIST:'.")
+                error += f"Error fixing name '{match}': {e}"
+    except BaseException:
         names = []
-
-    # Result
-    print("Processed Names:", names)
+        error = "Names not returned in JSON format!"
 
     return A_GIS.Code.make_struct(
-        names=names, content=content, matches=matches
+        names=names, matches=matches, error=error, content=content
     )
