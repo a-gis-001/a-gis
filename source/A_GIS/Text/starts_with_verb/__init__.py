@@ -45,24 +45,27 @@ def starts_with_verb(*, sentence: str, do_second_pass: bool = True):
     result = False
     pos_tags = None
     pos_tags2 = None
+    is_verb_from_wordnet = None
 
     # Tokenize into words.
     words = nltk.word_tokenize(sentence)
 
     if words:
+        is_verb_from_wordnet = any(
+            ss.pos() == "v" for ss in nltk.corpus.wordnet.synsets(words[0])
+        )
 
         # Get part of speech tags.
         pos_tags = nltk.pos_tag(words)
 
         # Simple return if starts with verb.
-        if pos_tags[0][1] == "VB":
+        if pos_tags[0][1].startswith("VB"):
             result = True
-        elif pos_tags[0][1] not in ["PRP"] and do_second_pass:
-            words = ["Do", words[0].lower(), *words[1:]]
-            pos_tags2 = nltk.pos_tag(words)
-            if pos_tags2[1][1] == "VB":
-                result = True
+        elif do_second_pass:
+            result = is_verb_from_wordnet
 
     return A_GIS.Code.make_struct(
-        result=result, pos_tags=pos_tags, pos_tags2=pos_tags2
+        result=result,
+        pos_tags=pos_tags,
+        is_verb_from_wordnet=is_verb_from_wordnet,
     )
