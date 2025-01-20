@@ -37,12 +37,13 @@ def get_git_status(*, root: str = None):
     import git
     import os
     import A_GIS.Code.make_struct
-    import A_GIS.Code.find_root
+    import A_GIS.Code.Unit.Name.init_from_path
     import A_GIS.Code.guess_name
     import pathlib
 
-    root = pathlib.Path(root)
-    git_root = root
+    if root is None:
+        root = pathlib.Path(".").absolute()
+    git_root = pathlib.Path(root)
     while not (git_root / ".git").exists():
         git_root = git_root.parent
         if git_root == git_root.parent:
@@ -60,14 +61,10 @@ def get_git_status(*, root: str = None):
     def get_names(*, paths):
         names = []
         for path in paths:
-            try:
-                mod_path = pathlib.Path(path)
-                name = A_GIS.Code.guess_name(path=mod_path.parent)
-                unit_type = A_GIS.Code.guess_type(file=mod_path)
-                if unit_type == "function":
-                    names.append(name)
-            except BaseException:
-                pass
+            path0 = pathlib.Path(path).resolve()
+            if path0.exists():
+                name = A_GIS.Code.Unit.Name.init_from_path(path=path0)
+                names.append(name)
         return list(set(names))
 
     return A_GIS.Code.make_struct(

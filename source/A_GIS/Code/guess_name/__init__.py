@@ -20,6 +20,7 @@ def guess_name(*, path: type["pathlib.Path"]):
     import A_GIS.Code.find_root
     import pathlib
 
+    path = path.resolve()
     root = A_GIS.Code.find_root(path=path)
     if root is None:
         raise ValueError(
@@ -27,7 +28,8 @@ def guess_name(*, path: type["pathlib.Path"]):
         )
 
     root = root.resolve().parent
+    if path.is_file():
+        path = path.parent
+
     subdir = pathlib.Path(path).resolve().relative_to(root)
-    if subdir.is_file():
-        subdir = subdir.parent
     return ".".join(subdir.parts)

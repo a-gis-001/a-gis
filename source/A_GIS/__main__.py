@@ -242,32 +242,39 @@ def touch(name: "unit name"):
 cli.add_command(touch)
 
 
-# Define the name command.
+# Define the absorb command.
 @click.command()
 @A_GIS.Cli.register
-def name(description: "unit description", tries: "number of tries" = 3):
-    """Generate a new name from a description"""
+def absorb(file: "function to absorb"):
+    """Absorb a function into A_GIS"""
 
     console = rich.console.Console(width=WIDTH)
     console.print(
-        f"Initiating AI name generation with description='{description}' tries={tries}"
+        f"Absorbing function file={file}"
     )
+    code = A_GIS.File.read(file=file)
+    if not A_GIS.Code.is_function(code=code):
+        console.print(
+            "File must be a single function!"
+        )
+        return
 
-    # Try a few times.
-    names = []
-    for i in range(tries):
-        x = A_GIS.Code.Unit.Name.generate(description=description)
-        console.print(f"AI generated name={name}")
-        if len(x.names) > 0:
-            names = x.names
-            break
-
-    if len(names)==0:
-        console.print("Could not get AI to give a valid name!")
+    x = A_GIS.Code.Unit.Name.generate(description=code)
+    if len(x.names)>0:
+        found=False
+        for name in x.names:
+            print(name)
+#             if not name exists:
+#                 create the file at the location using touch
+#                 make sure the function name is the intended name
+#                found=True
+#                break
+        if not found:
+            console.print(f"All generated functional unit names already exist {x.names}!")
     else:
-        console.print(f"name={name}")
+        console.print(f"A valid name was not generated for {file}")
 
-cli.add_command(name)
+cli.add_command(absorb)
 
 
 # Define the add command.
@@ -341,6 +348,7 @@ def status(*, root: "path to A_GIS root" = "source/A_GIS"):
     # Show current status.
     console = rich.console.Console(width=WIDTH)
     status = A_GIS.Code.Unit.get_git_status(root=root)
+
     output_text = rich.text.Text.from_ansi("\n".join(status.staged_names))
     panel = rich.panel.Panel(
         output_text,

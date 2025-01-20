@@ -8,10 +8,9 @@ def find_root(
 
     # Make sure we are inside a package.
     input_path = pathlib.Path(path).resolve()
-    if (
-        input_path.name == "__init__.py"
-        or (input_path / "__init__.py").exists()
-    ):
+    if (input_path.parent / "__init__.py").exists() or (
+        input_path / "__init__.py"
+    ).exists():
         # Walk up the directory tree until the parent directory does not have
         # __init__.py.
         system_root = input_path.root

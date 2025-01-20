@@ -1,4 +1,4 @@
-def load_from_db(data={}, file="data.json", debug=False):
+def load(data={}, file="data.json", debug=False):
     """Read data from a JSON file into a Python dictionary.
 
     This function reads data from a specified JSON database file and
