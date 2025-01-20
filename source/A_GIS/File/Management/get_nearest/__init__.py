@@ -65,12 +65,12 @@ def get_nearest(
     import A_GIS.Math.calculate_angle_between_vectors
     import A_GIS.Code.make_struct
     import os
-    import A_GIS.File.Database.get_collection
+    import A_GIS.File.Management.get_collection
 
     target_exists = os.path.exists(target_path)
     target_path = str(target_path)
     if target_exists:
-        collection = A_GIS.File.Database.get_collection(
+        collection = A_GIS.File.Management.get_collection(
             name=collection_name, from_database=database_name
         )
         target = collection.find_one({"_id": target_path})

@@ -34,7 +34,7 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
         import A_GIS.File.read_to_text
         import A_GIS.Text.calculate_embedding
         import A_GIS.Math.calculate_angle_between_vectors
-        import A_GIS.File.Database.prune_deleted
+        import A_GIS.File.Management.prune_deleted
         import datetime
         import pathlib
 
@@ -81,7 +81,7 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
             # Calculate the new embedding.
             # If the SHA-256 hasn't changed then we do not update.
             try:
-                A_GIS.File.Database.prune_deleted(
+                A_GIS.File.Management.prune_deleted(
                     collection=self.collection,
                     sha256=updates["sha256"],
                     logger=self.logger,

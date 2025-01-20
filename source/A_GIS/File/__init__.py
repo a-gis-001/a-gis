@@ -26,6 +26,6 @@ from ._Modification_Handler import _Modification_Handler
 from ._Url import _Url
 
 # Packages
-from . import Database
 from . import Duplicates
+from . import Management
 from . import Node

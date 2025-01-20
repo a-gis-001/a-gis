@@ -1,12 +1,5 @@
-import A_GIS.Log.track_function
-
-@A_GIS.Log.track_function
 def parse_docstring(
-    *,
-    code: str,
-    clean: bool = True,
-    only_description: bool = False,
-    __tracking_hash=None,
+    *, code: str, clean: bool = True, only_description: bool = False
 ) -> str:
     """Extract and optionally cleans the first docstring.
 
@@ -30,9 +23,6 @@ def parse_docstring(
             If True, returns only the main description of the docstring without
             additional sections like usage examples or parameter descriptions.
             Default is False.
-        __tracking_hash (str, optional):
-            An internal argument used for function tracking and logging purposes. It
-            can be set to a specific hash value if needed.
 
     Returns:
         str:

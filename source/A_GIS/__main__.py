@@ -263,7 +263,7 @@ def absorb(file: "function to absorb"):
     if len(x.names)>0:
         found=False
         for name in x.names:
-            print(name)
+            console.print(f"Absorbing to functional unit {name}")
 #             if not name exists:
 #                 create the file at the location using touch
 #                 make sure the function name is the intended name

@@ -12,9 +12,9 @@ class _Log:
         import logging
         import structlog
         import os
-        import sys
-        import tempfile
-        import socket
+
+        if _Log.initialized:
+            return
 
         _Log.name = "A_GIS_LOG"
         _Log.logfile = os.environ.get("A_GIS_LOGFILE", "app.log")
@@ -28,10 +28,14 @@ class _Log:
             structlog.processors.format_exc_info,
         ]
 
-        # Configure logging to a file if not using socket-based logging
+        # Configure basic logging
         logging.basicConfig(
-            filename=_Log.logfile, filemode="a", level=logging.INFO
+            level=logging.INFO,
+            handlers=[
+                logging.FileHandler(_Log.logfile, mode="a"),
+            ],
         )
+
         final_processors = [
             structlog.processors.JSONRenderer(indent=1, sort_keys=True)
         ]
@@ -42,10 +46,6 @@ class _Log:
             wrapper_class=structlog.stdlib.BoundLogger,
             cache_logger_on_first_use=True,
         )
-
-        file_handler = logging.FileHandler(_Log.logfile)
-        file_handler.setFormatter(logging.Formatter("%(message)s"))
-        logging.getLogger().addHandler(file_handler)
 
         _Log.logger = structlog.get_logger(_Log.name)
         _Log.logger.info(f"{_Log.name} initialized")
