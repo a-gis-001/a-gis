@@ -4,14 +4,17 @@ import A_GIS.Log.track_function
 def generate(
     *,
     description: str,
-    model="qwq",
+    model="qwen2.5:14b",
     suggestions=[],
+    temperature=0.0,
+    num_examples=20,
     __tracking_hash=None,
 ):
     """Generate an A_GIS functional unit name using AI."""
-    import ollama
     import re
     import textwrap
+    import json
+    import random
     import A_GIS.catalog
     import A_GIS.Log.append
     import A_GIS.Text.add_indent
@@ -30,7 +33,10 @@ def generate(
                 "Function description: {description} --> Function name: {suggestion}"
             )
         examples = ""
-        for e in example_list:
+        short_list = random.sample(
+            example_list, min(num_examples, len(example_list))
+        )
+        for e in short_list:
             if not e.startswith("None"):
                 examples += "- " + e + "\n"
         return A_GIS.Text.add_indent(text=examples)
@@ -47,13 +53,16 @@ I will give you a description of the function and you will reply with the fully
 qualified name of that function. A_GIS has particular rules which you should follow.
 
 Requirements:
-    1. Parts separated with '.' as in Python.
-    2. First part is 'A_GIS', always.
-    3. Last part is a function name and is lower case with underscores '_' allowed.
-    4. Other parts are package names and are capitalized, first letter only.
-    5. There are no underscores '_' in a package name.
-    6. Package names are simple, generic nouns.
-    7. The first word in a function name is a verb.
+    1. Package
+       - First part is always A_GIS
+    2. Subpackages
+       - Middle parts denote subpackages in a hierarchy.
+       - Subpackage names are nouns.
+       - First letter is uppercase of each package.
+    3. Function
+       - Last part is a function name.
+       - Lower case with underscores '_' allowed.
+       - Function names always start with a verb like 'read' or 'read_database'.
 
 Here are some examples:
 
@@ -70,7 +79,7 @@ Be careful about introducing unnecessary hierarchy for synonymous concepts.
     chatbot = A_GIS.Ai.Chatbot.init(
         model=model,
         system=system,
-        temperature=0.5,
+        temperature=temperature,
         num_ctx=10000,
         num_predict=20000,
         mirostat=2,
@@ -100,21 +109,15 @@ Brainstorm at least 10 names for the following function:
     # Parse out the content and return a result
     content = x.response["message"]["content"]
 
-    import json
-
     error = ""
     names = []
     matches = None
     try:
         matches = json.loads(content)["names"]
         for match in matches:
-            try:
-                # Attempt to fix the name (you can customize error handling in
-                # the fix method as well)
-                name = A_GIS.Code.Unit.Name.fix(name=match)
-                names.append(name)
-            except Exception as e:
-                error += f"Error fixing name '{match}': {e}"
+            x = A_GIS.Code.Unit.Name.check(name=match)
+            if x.result:
+                names.append(x.fixed_name)
     except BaseException:
         names = []
         error = "Names not returned in JSON format!"

@@ -245,7 +245,7 @@ cli.add_command(touch)
 # Define the absorb command.
 @click.command()
 @A_GIS.Cli.register
-def absorb(file: "function to absorb", *, model: "model name" = "qwq"):
+def absorb(file: "function to absorb", *, name: "name to place" = None, write: "whether to write" = True):
     """Absorb a function into A_GIS"""
 
     console = rich.console.Console(width=WIDTH)
@@ -253,26 +253,17 @@ def absorb(file: "function to absorb", *, model: "model name" = "qwq"):
         f"Absorbing function file={file}"
     )
     code = A_GIS.File.read(file=file)
-    if not A_GIS.Code.is_function(code=code):
-        console.print(
-            "File must be a single function!"
-        )
-        return
+    x = A_GIS.Code.Unit.absorb(code=code,name=name,write=write)
 
-    x = A_GIS.Code.Unit.Name.generate(description=code, model=model)
-    if len(x.names)>0:
-        found=False
-        for name in x.names:
-            console.print(f"Absorbing to functional unit {name}")
-#             if not name exists:
-#                 create the file at the location using touch
-#                 make sure the function name is the intended name
-#                found=True
-#                break
-        if not found:
-            console.print(f"All generated functional unit names already exist {x.names}!")
+    if x.error:
+        console.print(
+            f"Function could not be absorbed\n{x.error}"
+        )
     else:
-        console.print(f"A valid name was not generated for {file}")
+        if write:
+            console.print(f"New function absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")
+        else:
+            console.print(f"New function would be absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")
 
 cli.add_command(absorb)
 
