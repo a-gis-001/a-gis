@@ -261,7 +261,7 @@ def absorb(file: "function to absorb", *, name: "name to place" = None, write: "
         )
     else:
         console.print("Names generated:")
-        for name in x.names:
+        for name in x.generated_names:
             console.print(f"  - {name}")
         if write:
             console.print(f"New function absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")

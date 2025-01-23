@@ -18,3 +18,4 @@ from . import Log
 from . import Math
 from . import Text
 from . import Time
+from . import Visual

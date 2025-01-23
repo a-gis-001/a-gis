@@ -1,11 +1,12 @@
 def plot_transition(
+    *,
     dates,
     y_values,
-    target_date,
-    plot_function,
-    label,
-    pre_style,
-    post_style,
+    target_date=None,
+    plot_function=None,
+    label="",
+    pre_style={},
+    post_style={},
     pre_annotation=" (Actual)",
     post_annotation=" (Projection)",
     **kwargs,
@@ -23,11 +24,16 @@ def plot_transition(
         post_style (dict): Dictionary of plotting style for dates > target_date.
         **kwargs: Additional arguments passed to the plotting function.
     """
-    import numpy as np
-    import numpy as np
+    import numpy
+    import matplotlib.pyplot
+
+    if not plot_function:
+        plot_function = matplotlib.pyplot.plot
+    if not target_date:
+        target_date = dates[len(dates) // 2]
 
     # Convert inputs to numpy arrays for indexing
-    dates = np.array(dates)
+    dates = numpy.array(dates)
 
     # Boolean masks for pre- and post-target dates
     pre_mask = dates <= target_date
@@ -36,8 +42,8 @@ def plot_transition(
     if isinstance(y_values, tuple):
         # Handle multiple y-values (e.g., for fill_between)
         y1, y2 = y_values
-        y1 = np.array(y1)
-        y2 = np.array(y2)
+        y1 = numpy.array(y1)
+        y2 = numpy.array(y2)
 
         # Plot the pre-target segment
         plot_function(
@@ -59,7 +65,7 @@ def plot_transition(
         )
     else:
         # Handle single y-values (e.g., for plt.plot)
-        y_values = np.array(y_values)
+        y_values = numpy.array(y_values)
 
         # Plot the pre-target segment
         plot_function(
