@@ -260,6 +260,9 @@ def absorb(file: "function to absorb", *, name: "name to place" = None, write: "
             f"Function could not be absorbed\n{x.error}"
         )
     else:
+        console.print("Names generated:")
+        for name in x.names:
+            console.print(f"  - {name}")
         if write:
             console.print(f"New function absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")
         else:

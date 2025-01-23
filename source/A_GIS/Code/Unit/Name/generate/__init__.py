@@ -115,9 +115,15 @@ Brainstorm at least 10 names for the following function:
     try:
         matches = json.loads(content)["names"]
         for match in matches:
-            x = A_GIS.Code.Unit.Name.check(name=match)
-            if x.result:
-                names.append(x.fixed_name)
+            name = match
+            for i in range(2):
+                x = A_GIS.Code.Unit.Name.check(name=name)
+                if x.result:
+                    names.append(name)
+                    break
+                else:
+                    name = x.fixed_name
+
     except BaseException:
         names = []
         error = "Names not returned in JSON format!"
