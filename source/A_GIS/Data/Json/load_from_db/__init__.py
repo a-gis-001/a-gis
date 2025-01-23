@@ -1,11 +1,9 @@
-def load_from_db(data={}, file="data.json", debug=False):
+def load_from_db(*, data={}, file="data.json", only_keys=[], leave=True):
     """Read data from a JSON file into a Python dictionary.
 
     This function reads data from a specified JSON database file and
     loads it into a Python dictionary, making the data accessible for
-    further processing or analysis. The database is accessed using the
-    `tinydb` library, and the progress can be tracked with `tqdm` if set
-    to verbose mode (`debug=True`).
+    further processing or analysis.
 
     Args:
         data (dict, optional):
@@ -15,10 +13,6 @@ def load_from_db(data={}, file="data.json", debug=False):
         file (str, optional):
             The path to the JSON database file from which to load the
             data. Defaults to "data.json".
-        debug (bool, optional):
-            A flag that, when set to True, enables progress tracking via
-            `tqdm` and prints out each key-value pair to the console as
-            it is loaded into the dictionary.
 
     Returns:
         dict:
@@ -31,9 +25,20 @@ def load_from_db(data={}, file="data.json", debug=False):
     import tqdm.notebook
 
     db = tinydb.TinyDB(file)
-    for record in tqdm.notebook.tqdm(db.all()):
-        if debug:
-            print(record["key"], end=",")
-        data[record["key"]] = record["value"]
+    Key = tinydb.Query()
+
+    # Determine the query condition
+    query_condition = Key.key.one_of(only_keys) if only_keys else None
+
+    # Perform the search
+    records = db.search(query_condition) if query_condition else db.all()
+
+    # Process the results
+    with tqdm.notebook.tqdm(records, leave=leave) as pbar:
+        for record in pbar:
+            key = record["key"]
+            pbar.set_postfix({"load": key})
+            data[key] = record["value"]
+
     db.close()
     return data

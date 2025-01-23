@@ -1,12 +1,11 @@
-def save_to_db(data, file="data.json", debug=False):
+def save_to_db(*, data, file="data.json", leave=True):
     """Saves a dictionary to a local JSON database file.
 
     This function takes a dictionary `data` containing key-value pairs
     and saves it into a JSON database stored in a file, which defaults
     to "data.json". The function updates the existing records with new
     values for the given keys or inserts new key-value pairs if they do
-    not exist. It supports an optional debug mode that prints out the
-    operations being performed.
+    not exist.
 
     Args:
         data (dict):
@@ -14,9 +13,6 @@ def save_to_db(data, file="data.json", debug=False):
             database.
         file (str, optional):
             The path to the JSON database file. Defaults to "data.json".
-        debug (bool, optional):
-            If True, print out the operations being performed for each
-            key.
 
     Returns:
         None:
@@ -29,14 +25,15 @@ def save_to_db(data, file="data.json", debug=False):
     db = tinydb.TinyDB(file)
 
     # Insert or overwrite data
-    for key, value in tqdm.notebook.tqdm(data.items()):
-        if db.search(tinydb.Query().key == key):  # Check if the key exists
-            db.update({"key": key, "value": value}, Query().key == key)
-            if debug:
-                print(str(key) + "u", end=",")
-        else:
-            db.insert({"key": key, "value": value})
-            if debug:
-                print(str(key) + "n", end=",")
+    with tqdm.notebook.tqdm(data.items(), leave=leave) as pbar:
+        for key, value in pbar:
+            if db.search(tinydb.Query().key == key):  # Check if the key exists
+                db.update(
+                    {"key": key, "value": value}, tinydb.Query().key == key
+                )
+                pbar.set_postfix({"update": str(key)})
+            else:
+                db.insert({"key": key, "value": value})
+                pbar.set_postfix({"insert": str(key)})
 
     db.close()
