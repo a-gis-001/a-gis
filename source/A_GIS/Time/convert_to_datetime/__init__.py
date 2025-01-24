@@ -17,12 +17,15 @@ def convert_to_datetime(*, time=None):
             If the input string is not a valid ISO8601 format.
     """
     import datetime
+    import pytz
 
     if not time:
-        return datetime.datetime.now()
+        return datetime.datetime.now(pytz.utc)
 
     if isinstance(time, datetime.datetime):
-        # If already a datetime object, return it as-is
+        # If already a datetime object, ensure it has timezone information
+        if time.tzinfo is None:
+            return time.replace(tzinfo=pytz.utc)
         return time
 
     try:
