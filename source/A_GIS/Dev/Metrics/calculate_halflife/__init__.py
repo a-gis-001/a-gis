@@ -19,7 +19,7 @@ def calculate_halflife(*, data, start_date=None, end_date=None, label='Enhanceme
         end_date = A_GIS.Time.get(year=2050)
 
     # Get closure statistics within the specified date range
-    stats = A_GIS.Dev.Metrics.get_closure_stats(
+    stats, all_issues = A_GIS.Dev.Metrics.get_closure_stats(
         data=data, start_date=start_date, label=label, end_date=end_date, projections_after=projections_after
     )
 
@@ -28,7 +28,9 @@ def calculate_halflife(*, data, start_date=None, end_date=None, label='Enhanceme
     half_lives = []
 
     # Calculate half-life for each closure statistic point
+    last_date=None
     for point in stats:
+        last_date=point[0]
         closure_counts = numpy.array(point[2])
         fractions = closure_counts / (1e-20 + closure_counts[0])
         index = (
@@ -41,5 +43,6 @@ def calculate_halflife(*, data, start_date=None, end_date=None, label='Enhanceme
             half_lives.append(
                 point[1][index] / 365.25
             )  # Convert days to years
-
-    return dates, half_lives
+    dates.append(last_date)
+    half_lives.append(0.0)
+    return dates, half_lives, all_issues

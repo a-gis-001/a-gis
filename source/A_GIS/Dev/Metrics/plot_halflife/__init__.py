@@ -1,4 +1,4 @@
-def plot_halflife(*, data, timestamp=None, label='Enhancement', projections_after=None, target_halflife=120., projections_after_label='Projections after'):
+def plot_halflife(*, data, timestamp=None, label='Enhancement', pre_color='blue', post_color='black', target_color="green", projections_after=None, target_halflife=120., projections_after_label='Last actual'):
     
     """Calculate and return a plot object for the half-life of enhancements over time.
 
@@ -18,10 +18,12 @@ def plot_halflife(*, data, timestamp=None, label='Enhancement', projections_afte
     import datetime
     import A_GIS.Visual.plot_transition
 
+    closed_dates =  A_GIS.Dev.Metrics.get_dates(data=data, key='closed_at', label=label)
+    started_dates =  A_GIS.Dev.Metrics.get_dates(data=data, key='started_at', label=label)
     if not projections_after:
-       projections_after = A_GIS.Dev.Metrics.get_dates(data=data, key='closed_at', label=label)[-1]
+       projections_after = closed_dates[-1]
 
-    dates, half_lives = A_GIS.Dev.Metrics.calculate_halflife(data=data, label=label, projections_after=projections_after)
+    dates, half_lives, all_issues = A_GIS.Dev.Metrics.calculate_halflife(data=data, label=label, projections_after=projections_after)
 
     # Create a plot for the half-life data
     fig, ax = matplotlib.pyplot.subplots(figsize=(10, 6))
@@ -31,46 +33,64 @@ def plot_halflife(*, data, timestamp=None, label='Enhancement', projections_afte
         target_date=projections_after,
         plot_function=ax.plot,
         label="Half-life",
-        pre_style={"color": "blue", "alpha": 0.6},
-        post_style={"color": "black", "alpha": 0.4, "linestyle": "--"},
+        pre_annotation=" (Actual+Projected)",
+        post_annotation=" (Projected)",
+        pre_style={"color": pre_color, "alpha": 0.6},
+        post_style={"color": post_color, "alpha": 0.4, "linestyle": "--"},
     )
 
-    # Plot closure dates with different styling
-    A_GIS.Visual.plot_transition(
-        dates=dates,
-        y_values=half_lives,
-        target_date=projections_after,
-        plot_function=ax.plot,
-        label="Closure dates",
-        pre_style={
-            "color": "blue",
-            "alpha": 0.2,
-            "marker": ".",
-            "markersize": 10,
-        },
-        post_style={
-            "color": "black",
-            "alpha": 0.1,
-            "marker": ".",
-            "markersize": 10,
-        },
+    # Plot started dates.
+    ax.plot(
+        started_dates,
+        [target_halflife / 365.25]*len(started_dates),
+        alpha=0.3,
+        linewidth=4,
+        label="Started date",
+        color=target_color,
+        marker=".",
+        markersize=10,
+        linestyle=""
     )
+    
+    # Plot closed dates.
+    ax.plot(
+        closed_dates,
+        [0.0]*len(closed_dates),
+        alpha=0.3,
+        linewidth=4,
+        label="Closed date",
+        color=post_color,
+        marker=".",
+        markersize=10,
+        linestyle=""
+    )
+
+    for issue in all_issues:
+        ax.plot(
+            [issue["started_at"], issue["closed_at"]],  # x-coordinates (time range)
+            [target_halflife/365.25, 0.0],  # y-coordinates (fixed y-values for start and end)
+            marker="",  # Add markers to show start and end points
+            linestyle="-",
+            color=post_color,
+            alpha=0.9,
+            linewidth=0.2,
+            label="_nolegend_",  # Prevent this line from appearing in the legend
+        )
 
     # Plot a target line for reference
-    ax.plot(
-        dates,
-        [target_halflife / 365.25] * len(dates),
+    ax.axhline(
+        target_halflife / 365.25,
         alpha=0.5,
         linewidth=4,
-        label="Target",
-        color="green",
+        label="Target half-life",
+        color=target_color,
         linestyle="-",
     )
 
     # Add a vertical line indicating the last issue closed
     ax.axvline(
         projections_after,
-        color="blue",
+        color=post_color,
         linestyle="--",
         label=projections_after_label,
     )

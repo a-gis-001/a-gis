@@ -31,7 +31,14 @@ def get_closure_stats(
         for issue in issues:
             closure_dates.append(issue["closed_at"])
         return sorted(set(closure_dates))
-
+    
+    def get_all_dates(issues):
+        all_dates = []
+        for issue in issues:
+            all_dates.append(issue["started_at"])
+            all_dates.append(issue["closed_at"])
+        return sorted(set(all_dates))
+    
     if not projections_after:
         projections_after = A_GIS.Dev.Metrics.get_dates(data=data,label=label)[-1]
 
@@ -50,7 +57,7 @@ def get_closure_stats(
 
     # Gather statistics
     stats = []
-    for date1 in get_closure_dates(all_issues):
+    for date1 in get_all_dates(all_issues):
         days = []
         counts = []
         if start_date <= date1 <= end_date:
@@ -61,4 +68,4 @@ def get_closure_stats(
             if days:
                 stats.append((date1, days, counts))
 
-    return stats
+    return stats, all_issues
