@@ -7,8 +7,25 @@ def _get_raw_data_gitlab_sqa(
     only_from_store=False,
     save_every=15,
     full_update=False,
+    label=None,
+    closed_only=False,
 ):
-    """Assumes specific things about how things are managed within gitlab"""
+    """Assumes specific things about how things are managed within gitlab
+    
+    Args:
+        url (str): The GitLab URL.
+        project_number (int): The GitLab project number.
+        api_key_env (str, optional): The environment variable containing the API key. Defaults to "GITLAB_API_KEY".
+        store (str, optional): The file to store data in. Defaults to "data.json".
+        only_from_store (bool, optional): Whether to only read from store. Defaults to False.
+        save_every (int, optional): How often to save to store. Defaults to 15.
+        full_update (bool, optional): Whether to force full update. Defaults to False.
+        label (str, optional): Filter issues by label. Defaults to None.
+        closed_only (bool, optional): Filter to only include closed issues. Defaults to False.
+    
+    Returns:
+        dict: The raw data filtered by label and/or closed status if specified.
+    """
     import pathlib
     import datetime
     import tqdm.notebook
@@ -19,6 +36,49 @@ def _get_raw_data_gitlab_sqa(
     import A_GIS.Time.convert_to_string
     import A_GIS.Dev.Metrics._get_raw_data_gitlab_sqa
     import gitlab
+
+    def filter_by_label(data, label):
+        """Filter data dictionary by label.
+        
+        Args:
+            data (dict): Dictionary of issue data.
+            label (str): Label to filter by.
+            
+        Returns:
+            dict: Filtered data containing only issues with the specified label.
+        """
+        if not label:
+            return data
+        return {k: v for k, v in data.items() if label in v.get("labels", [])}
+
+    def filter_closed_only(data, closed_only):
+        """Filter data dictionary to only include closed issues.
+        
+        Args:
+            data (dict): Dictionary of issue data.
+            closed_only (bool): Whether to filter for only closed issues.
+            
+        Returns:
+            dict: Filtered data containing only closed issues if closed_only is True.
+        """
+        if not closed_only:
+            return data
+        return {k: v for k, v in data.items() if v.get("closed_at") is not None}
+
+    def apply_filters(data, label=None, closed_only=False):
+        """Apply all filters to the data.
+        
+        Args:
+            data (dict): Dictionary of issue data.
+            label (str, optional): Label to filter by. Defaults to None.
+            closed_only (bool, optional): Whether to filter for only closed issues. Defaults to False.
+            
+        Returns:
+            dict: Filtered data based on specified criteria.
+        """
+        filtered_data = filter_by_label(data, label)
+        filtered_data = filter_closed_only(filtered_data, closed_only)
+        return filtered_data
 
     def get_activity_started_at(labelevents):
         activity_started_at = None
@@ -112,7 +172,7 @@ def _get_raw_data_gitlab_sqa(
 
     # Quick return.
     if only_from_store:
-        return data
+        return apply_filters(data, label=label, closed_only=closed_only)
 
     api_key = os.getenv(api_key_env)
 
@@ -132,6 +192,15 @@ def _get_raw_data_gitlab_sqa(
                         continue
             labelevents = f.resourcelabelevents.list(get_all=True)
             pbar.set_postfix({"get": str(f.iid)})
+            
+            # Skip if we're filtering by label and this issue doesn't have it
+            if label and label not in f.labels:
+                continue
+                
+            # Skip if we're only looking for closed issues and this one isn't closed
+            if closed_only and not f.closed_at:
+                continue
+                
             data[f.iid] = {
                 "title": f.title,
                 "iid": f.iid,
@@ -156,4 +225,5 @@ def _get_raw_data_gitlab_sqa(
     # Final save to get anything left over.
     A_GIS.Data.Json.save_to_db(data=cached_data, file=store, leave=False)
 
-    return data
+    # Apply all filters before returning
+    return apply_filters(data, label=label, closed_only=closed_only)
