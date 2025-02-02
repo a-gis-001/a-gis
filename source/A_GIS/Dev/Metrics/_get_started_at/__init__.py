@@ -19,8 +19,11 @@ def _get_started_at(issue):
     # Retrieve the first merge request creation time
     first_mr_created_at = A_GIS.Dev.Metrics._get_first_mr_created_at(issue)
 
-    # Retrieve the first activity time
-    activity_started_at = A_GIS.Dev.Metrics._get_activity_started_at(issue)
+    # Get label events and retrieve the first activity time
+    labelevents = issue.resourcelabelevents.list(get_all=True)
+    activity_started_at = A_GIS.Dev.Metrics._get_activity_started_at(
+        labelevents
+    )
 
     # Return the earliest time
     if first_mr_created_at and activity_started_at:
@@ -31,5 +34,4 @@ def _get_started_at(issue):
         return A_GIS.Time.convert_to_string(time=first_mr_created_at)
     elif activity_started_at:
         return A_GIS.Time.convert_to_string(time=activity_started_at)
-    else:
-        return None
+    return None

@@ -12,9 +12,7 @@ def filter_issues(*, data, label=None, closed_only=False):
     import A_GIS.Dev.Metrics._filter_by_label
     import A_GIS.Dev.Metrics._filter_closed_only
 
-    filtered_data = A_GIS.Dev.Metrics._filter_by_label(
-        data, label
-    )
+    filtered_data = A_GIS.Dev.Metrics._filter_by_label(data, label)
     filtered_data = A_GIS.Dev.Metrics._filter_closed_only(
         filtered_data, closed_only
     )

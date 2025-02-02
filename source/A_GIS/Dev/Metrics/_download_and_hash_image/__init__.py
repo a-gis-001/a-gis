@@ -46,5 +46,5 @@ def _download_and_hash_image(image_info, store_path):
         return {
             "name": image_info["name"],
             "url": image_info["url"],
-            "error": str(e)
+            "error": str(e),
         }

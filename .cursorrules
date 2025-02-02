@@ -4,3 +4,28 @@ All functions should have a google style docstring.
 All functions should start with a verb.
 Imports always occur inside the deepest function where it can to reduce dependencies
 to only when you need them.
+
+Functions should only be called as
+
+import A_GIS.Module1.Module2.do_function
+A_GIS.Module1.Module2.do_function(...)
+
+NOT
+
+A_GIS.Module1.Module2.do_function.do_function(...)
+
+even though
+
+A_GIS.Module1.Module2.do_function is technically a module.
+
+Tests should be in the directory
+
+source/A_GIS/Module1/Module2/do_function/tests/__init__.py
+
+Note that Module1/Module2 and do_function are examples.
+
+Modules should always be nouns like "Visual" not verbs like "Visualize".
+
+
+
+

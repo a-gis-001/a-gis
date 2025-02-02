@@ -13,7 +13,7 @@ def _label_times(labelevents):
     for event in labelevents:
         ts.append(
             {
-            "action": event.action,
+                "action": event.action,
                 "label": event.label["name"] if event.label else None,
                 "created_at": A_GIS.Time.convert_to_string(
                     time=event.created_at

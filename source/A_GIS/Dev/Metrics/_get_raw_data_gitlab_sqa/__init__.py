@@ -59,6 +59,7 @@ def _get_raw_data_gitlab_sqa(
 
     gl = gitlab.Gitlab(url, private_token=api_key)
     p = gl.projects.get(project_number)
+    attachment_url = f"{gl.url}/-/project/{project_number}"
 
     # Handle single issue request
     if issue_number:
@@ -67,16 +68,17 @@ def _get_raw_data_gitlab_sqa(
             # Skip if we're filtering by label and this issue doesn't have it
             if label and label not in issue.labels:
                 return {}
-            # Skip if we're only looking for closed issues and this one isn't closed
+            # Skip if we're only looking for closed issues and this one isn't
+            # closed
             if closed_only and not issue.closed_at:
                 return {}
 
             data = {
                 issue_number: A_GIS.Dev.Metrics.process_issue(
-                    issue,
-                    store_path,
+                    issue=issue,
+                    store_path=store_path,
                     download_images=download_images,
-                    base_url=url,
+                    attachment_url=attachment_url,
                 )
             }
             A_GIS.Data.Json.save_to_db(data=data, file=store, leave=False)
@@ -102,12 +104,16 @@ def _get_raw_data_gitlab_sqa(
             if label and label not in f.labels:
                 continue
 
-            # Skip if we're only looking for closed issues and this one isn't closed
+            # Skip if we're only looking for closed issues and this one isn't
+            # closed
             if closed_only and not f.closed_at:
                 continue
 
             data[f.iid] = A_GIS.Dev.Metrics.process_issue(
-                f, store_path, download_images=download_images, base_url=url
+                issue=f,
+                store_path=store_path,
+                download_images=download_images,
+                attachment_url=attachment_url,
             )
             cached_data[f.iid] = data[f.iid]
             count += 1

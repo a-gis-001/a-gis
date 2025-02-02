@@ -4,6 +4,7 @@
 from ._download_and_hash_image import _download_and_hash_image
 from ._extract_image_urls import _extract_image_urls
 from ._extract_scl import _extract_scl
+from ._extract_sdl import _extract_sdl
 from ._filter_by_label import _filter_by_label
 from ._filter_closed_only import _filter_closed_only
 from ._get_activity_started_at import _get_activity_started_at
