@@ -40,27 +40,23 @@ def _project_time_to_close(*, closed_at, started_at, projections_after=None):
             days_to_close = (dt_closed - dt_started).days
         else:
             days_to_close = 2 * (projections_after - dt_started).days
-            dt_closed = dt_started + datetime.timedelta(
-                days=days_to_close
-            )
+            dt_closed = dt_started + datetime.timedelta(days=days_to_close)
         return days_to_close, dt_closed
 
     if started_at is None:
         return A_GIS.Code.make_struct(
-            days_to_close=None,
-            dt_closed=None,
-            dt_started=None
+            days_to_close=None, dt_closed=None, dt_started=None
         )
 
     projections_after = projections_after or _get_current_date()
     dt_started = A_GIS.Time.convert_to_datetime(time=started_at)
 
     days_to_close, dt_closed = _calculate_close_time(
-        dt_started, A_GIS.Time.convert_to_datetime(time=closed_at), projections_after
+        dt_started,
+        A_GIS.Time.convert_to_datetime(time=closed_at),
+        projections_after,
     )
 
     return A_GIS.Code.make_struct(
-        days_to_close=days_to_close,
-        dt_closed=dt_closed,
-        dt_started=dt_started
+        days_to_close=days_to_close, dt_closed=dt_closed, dt_started=dt_started
     )

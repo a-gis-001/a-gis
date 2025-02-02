@@ -1,16 +1,11 @@
-def split_into_sentences(*, text: str):
-    """Extract and returns a list of sentences.
-
-    The spaCy model `en_core_web_sm` is loaded internally to perform the
-    sentence segmentation.
+def split_into_sentences(*, text):
+    """Split text into sentences using spaCy.
 
     Args:
-        text (str):
-            The text string that needs to be split into sentences.
+        text (str): The text to split into sentences.
 
     Returns:
-        List[str]:
-            A list of sentences extracted from the input text.
+        list: A list of sentences.
 
     Raises:
         ImportError:
@@ -20,18 +15,11 @@ def split_into_sentences(*, text: str):
             will be raised.
 
     Examples:
-        >>> split_into_sentences("This is a test. This is merely a test.")
+        >>> split_into_sentences(text="This is a test. This is merely a test.")
         ['This is a test.', 'This is merely a test.']
     """
-
     import spacy
 
-    # Load the English language model
     nlp = spacy.load("en_core_web_sm")
-
-    # Process the text using spaCy
     doc = nlp(text)
-
-    # Extract sentences
-    sentences = [sent.text for sent in doc.sents]
-    return sentences
+    return [str(sent) for sent in doc.sents]

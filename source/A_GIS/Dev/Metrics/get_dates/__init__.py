@@ -10,7 +10,7 @@ def get_dates(*, data, key="closed_at", label=None, unique=False):
         list: A sorted list of dates.
     """
     import A_GIS.Time.convert_to_datetime
-    
+
     dates = []
     for issue in data.values():
         if key in issue and issue[key]:

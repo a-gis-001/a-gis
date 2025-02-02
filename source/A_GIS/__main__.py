@@ -74,10 +74,12 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     root = A_GIS.Code.find_root(path=pathlib.Path(root))
 
     console.print(f"updating A_GIS at root={root} ...")
+    
+    # Update the tree
     tree = A_GIS.Code.Tree.recurse(path=root)
     A_GIS.Code.Tree.update(tree=tree)
 
-    # Use the console to render the output inside a box, capturing the result
+    # Show git status
     console.print(A_GIS.Cli.get_git_status(root=root))
 
 

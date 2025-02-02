@@ -31,22 +31,26 @@ def get_closure_stats(
         for issue in issues:
             closure_dates.append(issue["closed_at"])
         return sorted(set(closure_dates))
-    
+
     def get_all_dates(issues):
         all_dates = []
         for issue in issues:
             all_dates.append(issue["started_at"])
             all_dates.append(issue["closed_at"])
         return sorted(set(all_dates))
-    
+
     if not projections_after:
-        projections_after = A_GIS.Dev.Metrics.get_dates(data=data,label=label)[-1]
+        projections_after = A_GIS.Dev.Metrics.get_dates(
+            data=data, label=label
+        )[-1]
 
     all_issues = []
     for v in data.values():
         if v["started_at"] and label in v["labels"]:
             x = A_GIS.Dev.Metrics._project_time_to_close(
-                closed_at=v["closed_at"], started_at=v["started_at"], projections_after = projections_after
+                closed_at=v["closed_at"],
+                started_at=v["started_at"],
+                projections_after=projections_after,
             )
             all_issues.append(
                 {

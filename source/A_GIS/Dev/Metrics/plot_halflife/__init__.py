@@ -1,5 +1,15 @@
-def plot_halflife(*, data, timestamp=None, label='Enhancement', pre_color='blue', post_color='black', target_color="green", projections_after=None, target_halflife=120., projections_after_label='Last actual'):
-    
+def plot_halflife(
+    *,
+    data,
+    timestamp=None,
+    label="Enhancement",
+    pre_color="blue",
+    post_color="black",
+    target_color="green",
+    projections_after=None,
+    target_halflife=120.0,
+    projections_after_label="Last actual",
+):
     """Calculate and return a plot object for the half-life of enhancements over time.
 
     This function calculates the half-life of issues with label issue closure statistics
@@ -18,12 +28,18 @@ def plot_halflife(*, data, timestamp=None, label='Enhancement', pre_color='blue'
     import datetime
     import A_GIS.Visual.plot_transition
 
-    closed_dates =  A_GIS.Dev.Metrics.get_dates(data=data, key='closed_at', label=label)
-    started_dates =  A_GIS.Dev.Metrics.get_dates(data=data, key='started_at', label=label)
+    closed_dates = A_GIS.Dev.Metrics.get_dates(
+        data=data, key="closed_at", label=label
+    )
+    started_dates = A_GIS.Dev.Metrics.get_dates(
+        data=data, key="started_at", label=label
+    )
     if not projections_after:
-       projections_after = closed_dates[-1]
+        projections_after = closed_dates[-1]
 
-    dates, half_lives, all_issues = A_GIS.Dev.Metrics.calculate_halflife(data=data, label=label, projections_after=projections_after)
+    dates, half_lives, all_issues = A_GIS.Dev.Metrics.calculate_halflife(
+        data=data, label=label, projections_after=projections_after
+    )
 
     # Create a plot for the half-life data
     fig, ax = matplotlib.pyplot.subplots(figsize=(10, 6))
@@ -42,33 +58,35 @@ def plot_halflife(*, data, timestamp=None, label='Enhancement', pre_color='blue'
     # Plot started dates.
     ax.plot(
         started_dates,
-        [target_halflife / 365.25]*len(started_dates),
+        [target_halflife / 365.25] * len(started_dates),
         alpha=0.3,
         linewidth=4,
         label="Started date",
         color=target_color,
         marker=".",
         markersize=10,
-        linestyle=""
+        linestyle="",
     )
-    
+
     # Plot closed dates.
     ax.plot(
         closed_dates,
-        [0.0]*len(closed_dates),
+        [0.0] * len(closed_dates),
         alpha=0.3,
         linewidth=4,
         label="Closed date",
         color=post_color,
         marker=".",
         markersize=10,
-        linestyle=""
+        linestyle="",
     )
 
     for issue in all_issues:
         ax.plot(
-            [issue["started_at"], issue["closed_at"]],  # x-coordinates (time range)
-            [target_halflife/365.25, 0.0],  # y-coordinates (fixed y-values for start and end)
+            # x-coordinates (time range)
+            [issue["started_at"], issue["closed_at"]],
+            # y-coordinates (fixed y-values for start and end)
+            [target_halflife / 365.25, 0.0],
             marker="",  # Add markers to show start and end points
             linestyle="-",
             color=post_color,

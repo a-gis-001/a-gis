@@ -10,9 +10,11 @@ def get_raw_data(
     full_update=False,
     label=None,
     closed_only=False,
+    download_images=False,
+    issue_number=None,
 ):
     """Gets the raw data to calculate metrics.
-    
+
     Args:
         url (str): The GitLab URL.
         project_number (int): The GitLab project number.
@@ -24,7 +26,9 @@ def get_raw_data(
         full_update (bool, optional): Whether to force full update. Defaults to False.
         label (str, optional): Filter issues by label. Defaults to None.
         closed_only (bool, optional): Filter to only include closed issues. Defaults to False.
-    
+        download_images (bool, optional): Whether to download image attachments. Defaults to False.
+        issue_number (int, optional): Specific issue number to fetch. Defaults to None.
+
     Returns:
         dict: The raw data filtered by label and/or closed status if specified.
     """
@@ -52,6 +56,8 @@ def get_raw_data(
             full_update=full_update,
             label=label,
             closed_only=closed_only,
+            download_images=download_images,
+            issue_number=issue_number,
         )
     else:
         valid_options = ", ".join(ADAPTER_HANDLERS.keys())
