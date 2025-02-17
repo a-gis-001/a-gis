@@ -8,6 +8,7 @@ def download(
     filename: pathlib.Path = None,
     session: requests.Session = None,
     start_from_scratch: bool = False,
+    leave_progress_bar: bool = True,
 ):
     """
     Downloads a single file from a given URL.
@@ -70,10 +71,11 @@ def download(
             "unit": "iB",
             "unit_scale": True,
             "bar_format": "{l_bar}{bar}| {n_fmt:6}/{total_fmt:6} {rate_fmt:6}",
+            "leave": leave_progress_bar,
         }
 
         if "COLAB_GPU" in os.environ:
-            tqdm_kwargs.update({"position": 0, "leave": True})
+            tqdm_kwargs.update({"position": 0})
 
         with open(output_path, mode) as f:
             with tqdm.tqdm(**tqdm_kwargs) as t:

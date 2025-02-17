@@ -20,6 +20,17 @@ def process_issue(
     import A_GIS.Dev.Metrics.process_images
 
     labelevents = issue.resourcelabelevents.list(get_all=True)
+
+    images, errors = A_GIS.Dev.Metrics.process_images(
+        issue=issue,
+        attachment_url=attachment_url,
+        store_path=store_path,
+        download=download_images,
+    )
+    for error in errors:
+        if error:
+            print(error)
+
     return {
         "title": issue.title,
         "iid": issue.iid,
@@ -33,10 +44,6 @@ def process_issue(
         "sdl": A_GIS.Dev.Metrics._extract_sdl(issue.description),
         "updated_at": A_GIS.Time.convert_to_string(time=issue.updated_at),
         "description": issue.description,
-        "images": A_GIS.Dev.Metrics.process_images(
-            issue=issue,
-            attachment_url=attachment_url,
-            store_path=store_path,
-            download=download_images,
-        ),
+        "images": images,
+        "weight": issue.weight or 0,
     }

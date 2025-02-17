@@ -1,4 +1,11 @@
-def load_from_db(*, data={}, file="data.json", only_keys=[], leave=True):
+def load_from_db(
+    *,
+    data={},
+    file="data.json",
+    only_keys=[],
+    leave=True,
+    database_adapter="tinydb",
+):
     """Read data from a JSON file into a Python dictionary.
 
     This function reads data from a specified JSON database file and
@@ -13,6 +20,8 @@ def load_from_db(*, data={}, file="data.json", only_keys=[], leave=True):
         file (str, optional):
             The path to the JSON database file from which to load the
             data. Defaults to "data.json".
+        database_adapter (str, optional):
+            The database adapter to use. Must be "tinydb". Defaults to "tinydb".
 
     Returns:
         dict:
@@ -21,6 +30,11 @@ def load_from_db(*, data={}, file="data.json", only_keys=[], leave=True):
             values corresponding to the associated "values" in the
             database.
     """
+    if database_adapter != "tinydb":
+        raise ValueError(
+            "Invalid database_adapter. Only 'tinydb' is supported."
+        )
+
     import tinydb
     import tqdm.notebook
 

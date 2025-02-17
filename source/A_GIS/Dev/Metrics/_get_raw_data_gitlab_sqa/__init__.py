@@ -39,7 +39,10 @@ def _get_raw_data_gitlab_sqa(
     import gitlab
 
     if pathlib.Path(store).exists():
-        data = A_GIS.Data.Json.load_from_db(file=store, leave=False)
+        only_keys = [issue_number] if issue_number is not None else None
+        data = A_GIS.Data.Json.load_from_db(
+            file=store, leave=False, only_keys=only_keys
+        )
     else:
         data = {}
 
@@ -61,54 +64,42 @@ def _get_raw_data_gitlab_sqa(
     p = gl.projects.get(project_number)
     attachment_url = f"{gl.url}/-/project/{project_number}"
 
-    # Handle single issue request
-    if issue_number:
-        try:
-            issue = p.issues.get(issue_number)
-            # Skip if we're filtering by label and this issue doesn't have it
-            if label and label not in issue.labels:
-                return {}
-            # Skip if we're only looking for closed issues and this one isn't
-            # closed
-            if closed_only and not issue.closed_at:
-                return {}
-
-            data = {
-                issue_number: A_GIS.Dev.Metrics.process_issue(
-                    issue=issue,
-                    store_path=store_path,
-                    download_images=download_images,
-                    attachment_url=attachment_url,
-                )
-            }
-            A_GIS.Data.Json.save_to_db(data=data, file=store, leave=False)
-            return data
-        except gitlab.exceptions.GitlabGetError:
-            print(f"Issue {issue_number} not found")
-            return {}
-
-    # Handle multiple issues request
     count = 0
     cached_data = {}
-    with tqdm.notebook.tqdm(p.issues.list(iterator=True)) as pbar:
+    issues_list = []
+    if issue_number:
+        target = p.issues.get(issue_number)
+        if target:
+            issues_list = [target]
+    else:
+        issues_list = p.issues.list(iterator=True)
+    skipped = 0
+    updated = 0
+    with tqdm.notebook.tqdm(issues_list) as pbar:
         for f in pbar:
+            pbar.set_postfix(
+                {"id": f.iid, "skipped": skipped, "updated": updated}
+            )
             if not full_update:
                 if f.iid in data:
                     if data[f.iid][
                         "updated_at"
                     ] == A_GIS.Time.convert_to_string(time=f.updated_at):
-                        pbar.set_postfix({"skip": str(f.iid)})
+                        skipped += 1
                         continue
 
             # Skip if we're filtering by label and this issue doesn't have it
             if label and label not in f.labels:
+                skipped += 1
                 continue
 
             # Skip if we're only looking for closed issues and this one isn't
             # closed
             if closed_only and not f.closed_at:
+                skipped += 1
                 continue
 
+            updated += 1
             data[f.iid] = A_GIS.Dev.Metrics.process_issue(
                 issue=f,
                 store_path=store_path,

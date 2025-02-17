@@ -21,7 +21,8 @@ def _extract_image_urls(issue, url):
             r'/uploads/[a-f0-9]+/[^\s"\']+\.(?:png|jpg|gif|jpeg|webp)', text
         )
         return [
-            {"link": m, "url": f"{url}{m}"} for m in matches
+            {"link": m, "url": f"{url}{m}", "path": None, "hash": None}
+            for m in matches
         ]
 
     # Get images from description

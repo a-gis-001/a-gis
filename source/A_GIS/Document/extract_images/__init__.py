@@ -60,7 +60,7 @@ def extract_images(
                         page_number=page_number,
                         image_bytes=image_bytes,
                         image_number=img_index,
-                        ext=ext,
+                        ext=image_ext,
                     )
                 )
 

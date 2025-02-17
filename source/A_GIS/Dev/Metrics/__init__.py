@@ -22,3 +22,6 @@ from .get_raw_data import get_raw_data
 from .plot_halflife import plot_halflife
 from .process_images import process_images
 from .process_issue import process_issue
+
+# Packages
+from . import Defects
