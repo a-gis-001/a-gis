@@ -1,24 +1,4 @@
-def get_report_style(
-    *,
-    levels={
-        "MINOR": {
-            "border_color": "hsla(0, 0%, 75%, 0.4)",
-            "bg_color": "hsla(0, 0%, 90%, 0.9)",
-        },
-        "MODERATE": {
-            "border_color": "hsla(50, 95%, 75%, 0.5)",
-            "bg_color": "hsla(50, 95%, 90%, 0.9)",
-        },
-        "SIGNIFICANT": {
-            "border_color": "hsla(30, 95%, 75%, 0.5)",
-            "bg_color": "hsla(30, 95%, 90%, 0.9)",
-        },
-        "SAFETY-SIGNIFICANT": {
-            "border_color": "hsla(0, 95%, 75%, 0.5)",
-            "bg_color": "hsla(0, 95%, 90%, 0.9)",
-        },
-    },
-):
+def get_report_style(*, severity):
     """Generates CSS for defects reporting.
 
     Args:
@@ -37,5 +17,5 @@ def get_report_style(
     template = template_env.get_template("report.css.jt")
 
     # Render the template with the provided levels
-    css_output = template.render(levels=levels)
+    css_output = template.render(severity=severity)
     return css_output

@@ -1,4 +1,6 @@
-def convert_to_string(*, time, timezone="US/Eastern"):
+def convert_to_string(
+    *, time, timezone="US/Eastern", format="%Y-%m-%dT%H:%M:%S.%fZ"
+):
     """Convert a datetime object or ISO8601 string to an ISO8601 formatted string.
 
     This function takes an optional parameter `time`, which can be
@@ -25,9 +27,9 @@ def convert_to_string(*, time, timezone="US/Eastern"):
     if isinstance(time, str):
         try:
             # Parse the string into a datetime object (assuming UTC by default)
-            time = datetime.datetime.strptime(
-                time, "%Y-%m-%dT%H:%M:%S.%fZ"
-            ).replace(tzinfo=pytz.utc)
+            time = datetime.datetime.strptime(time, format).replace(
+                tzinfo=pytz.utc
+            )
         except ValueError as e:
             raise ValueError(f"Invalid ISO8601 string: {time}") from e
 
@@ -35,6 +37,6 @@ def convert_to_string(*, time, timezone="US/Eastern"):
         # Convert to the specified timezone
         local_time = time.astimezone(pytz.timezone(timezone))
         # Return ISO8601 format with timezone offset
-        return local_time.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+        return local_time.strftime(format)
 
     raise TypeError("time must be a datetime.datetime or an ISO8601 string.")

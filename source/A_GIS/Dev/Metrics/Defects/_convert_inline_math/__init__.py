@@ -2,6 +2,12 @@ def _convert_inline_math(html_content):
     """Fix inline math expressions by removing <code> tags inside $...$."""
     import bs4
     import re
+    import warnings
+
+    # Suppress specific BeautifulSoup warning
+    warnings.filterwarnings(
+        "ignore", category=bs4.MarkupResemblesLocatorWarning
+    )
 
     soup = bs4.BeautifulSoup(html_content, "html.parser")
 

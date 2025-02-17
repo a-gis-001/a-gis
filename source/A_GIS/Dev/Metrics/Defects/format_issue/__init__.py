@@ -20,6 +20,8 @@ def format_issue(*, issue, base_path="."):
     html_content = A_GIS.Dev.Metrics.Defects._convert_inline_math(html_content)
 
     # Embed images.
-    html_with_images = A_GIS.Text.Html.embed_images(html=html_content, base_path=base_path)
+    html_with_images = A_GIS.Text.Html.embed_images(
+        html=html_content, base_path=base_path
+    )
 
     return html_with_images

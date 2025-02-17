@@ -168,7 +168,7 @@ h3 {
 }
 
 /* Number of levels and coloring substituted from Python builder.*/
-{% for name, level in levels.items() %}
+{% for name, level in severity.items() %}
 .defect-{{ name }},
 .tooltip-{{ name }} {
     --border-color: {{ level.border_color }};

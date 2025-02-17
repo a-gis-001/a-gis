@@ -1,7 +1,5 @@
 // List of allowed products.
-const PRODUCTS = ["All", "AMPX", "CSAS", "SCALE-DATA", "SCALE-ENV", "FULCRUM",
-    "MAVRIC", "OMNIBUS", "ORIGAMI", "ORIGEN", "POLARIS", "SAMPLER",
-    "STDCOMP", "TRITON", "TSUNAMI", "VADER", "XSPROC"];
+const PRODUCTS = {{ products | tojson }};
 
 // List of severity descriptions.
 const SEVERITY_DESCRIPTIONS = {
@@ -175,8 +173,8 @@ function __createSeverityBlock(severityDescriptions, severityLevel, issues, stat
         states.showDesc[severityLevel] = descCheckbox.checked;
         states.hideAll[severityLevel] = hideCheckbox.checked;
         __updateList(ul, issues, idCheckbox.checked, descCheckbox.checked, hideCheckbox.checked);
-        __updateSectionVisibility(document.getElementById('product-filter').value, states); // Add this
-        __updateSidebarNav(); // Add this
+        __updateSectionVisibility(document.getElementById('product-filter').value, states);
+        __updateSidebarNav(); 
     };
     idCheckbox.addEventListener('change', _updateListWithState);
     descCheckbox.addEventListener('change', _updateListWithState);
@@ -361,6 +359,16 @@ function createProductFilter(severityDescriptions, products, issues, states) {
 function createContentListing(severityDescriptions, issues, states) {
 
     const inlineToc = document.getElementById("inline-toc");
+    if( !inlineToc ){
+        // Turn off all hide all if we don't show the controls.
+        for (let key in states.hideAll) {
+            states.hideAll[key] = false;
+        }        
+        __updateSectionVisibility(document.getElementById('product-filter').value, states);
+        __updateSidebarNav(); 
+        return
+    }
+
     inlineToc.innerHTML = '';
 
     const groupedIssues = Object.keys(severityDescriptions).reduce((acc, key) => {
@@ -374,24 +382,40 @@ function createContentListing(severityDescriptions, issues, states) {
         section.className = 'severity-box';
         inlineToc.appendChild(section);
     });
-    __updateSidebarNav();
 }
+
+function getKatexBlock() {
+    const katexElements = document.querySelectorAll('[data-katex]');
+    return Array.from(katexElements).map(el => el.outerHTML).join("\n");
+}
+
 
 // Add standalone page generation buttons to each section.
 function addStandalonePageButtons() {
     function _generateStandalonePage(section) {
         const styles = __extractPageStyle();
+		const katexBlock = getKatexBlock();  // Get KaTeX HTML from main page
         const html = `<!DOCTYPE html>
 <html>
 <head>
-    <style>${styles}</style>
+${katexBlock}
+<style>
+${styles}
+.page-button {
+	display: none;
+}
+</style>
+
 </head>
 <body>
-    ${section.outerHTML}
+
+${section.outerHTML}
+
 <script>
-    ${addBlockCopyButtons.toString()}
-    addBlockCopyButtons();
+${addBlockCopyButtons.toString()}
+addBlockCopyButtons();
 </`+`script>
+
 </body>
 </html>`;
 
@@ -413,7 +437,7 @@ function addStandalonePageButtons() {
         if (h2) {
             const button = document.createElement('button');
             button.className = 'page-button';
-            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4a2 2 0 0 1 2-2h12"/></svg>`;
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
             button.title = 'Download section';
             button.addEventListener('click', () => _generateStandalonePage(section));
             h2.style.position = 'relative';
