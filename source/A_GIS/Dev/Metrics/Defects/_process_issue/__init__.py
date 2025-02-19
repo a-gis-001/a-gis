@@ -1,4 +1,4 @@
-def _process_issue(*, issue, store_dir, defect_id_key="sdl"):
+def _process_issue(*, issue, store_dir, severity_definitions, defect_id_key="sdl"):
     """Preprocess a user-facing gitlab issue with full paths to images.
 
     issue is the result of a gitlab issue extraction formatted for A_GIS
@@ -42,15 +42,14 @@ def _process_issue(*, issue, store_dir, defect_id_key="sdl"):
     i = d.index("## SQA")
 
     weight = issue["weight"]
-    if weight <= 4:
-        severity = "MINOR"
-    elif weight <= 32:
-        severity = "MODERATE"
-    elif weight <= 256:
-        severity = "SIGNIFICANT"
-    else:
-        severity = "SAFETY-SIGNIFICANT"
-
+    severity = None
+    for k,v in severity_definitions.items():
+        if weight in set(v['allowed_weights']):
+            severity = k
+            break
+    if severity == None:
+        severity = 'NOT DEFINED FOR GIVEN WEIGHT'
+    
     title = issue[defect_id_key]
 
     aka = "None"

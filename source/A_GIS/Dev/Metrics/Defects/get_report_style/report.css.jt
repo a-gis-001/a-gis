@@ -168,7 +168,7 @@ h3 {
 }
 
 /* Number of levels and coloring substituted from Python builder.*/
-{% for name, level in severity.items() %}
+{% for name, level in SEVERITY_DEFINITIONS.items() %}
 .defect-{{ name }},
 .tooltip-{{ name }} {
     --border-color: {{ level.border_color }};
@@ -209,12 +209,14 @@ h2[class^="defect-"] {
 }
 
 img {
-    max-height: 80vh;
+    max-height: 60vh;
     max-width: 95%;
     display: block;
     margin: 10px auto;
     border-radius: 5px;
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.1);
+    height: auto;
+    object-fit: contain;
 }
 
 table {

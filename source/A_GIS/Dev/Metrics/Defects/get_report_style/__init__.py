@@ -1,4 +1,4 @@
-def get_report_style(*, severity):
+def get_report_style(*, severity_definitions):
     """Generates CSS for defects reporting.
 
     Args:
@@ -17,5 +17,5 @@ def get_report_style(*, severity):
     template = template_env.get_template("report.css.jt")
 
     # Render the template with the provided levels
-    css_output = template.render(severity=severity)
+    css_output = template.render(SEVERITY_DEFINITIONS=severity_definitions)
     return css_output

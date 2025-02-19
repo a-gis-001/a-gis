@@ -6,40 +6,40 @@ def get_report(
     store_dir=None,
     toc=True,
     products=["All"],
-    severity={
+    severity_definitions={
         "SAFETY-SIGNIFICANT": {
             "description": "Undetectable error with magnitude that could invalidate safety analyses",
             "allowed_weights": [512],
-            "defaultIdOnly": False,
-            "defaultShowDesc": True,
-            "defaultHideAll": False,
+            "default_id_only": False,
+            "default_show_desc": True,
+            "default_hide_all": False,
             "border_color": "hsla(0, 95%, 75%, 0.5)",
             "bg_color": "hsla(0, 95%, 90%, 0.9)",
         },
         "SIGNIFICANT": {
             "description": "Difficult to detect error; results are unreliable for decision-making",
             "allowed_weights": [64, 128, 256],
-            "defaultIdOnly": False,
-            "defaultShowDesc": True,
-            "defaultHideAll": False,
+            "default_id_only": False,
+            "default_show_desc": True,
+            "default_hide_all": False,
             "border_color": "hsla(30, 95%, 75%, 0.5)",
             "bg_color": "hsla(30, 95%, 90%, 0.9)",
         },
         "MODERATE": {
             "description": "Obvious deviation or performance issue including code crash; low chance of false conclusions",
             "allowed_weights": [8, 16, 32],
-            "defaultIdOnly": False,
-            "defaultShowDesc": False,
-            "defaultHideAll": False,
+            "default_id_only": False,
+            "default_show_desc": False,
+            "default_hide_all": False,
             "border_color": "hsla(50, 95%, 75%, 0.5)",
             "bg_color": "hsla(50, 95%, 90%, 0.9)",
         },
         "MINOR": {
             "description": "Cosmetic or negligible; does not alter conclusions of analysis",
             "allowed_weights": [1, 2, 4],
-            "defaultIdOnly": True,
-            "defaultShowDesc": False,
-            "defaultHideAll": True,
+            "default_id_only": True,
+            "default_show_desc": False,
+            "default_hide_all": True,
             "border_color": "hsla(0, 0%, 75%, 0.4)",
             "bg_color": "hsla(0, 0%, 90%, 0.9)",
         },
@@ -55,7 +55,7 @@ def get_report(
         body += (
             "\n<section>\n"
             + A_GIS.Dev.Metrics.Defects.format_issue(
-                issue=v, base_path=store_dir
+                issue=v, base_path=store_dir, severity_definitions=severity_definitions
             )
             + "\n</section>\n"
         )
@@ -82,7 +82,7 @@ def get_report(
 {A_GIS.Text.Html.add_math_render()}
 
 <style>
-{A_GIS.Dev.Metrics.Defects.get_report_style(severity=severity)}
+{A_GIS.Dev.Metrics.Defects.get_report_style(severity_definitions=severity_definitions)}
 </style>
 </head>
 <body>
@@ -103,7 +103,7 @@ def get_report(
 </div>
 
 <script>
-{A_GIS.Dev.Metrics.Defects.get_report_script(products=products,severity=severity)}
+{A_GIS.Dev.Metrics.Defects.get_report_script(products=products,severity_definitions=severity_definitions)}
 </script>
 
 </body>

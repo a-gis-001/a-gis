@@ -1,4 +1,4 @@
-def format_issue(*, issue, base_path="."):
+def format_issue(*, issue, severity_definitions, base_path="."):
     """Do a full formatting of an issue to html."""
     import markdown
     import A_GIS.Dev.Metrics.Defects._process_issue
@@ -7,7 +7,7 @@ def format_issue(*, issue, base_path="."):
 
     # Get base markdown that has a bunch of junk removed.
     md_content = A_GIS.Dev.Metrics.Defects._process_issue(
-        issue=issue, store_dir=base_path
+        issue=issue, store_dir=base_path, severity_definitions=severity_definitions
     )
 
     # Convert to HTML.

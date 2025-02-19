@@ -1,9 +1,9 @@
 // List of allowed products.
-const PRODUCTS = {{ products | tojson }};
+const PRODUCTS = {{ PRODUCTS | tojson }};
 
 // List of severity descriptions.
 const SEVERITY_DESCRIPTIONS = {
-    {% for name, level in severity.items() %}
+    {% for name, level in SEVERITY_DEFINITIONS.items() %}
     "{{ name }}": "{{ level.description }}. (weight={{ level.allowed_weights|join('/') }})"{% if not loop.last %},{% endif %}
     {% endfor %}
 };
@@ -11,18 +11,18 @@ const SEVERITY_DESCRIPTIONS = {
 // The checkbox state is the only state.
 const CHECKBOX_STATES = {
     idOnly: {
-        {% for name, level in severity.items() %}
-        '{{ name }}': {{ level.defaultIdOnly|tojson }}{% if not loop.last %},{% endif %}
+        {% for name, level in SEVERITY_DEFINITIONS.items() %}
+        '{{ name }}': {{ level.default_id_only|tojson }}{% if not loop.last %},{% endif %}
         {% endfor %}
     },
     showDesc: {
-        {% for name, level in severity.items() %}
-        '{{ name }}': {{ level.defaultShowDesc|tojson }}{% if not loop.last %},{% endif %}
+        {% for name, level in SEVERITY_DEFINITIONS.items() %}
+        '{{ name }}': {{ level.default_show_desc|tojson }}{% if not loop.last %},{% endif %}
         {% endfor %}
     },
     hideAll: {
-        {% for name, level in severity.items() %}
-        '{{ name }}': {{ level.defaultHideAll|tojson }}{% if not loop.last %},{% endif %}
+        {% for name, level in SEVERITY_DEFINITIONS.items() %}
+        '{{ name }}': {{ level.default_hide_all|tojson }}{% if not loop.last %},{% endif %}
         {% endfor %}
     }
 };

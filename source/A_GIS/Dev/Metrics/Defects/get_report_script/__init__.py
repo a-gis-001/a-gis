@@ -1,4 +1,4 @@
-def get_report_script(*, products, severity):
+def get_report_script(*, products, severity_definitions):
     """Get the defect report scripts you need.
 
     The severity definitions are passed in a dictionary with the top-level keys
@@ -15,5 +15,5 @@ def get_report_script(*, products, severity):
     template = template_env.get_template("report.js")
 
     # Render the template with the provided levels
-    js_output = template.render(products=products, severity=severity)
+    js_output = template.render(PRODUCTS=products, SEVERITY_DEFINITIONS=severity_definitions)
     return js_output
