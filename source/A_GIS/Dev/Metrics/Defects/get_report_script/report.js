@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLayout();
     ISSUES = parseIssues(SEVERITY_DESCRIPTIONS);
     createProductFilter(SEVERITY_DESCRIPTIONS, PRODUCTS, ISSUES, CHECKBOX_STATES);
-    createContentListing(SEVERITY_DESCRIPTIONS, ISSUES, CHECKBOX_STATES);
     addStandalonePageButtons();
     addBlockCopyButtons();
 });
@@ -61,14 +60,12 @@ function __createCheckbox(id, labelText, checked = false) {
 // Create an issue list item.
 function __createListItem(issue, showIdOnly, showDesc) {
     const li = document.createElement('li');
-
     const a = document.createElement('a');
-
     a.href = `#${issue.id}`;
+    
     const titleSpan = document.createElement('span');
     titleSpan.style.fontWeight = 'bold';
     titleSpan.textContent = showIdOnly ? issue.id : issue.title;
-
     a.appendChild(titleSpan);
 
     if (showDesc) {
@@ -131,9 +128,8 @@ function __createControls(severityLevel, states) {
 // Update a list.
 function __updateList(ul, issues, showIdOnly, showDesc, hideAll) {
     ul.innerHTML = '';
-    if (hideAll) {
-        return;
-    }
+    if (hideAll) return;
+    
     issues.forEach(issue => {
         const li = __createListItem(issue, showIdOnly, showDesc);
         ul.appendChild(li);
@@ -174,8 +170,9 @@ function __createSeverityBlock(severityDescriptions, severityLevel, issues, stat
         states.hideAll[severityLevel] = hideCheckbox.checked;
         __updateList(ul, issues, idCheckbox.checked, descCheckbox.checked, hideCheckbox.checked);
         __updateSectionVisibility(document.getElementById('product-filter').value, states);
-        __updateSidebarNav(); 
+        __updateSidebarNav();
     };
+
     idCheckbox.addEventListener('change', _updateListWithState);
     descCheckbox.addEventListener('change', _updateListWithState);
     hideCheckbox.addEventListener('change', _updateListWithState);
@@ -204,6 +201,7 @@ function __updateSidebarNav() {
 
     sidebar.appendChild(ul);
 }
+
 
 // Initialize the layout.
 function initializeLayout() {
@@ -334,9 +332,23 @@ function createProductFilter(severityDescriptions, products, issues, states) {
             issues :
             issues.filter(issue => issue.products.includes(selectedProduct));
     }
+
+    // Get product from URL parameter with validation
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedProduct = urlParams.get('product');
+    const initialProduct = products.includes(requestedProduct) ? requestedProduct : 'All';
+
+    // Update checkbox states if a valid product is selected
+    if (initialProduct !== 'All') {
+        Object.keys(states.showDesc).forEach(severity => {
+            states.showDesc[severity] = true;
+            states.hideAll[severity] = false;
+            states.idOnly[severity] = false;
+        });
+    }
+
     const select = document.createElement('select');
     select.id = 'product-filter';
-
     products.forEach(product => {
         const option = document.createElement('option');
         option.value = product;
@@ -344,49 +356,58 @@ function createProductFilter(severityDescriptions, products, issues, states) {
         select.appendChild(option);
     });
 
-    select.addEventListener('change', (event) => {
-        const selectedProduct = event.target.value;
+    // Set initial value 
+    select.value = initialProduct;
+    
+    const container = document.getElementById('dropdown-container');
+    container.appendChild(select);
+
+    function _updateWithFilter(selectedProduct) {
         const filteredIssues = _filterIssuesByProduct(selectedProduct, issues);
         __updateSectionVisibility(selectedProduct, states);
         createContentListing(severityDescriptions, filteredIssues, states);
+        __updateSidebarNav();
+    }
+
+    // Update on change
+    select.addEventListener('change', (event) => {
+        _updateWithFilter(event.target.value);
     });
 
-    const container = document.getElementById('dropdown-container');
-    container.appendChild(select);
+    // Initialize with filtered content
+    _updateWithFilter(initialProduct);
 }
 
 // Create a content listing.
-function createContentListing(severityDescriptions, issues, states) {
-
+function createContentListing(severityDescriptions, filteredIssues, states) {
     const inlineToc = document.getElementById("inline-toc");
-    if( !inlineToc ){
-        // Turn off all hide all if we don't show the controls.
+    if (!inlineToc) {
         for (let key in states.hideAll) {
             states.hideAll[key] = false;
         }        
-        __updateSectionVisibility(document.getElementById('product-filter').value, states);
+        __updateSectionVisibility(document.getElementById('product-filter')?.value || 'All', states);
         __updateSidebarNav(); 
-        return
+        return;
     }
 
     inlineToc.innerHTML = '';
 
     const groupedIssues = Object.keys(severityDescriptions).reduce((acc, key) => {
-        acc[key] = issues.filter(issue => issue.severity === key)
+        acc[key] = filteredIssues.filter(issue => issue.severity === key)
             .sort((a, b) => b.weight - a.weight);
         return acc;
     }, {});
 
     Object.keys(severityDescriptions).forEach(severityLevel => {
-        const section = __createSeverityBlock(severityDescriptions, severityLevel, groupedIssues[severityLevel], states);
+        const section = __createSeverityBlock(
+            severityDescriptions, 
+            severityLevel, 
+            groupedIssues[severityLevel] || [], 
+            states
+        );
         section.className = 'severity-box';
         inlineToc.appendChild(section);
     });
-}
-
-function getKatexBlock() {
-    const katexElements = document.querySelectorAll('[data-katex]');
-    return Array.from(katexElements).map(el => el.outerHTML).join("\n");
 }
 
 

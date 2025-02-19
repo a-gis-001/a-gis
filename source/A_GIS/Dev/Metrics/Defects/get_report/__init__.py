@@ -26,7 +26,7 @@ def get_report(
             "bg_color": "hsla(30, 95%, 90%, 0.9)",
         },
         "MODERATE": {
-            "description": "Obvious deviation or performance issue including code crash; low chance of false conclusions",
+            "description": "Obvious deviation or performance issue such as code crash; low chance of false conclusions",
             "allowed_weights": [8, 16, 32],
             "default_id_only": False,
             "default_show_desc": False,
@@ -55,7 +55,9 @@ def get_report(
         body += (
             "\n<section>\n"
             + A_GIS.Dev.Metrics.Defects.format_issue(
-                issue=v, base_path=store_dir, severity_definitions=severity_definitions
+                issue=v,
+                base_path=store_dir,
+                severity_definitions=severity_definitions,
             )
             + "\n</section>\n"
         )

@@ -7,7 +7,9 @@ def format_issue(*, issue, severity_definitions, base_path="."):
 
     # Get base markdown that has a bunch of junk removed.
     md_content = A_GIS.Dev.Metrics.Defects._process_issue(
-        issue=issue, store_dir=base_path, severity_definitions=severity_definitions
+        issue=issue,
+        store_dir=base_path,
+        severity_definitions=severity_definitions,
     )
 
     # Convert to HTML.

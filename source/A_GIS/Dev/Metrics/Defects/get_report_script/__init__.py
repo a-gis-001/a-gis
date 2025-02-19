@@ -15,5 +15,7 @@ def get_report_script(*, products, severity_definitions):
     template = template_env.get_template("report.js")
 
     # Render the template with the provided levels
-    js_output = template.render(PRODUCTS=products, SEVERITY_DEFINITIONS=severity_definitions)
+    js_output = template.render(
+        PRODUCTS=products, SEVERITY_DEFINITIONS=severity_definitions
+    )
     return js_output
