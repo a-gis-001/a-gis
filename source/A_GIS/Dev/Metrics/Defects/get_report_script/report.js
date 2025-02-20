@@ -410,12 +410,16 @@ function createContentListing(severityDescriptions, filteredIssues, states) {
     });
 }
 
+function __getKatexBlock() {
+    const katexElements = document.querySelectorAll('[data-katex]');
+    return Array.from(katexElements).map(el => el.outerHTML).join("\n");
+}
 
 // Add standalone page generation buttons to each section.
 function addStandalonePageButtons() {
     function _generateStandalonePage(section) {
         const styles = __extractPageStyle();
-		const katexBlock = getKatexBlock();  // Get KaTeX HTML from main page
+		const katexBlock = __getKatexBlock();  // Get KaTeX HTML from main page
         const html = `<!DOCTYPE html>
 <html>
 <head>
