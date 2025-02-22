@@ -1,4 +1,4 @@
-"""Collection of file operations.
+"""Operate on files and file systems including urls.
 """
 # Functions
 from ._read_to_text_docx import _read_to_text_docx

@@ -26,9 +26,9 @@ def cli():
 
 
 # Define the inspect command.
-@click.command()
+@click.command("inspect")
 @A_GIS.Cli.register
-def inspect(
+def cli_inspect(
     module_name: "module to inspect",
     *,
     methods: "show methods" = True,
@@ -41,13 +41,13 @@ def inspect(
     rich.inspect(module, console=console, methods=methods, help=more)
 
 
-cli.add_command(inspect)
+cli.add_command(cli_inspect)
 
 
 # Define the update command.
-@click.command()
+@click.command("update")
 @A_GIS.Cli.register
-def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
+def cli_update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     """Update the A_GIS repo tree"""
 
     # Perform the update.
@@ -64,13 +64,13 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     console.print(A_GIS.Cli.get_git_status(root=root))
 
 
-cli.add_command(update)
+cli.add_command(cli_update)
 
 
 # Define the move command.
-@click.command()
+@click.command("move")
 @A_GIS.Cli.register
-def move(old: "old unit name", new: "new unit name"):
+def cli_move(old: "old unit name", new: "new unit name"):
     """Move an A_GIS functional unit from one name/location to another"""
 
     console = rich.console.Console(width=WIDTH)
@@ -84,13 +84,13 @@ def move(old: "old unit name", new: "new unit name"):
     console.print(panel)
 
 
-cli.add_command(move)
+cli.add_command(cli_move)
 
 
 # Define the catalog command.
-@click.command()
+@click.command("catalog")
 @A_GIS.Cli.register
-def catalog(args: bool = True):
+def cli_catalog(args: bool = True):
     """Show a catalog of all of A_GIS"""
 
     # Use StringIO to capture the rich output into a buffer
@@ -114,33 +114,37 @@ def catalog(args: bool = True):
     click.echo_via_pager(output_content)
 
 
-cli.add_command(catalog)
+cli.add_command(cli_catalog)
 
 
 # Define the list command.
-@click.command()
+@click.command("list")
 @A_GIS.Cli.register
-@click.option("--color", type=bool, default=None, help="Force color output (default: auto-detect)")
-def list(tests: bool = False, mains: bool = False, local: bool = False, color: bool = None):
+@click.option(
+    "--color", type=bool, default=None, help="Force color output (default: auto-detect)"
+)
+def cli_list(
+    tests: bool = False, mains: bool = False, local: bool = False, color: bool = None
+):
     """Show a list of all of A_GIS"""
     # Auto-detect color support: enabled for TTY, disabled for redirected output
     if color is None:
         color = sys.stdout.isatty()
 
-    ignore=[]
+    ignore = []
     if not tests:
-        ignore.append('tests')
+        ignore.append("tests")
     if not mains:
-        ignore.append('__main__')
+        ignore.append("__main__")
     if not local:
-        ignore.append('_')
+        ignore.append("_")
 
     console = rich.console.Console(width=WIDTH, force_terminal=color)
     for f in A_GIS.Code.list(ignore=ignore).result:
-        parts = f.split('.')  # Split by dots for qualified names
+        parts = f.split(".")  # Split by dots for qualified names
         colored_text = rich.console.Text()
 
-        for i,part in enumerate(parts):
+        for i, part in enumerate(parts):
             if part.islower():
                 colored_text.append(part, style="green")
             elif part.startswith("_"):
@@ -153,19 +157,25 @@ def list(tests: bool = False, mains: bool = False, local: bool = False, color: b
 
         console.print(colored_text)
 
-cli.add_command(list)
+
+cli.add_command(cli_list)
 
 
 # Define the docstring command.
-@click.command()
+@click.command("docstring")
 @A_GIS.Cli.register
-def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS root" = "source/A_GIS", model: "model name" = "wizardlm2:7b"):
+def cli_docstring(
+    name: "unit name (ALL for all staged)",
+    *,
+    root: "path to A_GIS root" = "source/A_GIS",
+    model: "model name" = "wizardlm2:7b",
+):
     """Use AI to replace a docstring"""
 
     # Get the path and name.
-    if name=="ALL":
+    if name == "ALL":
         status = A_GIS.Code.Unit.get_git_status(root=root)
-        names = [name for name in status.staged_names if not name == 'A_GIS']
+        names = [name for name in status.staged_names if not name == "A_GIS"]
     else:
         names = [name]
 
@@ -176,9 +186,14 @@ def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS ro
 
         # Generate a docstring.
         code = A_GIS.File.read(file=path)
-        docstring = A_GIS.Code.Docstring.generate(name=name, code=code, model=model, reformat=True)
+        docstring = A_GIS.Code.Docstring.generate(
+            name=name, code=code, model=model, reformat=True
+        )
         panel = rich.panel.Panel(
-            str(docstring), title=f"new docstring", expand=True, border_style="bold cyan"
+            str(docstring),
+            title=f"new docstring",
+            expand=True,
+            border_style="bold cyan",
         )
         console.print(panel)
 
@@ -193,13 +208,13 @@ def docstring(name: "unit name (ALL for all staged)", *, root: "path to A_GIS ro
     console.print(panel)
 
 
-cli.add_command(docstring)
+cli.add_command(cli_docstring)
 
 
 # Define the touch command.
-@click.command()
+@click.command("touch")
 @A_GIS.Cli.register
-def touch(name: "unit name"):
+def cli_touch(name: "unit name"):
     """Create a new unit"""
 
     # Touch the file.
@@ -220,43 +235,49 @@ def touch(name: "unit name"):
         console.print("TIP: Define environmental variable EDITOR to open touched file!")
 
 
-cli.add_command(touch)
+cli.add_command(cli_touch)
 
 
 # Define the absorb command.
-@click.command()
+@click.command("absorb")
 @A_GIS.Cli.register
-def absorb(file: "function to absorb", *, name: "name to place" = None, write: "whether to write" = True):
+def cli_absorb(
+    file: "function to absorb",
+    *,
+    name: "name to place" = None,
+    write: "whether to write" = True,
+):
     """Absorb a function into A_GIS"""
 
     console = rich.console.Console(width=WIDTH)
-    console.print(
-        f"Absorbing function file={file}"
-    )
+    console.print(f"Absorbing function file={file}")
     code = A_GIS.File.read(file=file)
-    x = A_GIS.Code.Unit.absorb(code=code,name=name,write=write)
+    x = A_GIS.Code.Unit.absorb(code=code, name=name, write=write)
 
     if x.error:
-        console.print(
-            f"Function could not be absorbed\n{x.error}"
-        )
+        console.print(f"Function could not be absorbed\n{x.error}")
     else:
         if x.generated_names:
             console.print("Names generated:")
             for name in x.generated_names:
                 console.print(f"  - {name}")
         if write:
-            console.print(f"New function absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")
+            console.print(
+                f"New function absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!"
+            )
         else:
-            console.print(f"New function would be absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!")
+            console.print(
+                f"New function would be absorbed to [bold]{x.name}[/bold] at path={str(x.path)}!"
+            )
 
-cli.add_command(absorb)
+
+cli.add_command(cli_absorb)
 
 
 # Define the add command.
-@click.command()
+@click.command("add")
 @A_GIS.Cli.register
-def add(name: "unit name"):
+def cli_add(name: "unit name"):
     """Wrapper around git add"""
 
     # Get the path and name.
@@ -264,20 +285,22 @@ def add(name: "unit name"):
     console = rich.console.Console(width=WIDTH)
     path0 = str(path.parent)
     root = A_GIS.Code.find_root(path=path)
-    console.print(f"Adding to staged package/unit [bold]{name}[/bold] at path={path0} ...")
+    console.print(
+        f"Adding to staged package/unit [bold]{name}[/bold] at path={path0} ..."
+    )
 
-    A_GIS.Cli.run_git(mode='add',args=[str(path0)])
+    A_GIS.Cli.run_git(mode="add", args=[str(path0)])
     panel = A_GIS.Cli.update_and_show_git_status(root=root)
     console.print(panel)
 
 
-cli.add_command(add)
+cli.add_command(cli_add)
 
 
 # Define the distill command.
-@click.command()
+@click.command("distill")
 @A_GIS.Cli.register
-def distill(name: "unit name" = ""):
+def cli_distill(name: "unit name" = ""):
     """Distill a piece of code into its basic form"""
 
     if name == "":
@@ -289,13 +312,17 @@ def distill(name: "unit name" = ""):
     A_GIS.Cli.distill(console=console, names=names)
 
 
-cli.add_command(distill)
+cli.add_command(cli_distill)
 
 
 # Define the commit command.
-@click.command()
+@click.command("commit")
 @A_GIS.Cli.register
-def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just generate message without committing" = False):
+def cli_commit(
+    *,
+    root: "path to A_GIS root" = "source/A_GIS",
+    dry_run: "just generate message without committing" = False,
+):
     """Use AI to generate a commit message for the staged changes"""
 
     # Show current status.
@@ -312,13 +339,14 @@ def commit(*, root: "path to A_GIS root" = "source/A_GIS", dry_run: "just genera
     )
     console.print(panel)
 
-cli.add_command(commit)
+
+cli.add_command(cli_commit)
 
 
 # Define the status command.
-@click.command()
+@click.command("status")
 @A_GIS.Cli.register
-def status(*, root: "path to A_GIS root" = "source/A_GIS"):
+def cli_status(*, root: "path to A_GIS root" = "source/A_GIS"):
     """Show git status"""
 
     # Show current status.
@@ -342,7 +370,340 @@ def status(*, root: "path to A_GIS root" = "source/A_GIS"):
     )
     console.print(panel)
 
-cli.add_command(status)
+
+cli.add_command(cli_status)
+
+@click.command('repl')
+@A_GIS.Cli.register
+def cli_repl(ctx=None, debug:"Show debug info"=False):
+    """Interactive REPL to explore A_GIS modules"""
+    import rich
+    from rich.text import Text
+    from rich.tree import Tree
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.completion import Completer, Completion
+    import importlib
+    import inspect
+    from collections import deque
+
+    console = rich.console.Console(width=WIDTH)
+    if debug:
+        console.print("Starting REPL...")
+        console.print(f"Current sys.argv: {sys.argv}")
+        console.print("Initializing navigation...")
+
+    nav_history = deque(maxlen=10)
+
+    class PathCompleter(Completer):
+        def __init__(self, get_current_contents):
+            self.get_current_contents = get_current_contents
+
+        def get_completions(self, document, complete_event):
+            text = document.text_before_cursor
+
+            # Handle root navigation
+            if text.endswith('/'):
+                try:
+                    root_module = A_GIS
+                    contents = get_module_contents(root_module)
+                    for name in contents.keys():
+                        yield Completion(name, start_position=-1)
+                except:
+                    pass
+                return
+
+            # Handle going up
+            if text.endswith('../'):
+                if path_stack:
+                    parent_path = path_stack[-1]
+                    try:
+                        parent_module = importlib.import_module(parent_path)
+                        contents = get_module_contents(parent_module)
+                        for name in contents.keys():
+                            yield Completion(name, start_position=-2)
+                    except:
+                        pass
+                return
+
+            # Handle module paths
+            if '.' in text:
+                parts = text.split('.')
+                base = '.'.join(parts[:-1])
+                partial = parts[-1]
+
+                try:
+                    full_path = f"{current_path}.{base}" if base else current_path
+                    module = importlib.import_module(full_path)
+                    contents = get_module_contents(module)
+
+                    for name in contents.keys():
+                        if name.startswith(partial):
+                            yield Completion(name, start_position=-len(partial))
+                except:
+                    pass
+                return
+
+            # Default completion from current module
+            contents = self.get_current_contents()
+            for name in contents.keys():
+                if name.startswith(text):
+                    yield Completion(name, start_position=-len(text))
+
+            # Add basic commands
+            commands = ['..', 'help', 'exit', '/']
+            for cmd in commands:
+                if cmd.startswith(text):
+                    yield Completion(cmd, start_position=-len(text))
+
+    def get_module_contents(module):
+        """Get contents of a module"""
+        contents = {}
+        try:
+            for name, obj in inspect.getmembers(module):
+                if name.startswith('_'):
+                    continue
+
+                # Only include if it's part of A_GIS
+                obj_name = getattr(obj, '__name__', '')
+                if not isinstance(obj_name, str) or (inspect.ismodule(obj) and not obj_name.startswith('A_GIS')):
+                    continue
+
+                if inspect.ismodule(obj):
+                    contents[name] = ('module', obj)
+                elif inspect.isfunction(obj):
+                    contents[name] = ('function', obj)
+                elif inspect.isclass(obj):
+                    contents[name] = ('class', obj)
+        except Exception as e:
+            if debug:
+                console.print(f"[red]Error getting contents: {str(e)}[/red]")
+        return contents
+
+    def show_nav_tree():
+        """Display navigation history as a tree"""
+        tree = Tree("A_GIS", style="bold", guide_style="bold bright_black")
+        current_nodes = {"A_GIS": tree}
+
+        for path, type_, obj in nav_history:
+            parts = path.split('.')
+            current = "A_GIS"
+
+            # Handle modules first
+            for part in parts[1:]:  # Skip "A_GIS" as it's the root
+                parent = current
+                current = f"{current}.{part}"
+                if current not in current_nodes:
+                    style = "green" if current == path and type_ == 'module' else "bold white"
+                    # Get module description
+                    try:
+                        module = importlib.import_module(current)
+                        doc = inspect.getdoc(module)
+                        desc = ""
+                        if doc:
+                            first_line = doc.split('\n')[0]
+                            desc = f" # {first_line}"
+                    except:
+                        desc = ""
+                    label = f"{part}{desc}"
+                    current_nodes[current] = current_nodes[parent].add(
+                        label,
+                        style=style,
+                        guide_style="bold bright_black"
+                    )
+
+            # Add function or class if this history entry is one
+            if type_ in ('function', 'class'):
+                style = "cyan" if type_ == 'function' else "magenta"
+                name = parts[-1]
+                doc = inspect.getdoc(obj)
+                desc = ""
+                if doc:
+                    first_line = doc.split('\n')[0]
+                    desc = f" # {first_line}"
+                if type_ == 'function':
+                    sig = str(inspect.signature(obj))
+                    label = f"○ {name}{sig}{desc}"
+                    # Force long signatures to single line
+                    if len(label) > console.width - 20:  # Leave some margin
+                        label = label.replace('\n', ' ')
+                    current_nodes[current].add(label, style=style, guide_style="bold bright_black")
+                else:
+                    current_nodes[current].add(f"□ {name}{desc}", style=style, guide_style="bold bright_black")
+
+        console.print("\nNavigation History:")
+        console.print(tree)
+        console.print()
+
+    def show_contents(contents):
+        """Display current module contents"""
+        if not contents:
+            console.print("[dim]Empty module[/dim]")
+            return
+
+        table = rich.table.Table(show_header=True, show_edge=True, border_style="bold")
+        table.add_column("Type", style="dim")
+        table.add_column("Name", style="bold")
+        table.add_column("Description")
+
+        for name, (type_, obj) in sorted(contents.items()):
+            doc = inspect.getdoc(obj)
+            desc = doc.split('\n')[0] if doc else "No description"
+            style = {"module": "green", "function": "cyan", "class": "magenta"}[type_]
+            table.add_row(type_.capitalize(), Text(name, style=style), desc)
+
+        console.print(table)
+        console.print()
+
+    try:
+        if debug:
+            console.print("Initializing navigation...")
+
+        current_path = "A_GIS"
+        current_module = A_GIS
+        path_stack = []
+
+        contents = get_module_contents(current_module)
+        if debug:
+            console.print(f"Found {len(contents)} items")
+
+        completer = PathCompleter(lambda: contents)
+        session = PromptSession(completer=completer)
+
+        # Banner
+        console.print("[bold]A_GIS Explorer[/bold]")
+        console.print("Type [cyan]module.submodule[/cyan] + TAB to explore")
+        console.print("Type [cyan]../[/cyan] + TAB to see parent contents")
+        console.print("Type [cyan]/[/cyan] + TAB to see root contents")
+        console.print("Type [green]help[/green] for commands\n")
+
+        # Show initial contents
+        show_contents(contents)
+
+        while True:
+            try:
+                if len(nav_history) > 0:
+                    show_nav_tree()
+
+                prompt_path = current_path.replace("A_GIS.", "")
+                if prompt_path == "A_GIS":
+                    prompt_text = "A_GIS> "
+                else:
+                    prompt_text = f"A_GIS.{prompt_path}> "
+
+                text = session.prompt(prompt_text).strip()
+
+                if text == "exit":
+                    break
+                elif text == "help":
+                    console.print("\nCommands:")
+                    console.print("  help  : Show this help")
+                    console.print("  ..    : Go up one level")
+                    console.print("  /     : Go to root")
+                    console.print("  exit  : Exit explorer")
+                    console.print("\nPress Enter to list contents")
+                    console.print("Type component name to navigate or view details\n")
+                elif text == "..":
+                    if path_stack:
+                        current_path = path_stack.pop()
+                        current_module = importlib.import_module(current_path)
+                        contents = get_module_contents(current_module)
+                        completer = PathCompleter(lambda: contents)
+                        nav_history.append((current_path, 'module', current_module))
+                        show_contents(contents)
+                elif text == "/" or text == "":
+                    if text == "/":
+                        path_stack = []
+                        current_path = "A_GIS"
+                        current_module = A_GIS
+                        contents = get_module_contents(current_module)
+                        completer = PathCompleter(lambda: contents)
+                        nav_history.append((current_path, 'module', current_module))
+                    show_contents(contents)
+                elif '.' in text:
+                    parts = text.split('.')
+                    try:
+                        nav_path = current_path
+                        for part in parts:
+                            if part:  # Skip empty parts
+                                module = importlib.import_module(nav_path)
+                                contents = get_module_contents(module)
+                                if part in contents:
+                                    type_, obj = contents[part]
+                                    if type_ == 'module':
+                                        nav_path = f"{nav_path}.{part}"
+                                    else:
+                                        # Handle function/class display
+                                        doc = inspect.getdoc(obj)
+                                        nav_history.append((f"{nav_path}.{part}", type_, obj))
+                                        console.print(f"\n[bold]{type_.capitalize()}: {part}[/bold]")
+                                        if inspect.isfunction(obj):
+                                            console.print(f"Signature: {inspect.signature(obj)}")
+                                        if doc:
+                                            console.print(f"\n{doc}\n")
+                                        nav_path = None
+                                        break
+
+                        if nav_path:
+                            # Update current state for module navigation
+                            path_stack.append(current_path)
+                            current_path = nav_path
+                            current_module = importlib.import_module(current_path)
+                            contents = get_module_contents(current_module)
+                            completer = PathCompleter(lambda: contents)
+                            nav_history.append((current_path, 'module', current_module))
+                            console.print(f"Moved to {current_path}")
+                            show_contents(contents)
+
+                    except Exception as e:
+                        if debug:
+                            console.print(f"[red]Navigation error: {str(e)}[/red]")
+                        continue
+                elif text in contents:
+                    type_, obj = contents[text]
+
+                    if type_ == 'module':
+                        doc = inspect.getdoc(obj)
+                        if doc:
+                            console.print(f"\nModule Description:")
+                            console.print(f"{doc}")
+                            console.print()
+
+                        path_stack.append(current_path)
+                        current_path = f"{current_path}.{text}"
+                        nav_history.append((current_path, 'module', obj))
+                        current_module = obj
+                        contents = get_module_contents(current_module)
+                        completer = PathCompleter(lambda: contents)
+                        console.print(f"Moved to {current_path}")
+                        show_contents(contents)
+                    else:
+                        doc = inspect.getdoc(obj)
+                        nav_history.append((f"{current_path}.{text}", type_, obj))
+                        console.print(f"\n[bold]{type_.capitalize()}: {text}[/bold]")
+                        if inspect.isfunction(obj):
+                            console.print(f"Signature: {inspect.signature(obj)}")
+                        if doc:
+                            console.print(f"\n{doc}\n")
+                        else:
+                            console.print("\nNo documentation available\n")
+                else:
+                    console.print(f"[red]Unknown: {text}[/red]")
+
+            except KeyboardInterrupt:
+                continue
+            except EOFError:
+                break
+            except Exception as e:
+                if debug:
+                    console.print(f"[red]Error: {str(e)}[/red]")
+
+    except Exception as e:
+        if debug:
+            console.print(f"[red]Error during initialization: {str(e)}[/red]")
+            import traceback
+            traceback.print_exc()
+
+cli.add_command(cli_repl)
 
 # This is always a main.
 cli()
