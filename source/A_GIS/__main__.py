@@ -1,23 +1,4 @@
-import A_GIS.catalog
-import A_GIS.Cli.get_console_width
-import A_GIS.Cli.get_git_status
-import A_GIS.Cli.get_name_and_path
-import A_GIS.Cli.register
-import A_GIS.Cli.update_and_show_git_status
-import A_GIS.Code.Docstring.generate
-import A_GIS.Code.replace_docstring
-import A_GIS.Code.Docstring.fix_short_description
-import A_GIS.Code.find_root
-import A_GIS.Code.highlight
-import A_GIS.Code.Tree.recurse
-import A_GIS.Code.Tree.update
-import A_GIS.Code.Unit.move
-import A_GIS.Code.Unit.Name.generate
-import A_GIS.Code.Unit.Name.init_from_path
-import A_GIS.Code.Unit.Name.to_path
-import A_GIS.Code.Unit.touch
-import A_GIS.File.read
-import A_GIS.File.write
+import A_GIS
 import importlib
 import io
 import os
@@ -74,7 +55,7 @@ def update(*, root: "path to find A_GIS root" = "source/A_GIS"):
     root = A_GIS.Code.find_root(path=pathlib.Path(root))
 
     console.print(f"updating A_GIS at root={root} ...")
-    
+
     # Update the tree
     tree = A_GIS.Code.Tree.recurse(path=root)
     A_GIS.Code.Tree.update(tree=tree)
@@ -142,8 +123,6 @@ cli.add_command(catalog)
 @click.option("--color", type=bool, default=None, help="Force color output (default: auto-detect)")
 def list(tests: bool = False, mains: bool = False, local: bool = False, color: bool = None):
     """Show a list of all of A_GIS"""
-    import A_GIS.Code.list
-
     # Auto-detect color support: enabled for TTY, disabled for redirected output
     if color is None:
         color = sys.stdout.isatty()
