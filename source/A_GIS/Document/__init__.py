@@ -1,5 +1,4 @@
-"""
-Operate on documents.
+"""Operate on documents.
 
 Documents are vehicles to deliver information to a specific audience.
 
@@ -14,7 +13,6 @@ This module explores the following.
 - Can we classify documents?
 - Can a document be converted back to data?
 - Can we identify components of a document and extract them?
-
 """
 # Functions
 from .extract_images import extract_images

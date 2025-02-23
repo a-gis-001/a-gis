@@ -384,7 +384,6 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
     from prompt_toolkit.completion import Completer, Completion
     import importlib
     import inspect
-    from collections import deque
 
     console = rich.console.Console(width=WIDTH)
     if debug:
@@ -392,7 +391,7 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
         console.print(f"Current sys.argv: {sys.argv}")
         console.print("Initializing navigation...")
 
-    nav_history = deque(maxlen=10)
+    nav_history = A_GIS.Data.Structure.UniqueDeque.create(maxlen=10)
 
     class PathCompleter(Completer):
         def __init__(self, get_current_contents):
@@ -479,61 +478,6 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
                 console.print(f"[red]Error getting contents: {str(e)}[/red]")
         return contents
 
-    def show_nav_tree():
-        """Display navigation history as a tree"""
-        tree = Tree("A_GIS", style="bold", guide_style="bold bright_black")
-        current_nodes = {"A_GIS": tree}
-
-        for path, type_, obj in nav_history:
-            parts = path.split('.')
-            current = "A_GIS"
-
-            # Handle modules first
-            for part in parts[1:]:  # Skip "A_GIS" as it's the root
-                parent = current
-                current = f"{current}.{part}"
-                if current not in current_nodes:
-                    style = "green" if current == path and type_ == 'module' else "bold white"
-                    # Get module description
-                    try:
-                        module = importlib.import_module(current)
-                        doc = inspect.getdoc(module)
-                        desc = ""
-                        if doc:
-                            first_line = doc.split('\n')[0]
-                            desc = f" # {first_line}"
-                    except:
-                        desc = ""
-                    label = f"{part}{desc}"
-                    current_nodes[current] = current_nodes[parent].add(
-                        label,
-                        style=style,
-                        guide_style="bold bright_black"
-                    )
-
-            # Add function or class if this history entry is one
-            if type_ in ('function', 'class'):
-                style = "cyan" if type_ == 'function' else "magenta"
-                name = parts[-1]
-                doc = inspect.getdoc(obj)
-                desc = ""
-                if doc:
-                    first_line = doc.split('\n')[0]
-                    desc = f" # {first_line}"
-                if type_ == 'function':
-                    sig = str(inspect.signature(obj))
-                    label = f"○ {name}{sig}{desc}"
-                    # Force long signatures to single line
-                    if len(label) > console.width - 20:  # Leave some margin
-                        label = label.replace('\n', ' ')
-                    current_nodes[current].add(label, style=style, guide_style="bold bright_black")
-                else:
-                    current_nodes[current].add(f"□ {name}{desc}", style=style, guide_style="bold bright_black")
-
-        console.print("\nNavigation History:")
-        console.print(tree)
-        console.print()
-
     def show_contents(contents):
         """Display current module contents"""
         if not contents:
@@ -582,7 +526,8 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
         while True:
             try:
                 if len(nav_history) > 0:
-                    show_nav_tree()
+                    tree = A_GIS.Code.Unit.show_nav_tree(nav_history=nav_history)
+                    console.print(tree)
 
                 prompt_path = current_path.replace("A_GIS.", "")
                 if prompt_path == "A_GIS":
@@ -693,9 +638,6 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
                 continue
             except EOFError:
                 break
-            except Exception as e:
-                if debug:
-                    console.print(f"[red]Error: {str(e)}[/red]")
 
     except Exception as e:
         if debug:

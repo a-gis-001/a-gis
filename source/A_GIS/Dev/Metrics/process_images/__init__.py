@@ -14,7 +14,7 @@ def process_images(
     """
     import A_GIS.Dev.Metrics._extract_image_urls
     import A_GIS.Dev.Metrics._download_and_hash_image
-    import A_GIS.Data.Json.load_from_db
+    import A_GIS.Data.Format.Json.load_from_db
     import pathlib
 
     images = A_GIS.Dev.Metrics._extract_image_urls(issue, attachment_url)
@@ -23,7 +23,7 @@ def process_images(
     if download and images:
         already_have = {}
         if use_cache:
-            data = A_GIS.Data.Json.load_from_db(
+            data = A_GIS.Data.Format.Json.load_from_db(
                 file=store_path, leave=False, only_keys=[issue.iid]
             )
             if issue.iid in data:

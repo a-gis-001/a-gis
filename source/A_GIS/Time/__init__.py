@@ -1,5 +1,4 @@
-"""
-Manage the 'when' of everything.
+"""Manage the 'when' of everything.
 
 Time data is necessary to understand progress and relationships.
 
@@ -27,7 +26,6 @@ For example, if the two events are a purchase and the delivery arriving:
 
 This data can be used to piece together the events to determine the most likely
 times that things happened.
-
 """
 # Functions
 from .convert_to_datetime import convert_to_datetime

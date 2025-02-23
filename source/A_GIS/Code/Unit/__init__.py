@@ -13,6 +13,7 @@ from .get_git_status import get_git_status
 from .move import move
 from .read import read
 from .recommend import recommend
+from .show_nav_tree import show_nav_tree
 from .substitute_imports import substitute_imports
 from .to_string import to_string
 from .touch import touch

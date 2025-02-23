@@ -1,5 +1,4 @@
-"""
-Develop software.
+"""Develop software.
 """
 # Packages
 from . import Metrics

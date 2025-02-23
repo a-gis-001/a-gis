@@ -97,9 +97,9 @@ def download(
     downloader = _ModelDownloader(max_retries=max_retries)
 
     # Clean up the model/branch names
-    import A_GIS.Data.Llm._helpers
+    import A_GIS.Ai.Llm._helpers
 
-    model, branch = A_GIS.Data.Llm._helpers.sanitize_model_and_branch_names(
+    model, branch = A_GIS.Ai.Llm._helpers.sanitize_model_and_branch_names(
         model, branch
     )
 
@@ -109,7 +109,7 @@ def download(
         sha256,
         is_lora,
         is_llamacpp,
-    ) = A_GIS.Data.Llm._helpers.get_download_links(
+    ) = A_GIS.Ai.Llm._helpers.get_download_links(
         downloader.session,
         model,
         branch,
@@ -118,7 +118,7 @@ def download(
     )
 
     # Get the output folder
-    output_folder = A_GIS.Data.Llm._helpers.get_output_folder(
+    output_folder = A_GIS.Ai.Llm._helpers.get_output_folder(
         model, branch, is_lora, is_llamacpp=is_llamacpp, base_folder=output
     )
 
@@ -129,7 +129,7 @@ def download(
         )
     else:
         # Download files
-        A_GIS.Data.Llm._helpers.download_model_files(
+        A_GIS.Ai.Llm._helpers.download_model_files(
             downloader.session,
             model,
             branch,
@@ -144,9 +144,9 @@ def download(
     return output_folder
 
 if __name__ == "__main__":
-    import A_GIS.Data.Llm._helpers.parse_download_cli_args
+    import A_GIS.Ai.Llm._helpers.parse_download_cli_args
 
-    args = A_GIS.Data.Llm._helpers.parse_download_cli_args()
+    args = A_GIS.Ai.Llm._helpers.parse_download_cli_args()
 
     download(
         model=args.MODEL,

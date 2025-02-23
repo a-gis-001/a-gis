@@ -11,7 +11,7 @@ def download_model_files(
     specific_file=None,
     is_llamacpp=False,
 ):
-    import A_GIS.Data.Llm._helpers.start_download_threads
+    import A_GIS.Ai.Llm._helpers.start_download_threads
     import datetime
     import hashlib
 
@@ -37,7 +37,7 @@ def download_model_files(
     else:
         print(f"Downloading the model to {output_folder}")
 
-    A_GIS.Data.Llm._helpers.start_download_threads(
+    A_GIS.Ai.Llm._helpers.start_download_threads(
         session,
         links,
         output_folder,

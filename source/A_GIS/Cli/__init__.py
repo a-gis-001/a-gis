@@ -1,5 +1,4 @@
-"""
-Deploy command line interfaces.
+"""Deploy command line interfaces.
 """
 # Functions
 from .distill import distill

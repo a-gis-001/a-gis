@@ -40,7 +40,7 @@ def _get_raw_data_gitlab_sqa(
 
     if pathlib.Path(store).exists():
         only_keys = [issue_number] if issue_number is not None else None
-        data = A_GIS.Data.Json.load_from_db(
+        data = A_GIS.Data.Format.Json.load_from_db(
             file=store, leave=False, only_keys=only_keys
         )
     else:
@@ -109,14 +109,16 @@ def _get_raw_data_gitlab_sqa(
             cached_data[f.iid] = data[f.iid]
             count += 1
             if count % save_every == 0:
-                A_GIS.Data.Json.save_to_db(
+                A_GIS.Data.Format.Json.save_to_db(
                     data=cached_data, file=store, leave=False
                 )
                 count = 0
                 cached_data = {}
 
     # Final save to get anything left over.
-    A_GIS.Data.Json.save_to_db(data=cached_data, file=store, leave=False)
+    A_GIS.Data.Format.Json.save_to_db(
+        data=cached_data, file=store, leave=False
+    )
 
     # Apply all filters before returning
     return A_GIS.Dev.Metrics.filter_issues(
