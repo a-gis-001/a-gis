@@ -4,8 +4,16 @@ def calculate_embedding(
     name: str = None,
     compare: list[str] = [],
     model: str = "microsoft/graphcodebert-base",
+    instruction: str = "Represent this Python function based on its computational logic"
 ):
-    """Calculate embeddings of code."""
+    """Calculate embeddings of code.
+
+    Good models
+    - microsoft/graphcodebert-base
+    - hkunlp/instructor-xl
+    - Salesforce/codet5p-110m-embedding
+
+    """
     import A_GIS.Code.Unit._process_args_name_code
     import A_GIS.Code.calculate_embedding
     import A_GIS.Code.Unit.read
