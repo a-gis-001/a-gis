@@ -2,6 +2,7 @@
 """
 # Functions
 from ._distill_imports import _distill_imports
+from .calculate_embedding import calculate_embedding
 from .collect_imports import collect_imports
 from .convert_multiline import convert_multiline
 from .distill import distill

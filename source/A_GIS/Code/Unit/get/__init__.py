@@ -1,4 +1,6 @@
-def get(*, code: str):
+def get(
+    *, code: str = None, name: str = None
+) -> type["A_GIS.Code.Unit._Unit"]:
     """Parse code into a functional unit
 
     Separates the code into four main sections
@@ -23,6 +25,10 @@ def get(*, code: str):
 
     import A_GIS.Code.Unit._parse_first_pass
     import A_GIS.Code.Unit._Unit
+    import A_GIS.Code.Unit.read
+    import A_GIS.Code.Unit._process_args_name_code
+
+    name, code = A_GIS.Code.Unit._process_args_name_code(name=name, code=code)
 
     # Split the full code body into 4 expected sections.
     (

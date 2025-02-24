@@ -1,4 +1,5 @@
 import A_GIS
+import inspect
 import importlib
 import io
 import os
@@ -646,6 +647,111 @@ def cli_repl(ctx=None, debug:"Show debug info"=False):
             traceback.print_exc()
 
 cli.add_command(cli_repl)
+
+
+@click.command('run',context_settings={"allow_extra_args": True, "ignore_unknown_options": True})
+@A_GIS.Cli.register
+def cli_run(function_path: "path to A_GIS function"):
+    """
+    Run a specified function with dynamically generated CLI arguments.
+    """
+    import yaml
+    import json
+    # Ensure multi-line strings use block formatting (| in YAML)
+    def str_presenter(dumper, data):
+        if '\n' in data:  # If string contains newlines, use block style (|)
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+    yaml.add_representer(str, str_presenter)  # Register custom representer
+
+    def to_yaml(result):
+        """Convert a result struct to YAML and print it nicely."""
+        return yaml.dump(result.__dict__, sort_keys=False, default_flow_style=False)
+
+    def resolve_function_safely(function_path):
+        """Resolve a function using A_GIS.resolve_function; handle errors gracefully."""
+        try:
+            func = A_GIS.resolve_function(func_path=function_path)
+            return func
+        except ModuleNotFoundError:
+            console.print(f"[red]Error:[/red] Module '{function_path}' not found.")
+        except AttributeError:
+            console.print(f"[red]Error:[/red] Function '{function_path}' not found in the module.")
+        return None
+
+    def create_dynamic_command(func):
+        """Create a click command with options matching the function signature."""
+        signature = inspect.signature(func)
+
+        @click.command()
+        def dynamic_command(**kwargs):
+            # Filter out None values to preserve defaults
+            kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+            # Handle string parameters
+            for key, value in kwargs.items():
+                try:
+                    kwargs[key] = json.loads(value)
+                except json.JSONDecodeError:
+                    if isinstance(value, str):
+                        value = value.replace("\\n", "\n")
+                    kwargs[key] = value
+
+            try:
+                result = func(**kwargs)
+                console.print(rich.panel.Panel(to_yaml(result), title="📜 Function Output", border_style="blue"))
+            except Exception as e:
+                console.print(
+                    rich.panel.Panel(f"[red]Error running function:[/red] {e}", title="⚠️ Function Error", border_style="red")
+                )
+
+        # Dynamically add options based on function parameters
+        for param_name, param in signature.parameters.items():
+            # Force string type for all parameters that might contain JSON
+            param_type = click.STRING
+            is_required = param.default == inspect.Parameter.empty
+            default = None if is_required else param.default
+            dynamic_command = click.option(
+                f"--{param_name}",
+                type=param_type,
+                required=is_required,
+                default=default
+            )(dynamic_command)
+
+        return dynamic_command
+
+    console = rich.console.Console(width=WIDTH)
+    ctx = click.get_current_context()
+    extra_args = ctx.args  # Extra args remain unparsed
+
+    func = resolve_function_safely(function_path)
+    if func is None:
+        return
+
+    # Show the function signature using Rich.
+    signature = inspect.signature(func)
+    table = rich.table.Table(title=f"Function: {function_path}")
+    table.add_column("Parameter", style="bold cyan")
+    table.add_column("Type", style="bold yellow")
+    table.add_column("Default", style="bold magenta")
+    for param_name, param in signature.parameters.items():
+        param_type = str(param.annotation) if param.annotation != inspect.Parameter.empty else "Any"
+        default_value = str(param.default) if param.default != inspect.Parameter.empty else "Required"
+        table.add_row(param_name, param_type, default_value)
+    console.print(rich.panel.Panel(table, title="🔍 Function Signature", border_style="green"))
+
+    # Only show signature if no additional arguments provided
+    if not extra_args:
+        return
+
+    # Create a dynamic command with options for the resolved function.
+    dynamic_cmd = create_dynamic_command(func)
+    # Create a new context for the dynamic command using the extra args.
+    with dynamic_cmd.make_context(dynamic_cmd.name, extra_args) as dyn_ctx:
+        dynamic_cmd.invoke(dyn_ctx)
+
+cli.add_command(cli_run)
 
 # This is always a main.
 cli()

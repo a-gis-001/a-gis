@@ -43,8 +43,10 @@ def get_source(*, entity, depth=0, max_depth=2):
     import inspect
     import ast
     import importlib
+    import A_GIS.Code.make_struct
 
     sources = {}
+    error = ""
 
     try:
         # Attempt to load the entity as a module
@@ -56,9 +58,9 @@ def get_source(*, entity, depth=0, max_depth=2):
             module_name, func_name = entity.rsplit(".", 1)
             module = importlib.import_module(module_name)
         except ModuleNotFoundError as e:
-            return {entity: f"Module not found: {e}"}
+            error = f"Module not found: {e}"
         except ValueError as e:
-            return {entity: f"Invalid entity format: {e}"}
+            error = f"Invalid entity format: {e}"
 
     # If only a module is provided, retrieve the entire module source
     if func_name is None:
@@ -73,7 +75,7 @@ def get_source(*, entity, depth=0, max_depth=2):
             func = getattr(module, func_name)
             sources[func_name] = inspect.getsource(func)
         except Exception as e:
-            return {entity: f"Unable to retrieve source: {e}"}
+            error = f"Unable to retrieve source: {e}"
 
     # Helper function to get called functions within source code
     def get_called_functions(func_source):
@@ -136,11 +138,15 @@ def get_source(*, entity, depth=0, max_depth=2):
 
     # Start the recursive source retrieval from the main function or entire
     # module
-    if func_name:
-        retrieve_sources(func_name, module, depth)
-    else:
-        # If only a module is provided, retrieve all functions in the module
-        for name, func in inspect.getmembers(module, inspect.isfunction):
-            retrieve_sources(name, module, depth)
+    if error != "":
+        if func_name:
+            retrieve_sources(func_name, module, depth)
+        else:
+            # If only a module is provided, retrieve all functions in the
+            # module
+            for name, func in inspect.getmembers(module, inspect.isfunction):
+                retrieve_sources(name, module, depth)
 
-    return sources
+    return A_GIS.Code.make_struct(
+        error=error, sources=sources, _entity=entity, _max_depth=max_depth
+    )
