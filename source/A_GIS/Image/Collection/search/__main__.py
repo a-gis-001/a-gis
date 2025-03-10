@@ -2,7 +2,10 @@ import A_GIS
 import sys
 
 # Initialize A_GIS components and retrieve images
-images, image_files = A_GIS.Image.glob(paths=sys.argv[1:])
+glob = A_GIS.Image.glob(paths=sys.argv[1:])
+images = glob.images
+image_files = glob.files
+
 encoder = A_GIS.Image.Encoder.init()
 encoded_images = A_GIS.Image.Encoder.encode(encoder=encoder, images=images)
 collection = A_GIS.Image.Collection.init()
