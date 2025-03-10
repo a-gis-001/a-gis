@@ -7,6 +7,11 @@ import pathlib
 import rich
 import rich_click as click
 import rich.traceback
+import rich.rule
+import rich.panel
+import rich.console
+import rich.text
+import rich.table
 import socket
 import subprocess
 import sys
@@ -141,7 +146,7 @@ def cli_list(
         ignore.append("_")
 
     console = rich.console.Console(width=WIDTH, force_terminal=color)
-    for f in A_GIS.Code.list(ignore=ignore).result:
+    for f in A_GIS.Code.list(ignore=ignore).modules:
         parts = f.split(".")  # Split by dots for qualified names
         colored_text = rich.console.Text()
 
@@ -305,7 +310,7 @@ def cli_distill(name: "unit name" = ""):
     """Distill a piece of code into its basic form"""
 
     if name == "":
-        names = A_GIS.Code.list(ignore=["__main", "tests"]).result.keys()
+        names = A_GIS.Code.list(ignore=["__main", "tests"]).modules
     else:
         names = [name]
 

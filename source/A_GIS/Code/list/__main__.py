@@ -2,4 +2,8 @@ import sys
 import A_GIS.Code.list
 import json
 
-print(json.dumps(A_GIS.Code.list().result, indent=4))
+result = A_GIS.Code.list()
+print(json.dumps({
+    "modules": result.modules,
+    "functions": result.functions
+}, indent=4))

@@ -48,28 +48,37 @@ def catalog(
     import A_GIS.Text.add_indent
 
     lines = []
-    for name, file in A_GIS.Code.list(
-        package_name=package_name
-    ).result.items():
+    result = A_GIS.Code.list(package_name=package_name)
+
+    # Only process functions, not modules
+    for name in result.functions:
+        file = result.sources[name]
         code = A_GIS.File.read(file=pathlib.Path(file))
-        if not A_GIS.Code.is_function(code=code):
-            continue
         unit = A_GIS.Code.Unit.get(code=code)
         description = (
             A_GIS.Code.parse_docstring(code=code, only_description=True)
             or "None"
         ).lstrip()
+
         if unit.function_definition != [""]:
-            parts = name.split(".")
+            # Get just the signature part (everything after 'def function_name')
             signature = "\n".join(unit.function_definition).strip()
+            func_name = name.split(".")[-1]  # Get the function name from the full path
+
+            # Find where the actual signature starts (after the function name)
+            sig_start = signature.find(func_name) + len(func_name)
+            if sig_start > 0:
+                signature = signature[sig_start:]  # Get just the signature part
+
             if not include_args:
-                signature = signature.split("(")[0]
-            parts[-1] = signature.replace("def ", "")
-            header = (".".join(parts)).lstrip()
+                header = name
+            else:
+                header = f"{name}{signature}"
         else:
             header = name
+
         text = entry_format.format(
-            header=header, description=description, name=name, file=file
+            header="x"+header, description=description, name=name, file=file
         )
         lines.append(text)
 
