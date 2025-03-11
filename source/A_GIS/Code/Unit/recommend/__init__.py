@@ -42,6 +42,7 @@ def recommend(*, query: str, model="qwen2.5:14b"):
     import textwrap
     import A_GIS.Code.make_struct
     import A_GIS.catalog
+    import A_GIS.Ai.Chatbot.init
 
     lines = A_GIS.catalog()
     available = "\n".join(lines)

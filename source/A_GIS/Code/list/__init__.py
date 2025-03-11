@@ -3,16 +3,16 @@ def list(
     package_name="A_GIS",
     ignore=["_", "tests"],
     functions_only: bool = False
-) -> "A_GIS.Code.Struct":
+):
     """List all modules and functions in a package.
-    
+
     Args:
         package_name: Name of package to list contents of
         ignore: List of strings to ignore in module names
         functions_only: Whether to only return functions
-        
+
     Returns:
-        A_GIS.Code.Struct containing:
+        A_GIS.Code.make_struct containing:
             modules: List of module names
             functions: List of function names
             sources: Dict mapping names to their source files
@@ -25,7 +25,7 @@ def list(
     import inspect
     import sys
     import typing
-    
+
     # Get package path
     package = importlib.import_module(package_name)
     package_path = package.__path__
@@ -33,7 +33,7 @@ def list(
     modules = []
     functions = []
     sources = {}  # Maps names to their source files
-    
+
     # Walk through all modules
     for importer, full_name, ispkg in pkgutil.walk_packages(
         path=package_path, prefix=package_name + ".", onerror=lambda x: None
@@ -42,22 +42,22 @@ def list(
         spec = importer.find_spec(full_name)
         if spec is None or spec.origin is None:
             continue
-            
+
         path = spec.origin
-        
+
         include = True
         for x in full_name.split("."):
             if any(x.startswith(i) for i in ignore):
                 include = False
                 break
-                
+
         if not include:
             continue
-            
+
         if not functions_only:
             modules.append(full_name)
             sources[full_name] = path
-            
+
         try:
             module = importlib.import_module(full_name)
             for name, obj in inspect.getmembers(module):
@@ -68,7 +68,7 @@ def list(
         except Exception as e:
             print(f"Error importing {full_name}: {e}", file=sys.stderr)
             continue
-            
+
     return A_GIS.Code.make_struct(
         modules=sorted(modules),
         functions=sorted(functions),

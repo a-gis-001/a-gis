@@ -78,7 +78,7 @@ def catalog(
             header = name
 
         text = entry_format.format(
-            header="x"+header, description=description, name=name, file=file
+            header=header, description=description, name=name, file=file
         )
         lines.append(text)
 

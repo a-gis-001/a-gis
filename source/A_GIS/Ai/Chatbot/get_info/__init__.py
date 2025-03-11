@@ -13,7 +13,7 @@ def get_info(*, model: str):
             information about.
 
     Returns:
-        A_GIS.Code.make_struct.Struct:
+        A_GIS.Code.make_struct:
             An instance of a dataclass with the following attributes:
 
             - model (str): The model identifier for which the

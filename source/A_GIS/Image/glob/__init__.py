@@ -4,9 +4,9 @@ def glob(
     patterns: "typing.Union[str, typing.List[str]]" = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.tiff", "*.webp"],
     recursive: bool = True,
     ignore_patterns: "typing.Optional[typing.List[str]]" = None
-) -> "A_GIS.Code.Struct":
+):
     """Recursively glob images into one flat list.
-    
+
     Args:
         paths: Single path or list of paths to glob from. Each path can be string or Path.
             All paths will be converted to absolute paths.
@@ -19,9 +19,9 @@ def glob(
             - "**/thumbnails/**" - Thumbnail directories
             - "**/*_thumb.*" - Thumbnail files
             - "**/temp/**" - Temporary directories
-            
+
     Returns:
-        A_GIS.Code.Struct containing:
+        A_GIS.Code.make_struct containing:
             images: List of opened image objects
             files: List[str] - All matched absolute file paths
             _patterns: Glob patterns used
@@ -40,10 +40,10 @@ def glob(
         recursive=recursive,
         ignore_patterns=ignore_patterns
     )
-    
+
     # Open all images
     images = [A_GIS.Image.open(path=file) for file in file_result.files]
-    
+
     return A_GIS.Code.make_struct(
         images=images,
         files=file_result.files,

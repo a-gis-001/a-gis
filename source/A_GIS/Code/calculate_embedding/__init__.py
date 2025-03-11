@@ -5,15 +5,28 @@ def calculate_embedding(
     compare: list[str] = [],
     model: str = "microsoft/graphcodebert-base",
     instruction: str = "Represent this Python code for semantic/logical similarity",
+    transformers_warnings=False,
 ):
     """Calculate embeddings using GraphCodeBERT, CodeT5+, or Instructor-XL."""
     import transformers
     import numpy as np
     import torch
-    from A_GIS.Code.make_struct import make_struct
+    import A_GIS.Code.make_struct
+    import logging
+
+    # Suppress warning messages from Hugging Face transformers
+    if not transformers_warnings:
+        logging.getLogger("transformers").setLevel(logging.ERROR)
 
     def cos_sim(a, b):
         return np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+    # Function to orthogonalize a vector with respect to reference
+    def orthogonalize(v, ref):
+        # Project v onto ref
+        proj = np.dot(v, ref) / np.dot(ref, ref) * ref
+        # Subtract projection to get orthogonal component
+        return v - proj
 
     device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
 
@@ -61,15 +74,19 @@ def calculate_embedding(
     # Compute embeddings relative to reference
     reference_embedding = embeddings[0]
     reference_tokens = token_counts[0]
-    code_embedding = embeddings[1] - reference_embedding
+    code_embedding = orthogonalize(embeddings[1],reference_embedding)
     code_tokens = token_counts[1]
-    compare_embeddings = embeddings[2:] - reference_embedding
-    compare_tokens = token_counts[2:]
+    if len(embeddings)>2:
+        compare_embeddings = orthogonalize(embeddings[2:], reference_embedding)
+        compare_tokens = token_counts[2:]
+    else:
+        compare_embeddings=[]
+        compare_tokens=[]
 
     # Compute similarity scores
     similarity = [float(cos_sim(code_embedding, c)) for c in compare_embeddings]
 
-    return make_struct(
+    return A_GIS.Code.make_struct(
         _code=code,
         _compare=compare,
         _reference=reference,
