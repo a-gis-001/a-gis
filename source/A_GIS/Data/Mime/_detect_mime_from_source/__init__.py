@@ -25,7 +25,7 @@ def _detect_mime_from_source(*, source, sniff_bytes: int = 2048) -> str:
         head = source.read(sniff_bytes)
         if pos is not None:
             source.seek(pos)
-        return A_GIS.Data.Mime._detect_mime_type._detect_mime_type(data=head)
+        return A_GIS.Data.Mime._detect_mime_type(data=head)
 
     source_str = str(source)
     parsed = urllib.parse.urlparse(source_str)

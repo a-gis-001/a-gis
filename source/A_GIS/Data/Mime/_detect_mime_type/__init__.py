@@ -10,6 +10,10 @@ def _detect_mime_type(*, data: bytes) -> str:
     """
     import magic
 
+    # Handle empty data
+    if not data:
+        return None
+
     try:
         return magic.from_buffer(data, mime=True)
     except Exception:

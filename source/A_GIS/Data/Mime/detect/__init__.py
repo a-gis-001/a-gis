@@ -16,11 +16,9 @@ def detect(*, data_or_source, sniff_bytes: int = 2048):
 
     # If it's binary data
     if isinstance(data_or_source, bytes):
-        return A_GIS.Data.Mime._detect_mime_type._detect_mime_type(
-            data=data_or_source
-        )
+        return A_GIS.Data.Mime._detect_mime_type(data=data_or_source)
 
     # Handle everything else as a source
-    return A_GIS.Data.Mime._detect_mime_from_source._detect_mime_from_source(
+    return A_GIS.Data.Mime._detect_mime_from_source(
         source=data_or_source, sniff_bytes=sniff_bytes
     )
