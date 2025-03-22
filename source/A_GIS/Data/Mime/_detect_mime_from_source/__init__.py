@@ -16,7 +16,7 @@ def _detect_mime_from_source(*, source, sniff_bytes: int = 2048) -> str:
 
     # Handle file-like objects
     if hasattr(source, "read"):
-        return A_GIS.Data.Mime._detect_mime_from_filelike._detect_mime_from_filelike(
+        return A_GIS.Data.Mime._detect_mime_from_filelike(
             source=source, sniff_bytes=sniff_bytes
         )
 
@@ -25,7 +25,7 @@ def _detect_mime_from_source(*, source, sniff_bytes: int = 2048) -> str:
 
     # URL case
     if parsed.scheme in ("http", "https", "ftp", "file"):
-        return A_GIS.Data.Mime._detect_mime_from_url._detect_mime_from_url(url=source_str)
+        return A_GIS.Data.Mime._detect_mime_from_url(url=source_str)
 
     # File path
-    return A_GIS.Data.Mime._detect_mime_from_path._detect_mime_from_path(path=source_str)
+    return A_GIS.Data.Mime._detect_mime_from_path(path=source_str)

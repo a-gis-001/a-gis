@@ -12,10 +12,16 @@ def _detect_mime_from_filelike(*, source, sniff_bytes: int = 2048) -> str:
     import A_GIS.Data.Mime._detect_mime_type
 
     if not hasattr(source, "read"):
-        raise ValueError("Source must be a file-like object with a read method")
+        raise ValueError(
+            "Source must be a file-like object with a read method"
+        )
 
-    pos = source.tell() if hasattr(source, "seek") and source.seekable() else None
+    pos = (
+        source.tell()
+        if hasattr(source, "seek") and source.seekable()
+        else None
+    )
     head = source.read(sniff_bytes)
     if pos is not None:
         source.seek(pos)
-    return A_GIS.Data.Mime._detect_mime_type(data=head) 
+    return A_GIS.Data.Mime._detect_mime_type(data=head)

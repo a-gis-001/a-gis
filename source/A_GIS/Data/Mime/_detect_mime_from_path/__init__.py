@@ -17,6 +17,7 @@ def _detect_mime_from_path(*, path: str) -> str:
 
     try:
         import magic
+
         return magic.from_file(str(path_obj), mime=True)
     except Exception:
-        return mimetypes.guess_type(path_obj.name)[0] 
+        return mimetypes.guess_type(path_obj.name)[0]
