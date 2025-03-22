@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.File.touch
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

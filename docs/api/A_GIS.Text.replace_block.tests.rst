@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Text.replace_block.tests
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

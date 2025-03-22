@@ -16,5 +16,5 @@ Module contents
 
 .. automodule:: A_GIS.Image.Metadata
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

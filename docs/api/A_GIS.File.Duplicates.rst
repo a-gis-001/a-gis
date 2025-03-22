@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   A_GIS.File.Duplicates.delete
    A_GIS.File.Duplicates.identify
 
 Module contents
@@ -14,5 +15,5 @@ Module contents
 
 .. automodule:: A_GIS.File.Duplicates
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

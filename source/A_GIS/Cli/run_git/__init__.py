@@ -10,35 +10,22 @@ def run_git(
     also included in the return value.
 
     Args:
-        mode (str):
-            The Git subcommand to execute (e.g., "status", "log").
-        args (list[str]):
-            A list of additional arguments to pass to the Git command
-            along with `mode`.
-        return_panel (bool, optional):
-            If True, the function will return a rich UI panel displaying
+        mode (str, optional): The Git subcommand to execute (e.g., "status", "log").
+            Defaults to "status"
+        args (list[str]): A list of additional arguments to pass to the Git command
+            along with `mode`
+        return_panel (bool, optional): If True, the function will return a rich UI panel displaying
             the Git output. The panel includes styled text and a title
-            based on the executed command. Defaults to False.
+            based on the executed command. Defaults to False
 
     Returns:
-        A_GIS.Code.make_struct:
-            With the following attributes
-
-            - panel (rich.panel.Panel, optional):
-            A rich UI panel displaying the Git output if `return_panel`
-            is True.
-
-            - output (str):
-            The plain text output from the executed Git command.
-
-            - stderr (str):
-            Any standard error output from the executed Git command.
-
-            - _mode (str):
-            The mode of the Git command that was executed.
-
-            - _args (list[str]):
-            The arguments passed to the Git command.
+        Result: A dataclass with the following attributes:
+            - panel: A rich UI panel displaying the Git output if `return_panel`
+              is True
+            - output: The plain text output from the executed Git command
+            - stderr: Any standard error output from the executed Git command
+            - _mode: The mode of the Git command that was executed
+            - _args: The arguments passed to the Git command
     """
 
     import subprocess

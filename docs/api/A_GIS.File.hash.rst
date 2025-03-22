@@ -14,5 +14,5 @@ Module contents
 
 .. automodule:: A_GIS.File.hash
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

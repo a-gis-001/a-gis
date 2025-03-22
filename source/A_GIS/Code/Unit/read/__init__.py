@@ -16,17 +16,15 @@ def read(*, name: str):
        parameters.
 
     Args:
-        name (str):
-            The identifier for the code unit whose associated file content is to be
+        name (str): The identifier for the code unit whose associated file content is to be
             read. For example, this file has unit name='A_GIS.Code.Unit.read'.
 
     Returns:
-        dataclass:
-            Result, with the following attributes
-            - path (str): The path to the file that was read.
-            - code (str): The content of the file as a string or bytes object,
-              depending on the `binary` argument used during reading.
-            - name (str): The name of the code unit associated with the file.
+        Result: A dataclass with the following attributes:
+            - path: The path to the file that was read
+            - code: The content of the file as a string or bytes object,
+              depending on the `binary` argument used during reading
+            - name: The name of the code unit associated with the file
     """
     import A_GIS.Code.Unit.Name.to_path
     import A_GIS.File.read

@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Cli.get_git_status
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

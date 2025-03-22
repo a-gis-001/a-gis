@@ -9,29 +9,22 @@ def insert_block_placeholders(
 ):
     """Inserts placeholders for blocks of specified type in a given text.
 
-    This function scans the input `text` for all blocks of specified
+    This function scans the input text for all blocks of specified
     type (default is 'python') and replaces each block with a unique
     placeholder string (default is '__PLACEHOLDER__'). The original
     blocks are stored in a dictionary, where keys are placeholders and
     values are the corresponding original blocks.
 
     Args:
-        text (str):
-            Input text to process.
-        label (str, optional):
-            Label for placeholder strings. Defaults to '__PLACEHOLDER__'.
-        block_name (str, optional):
-            Type of block to replace. Defaults to empty.
-        opening (str, optional):
-            Opening string denoting the start of a block. Defaults to '```'.
-        closing (str, optional):
-            Closing string denoting the end of a block. Defaults to '```'.
+        text: Input text to process
+        label: Label to use for placeholders
+        block_name: Name of the block type to process
+        opening: Opening delimiter for blocks
+        closing: Closing delimiter for blocks
+        max_blocks: Maximum number of blocks to process
 
     Returns:
-        tuple:
-            A tuple containing two elements:
-            - subs (dict): A dictionary where keys are placeholders and values are the original blocks.
-            - text (str): The modified input `text` with placeholders replacing the original blocks.
+        Dictionary mapping placeholders to original blocks
     """
 
     import A_GIS.Text.extract_markdown

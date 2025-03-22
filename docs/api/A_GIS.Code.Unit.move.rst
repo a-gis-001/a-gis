@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.Unit.move
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

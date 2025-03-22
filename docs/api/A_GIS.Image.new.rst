@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Image.new
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

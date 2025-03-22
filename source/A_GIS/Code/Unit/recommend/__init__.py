@@ -9,35 +9,26 @@ def recommend(*, query: str, model="qwen2.5:14b"):
     recommendation.
 
     Args:
-        query (str):
-            The user's search query as a string.
-        model (str, optional):
-            The specific AI model to use for the recommendation.
-            Defaults to "qwen2.5:14b".
+        query (str): The user's search query as a string
+        model (str, optional): The specific AI model to use for the recommendation.
+            Defaults to "qwen2.5:14b"
 
     Returns:
-        dataclass:
-            With the following attributes
+        Result: A dataclass with the following attributes:
 
-            - _query (str): The user's search query.
-            - _model (str): The AI model used for the recommendation.
-            - system (str): The complete system prompt used for
-              generating the recommendations.
-            - prompt (str): The specific chatbot prompt used to
-              generate the list of functions.
-            - result (dataclass): A nested dataclass containing the
-              results from the chatbot interaction, with attributes:
-                - message (str): The message sent to the chatbot
-                  for recommendation.
-                - response (dict): A dictionary containing the
-                  chatbot's response, which includes:
-                    - content (str): The content of the
-                      chatbot's response.
-            - function (str): The fully qualified name(s) of the
-              recommended function(s).
-            - function_prompt (str): The prompt used to extract the
+            - _query: The user's search query
+            - _model: The AI model used for the recommendation
+            - system: The complete system prompt used for
+              generating the recommendations
+            - prompt: The specific chatbot prompt used to
+              generate the list of functions
+            - result: A nested dataclass containing the
+              results from the chatbot interaction
+            - function: The fully qualified name(s) of the
+              recommended function(s)
+            - function_prompt: The prompt used to extract the
               top recommended function from the list of
-              recommendations.
+              recommendations
     """
     import textwrap
     import A_GIS.Code.make_struct

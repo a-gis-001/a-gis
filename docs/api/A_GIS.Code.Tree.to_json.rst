@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.Tree.to_json
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

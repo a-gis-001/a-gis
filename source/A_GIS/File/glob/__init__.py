@@ -8,29 +8,13 @@ def glob(
     """Recursively glob files and directories into a flat list structure.
 
     Args:
-        paths: Single path or list of paths to glob from. Each path can be string or Path.
-            All paths will be converted to absolute paths.
-        patterns: Single pattern or list of patterns to match against.
-            Default "**/*" matches all files recursively.
-        recursive: Whether to search subdirectories recursively. Defaults to True.
-        ignore_patterns: List of glob patterns to ignore. Common patterns:
-            - ".*" - Hidden files and directories
-            - "**/tests/**" - Test directories
-            - "*/__pycache__/*" - Python cache
-            - "*/node_modules/*" - Node.js modules
-            - "*/.git/*" - Git directory
-            - "*/.pytest_cache/*" - Pytest cache
-            - "*/.mypy_cache/*" - MyPy cache
-            - "*/.coverage" - Coverage data
-            - "*.pyc" - Python compiled
-            - "*~" - Temp files
-            - "*.swp" - Vim swap files
+        paths: Path or list of paths to search in
+        patterns: Glob pattern or list of patterns to match
+        recursive: Whether to search recursively
+        ignore_patterns: List of patterns to ignore
 
     Returns:
-        A_GIS.Code.make_struct containing:
-            files: List[Path] - All matched absolute file paths
-            _patterns: Glob patterns used
-            _ignore_patterns: Patterns used for ignoring files
+        List of matching file paths
     """
     import A_GIS.Code.make_struct
     import pathlib

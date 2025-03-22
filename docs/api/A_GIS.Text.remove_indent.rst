@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Text.remove_indent
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

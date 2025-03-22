@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.guess_type
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

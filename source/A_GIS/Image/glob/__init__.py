@@ -13,27 +13,16 @@ def glob(
     recursive: bool = True,
     ignore_patterns: "typing.Optional[typing.List[str]]" = None,
 ):
-    """Recursively glob images into one flat list.
+    """Recursively glob image files and directories into a flat list structure.
 
     Args:
-        paths: Single path or list of paths to glob from. Each path can be string or Path.
-            All paths will be converted to absolute paths.
-        patterns: Single pattern or list of patterns to match image files.
-            Defaults to common image extensions.
-        recursive: Whether to search subdirectories recursively. Defaults to True.
-        ignore_patterns: List of glob patterns to ignore. Common patterns:
-            - ".*" - Hidden files and directories
-            - "**/tests/**" - Test directories
-            - "**/thumbnails/**" - Thumbnail directories
-            - "**/*_thumb.*" - Thumbnail files
-            - "**/temp/**" - Temporary directories
+        paths: Path or list of paths to search in
+        patterns: Glob pattern or list of patterns to match. Defaults to common image formats
+        recursive: Whether to search recursively
+        ignore_patterns: List of patterns to ignore
 
     Returns:
-        A_GIS.Code.make_struct containing:
-            images: List of opened image objects
-            files: List[str] - All matched absolute file paths
-            _patterns: Glob patterns used
-            _ignore_patterns: Patterns used for ignoring files
+        List of matching image file paths
     """
     import A_GIS.File.glob
     import A_GIS.Image.open

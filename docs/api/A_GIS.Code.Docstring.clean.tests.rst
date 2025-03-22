@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.Docstring.clean.tests
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

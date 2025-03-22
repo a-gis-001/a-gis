@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.find_root
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -19,24 +19,18 @@ def catalog(
     `include_args` flag.
 
     Args:
-        package_name (str, optional):
-            The name of the package from which to list functions.
-            Defaults to "A_GIS".
-        entry_format (str, optional):
-            A string format template that defines how each function's
-            information is presented in the catalog. Defaults to
-            "{header}\n{description}".
-        include_args (bool, optional):
-            If True, the full signature of the function will be included
-            in the header. If False, only the function name without
-            arguments will be used. Defaults to True.
+        package_name (str, optional): The name of the package from which
+            to list functions. Defaults to "A_GIS".
+
+        entry_format (str, optional): A format string defining how each
+            function is presented. Defaults to "{header}\\n{description}".
+
+        include_args (bool, optional): Whether to include the function's
+            signature in the header. Defaults to True.
 
     Returns:
-        list[str]:
-            A list of strings, where each string represents a formatted
-            entry for a function in the package. Each entry includes the
-            function's header, its description, and the file path,
-            formatted according to `entry_format`.
+        list of str: A list of formatted function entries.
+
     """
 
     import A_GIS.Code.list

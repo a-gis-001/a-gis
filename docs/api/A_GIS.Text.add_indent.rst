@@ -14,5 +14,5 @@ Module contents
 
 .. automodule:: A_GIS.Text.add_indent
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

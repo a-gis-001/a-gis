@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.Code.is_package
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

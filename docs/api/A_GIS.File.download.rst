@@ -6,5 +6,5 @@ Module contents
 
 .. automodule:: A_GIS.File.download
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
