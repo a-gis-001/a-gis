@@ -78,7 +78,9 @@ def download(
                         validated = False
                     else:
                         print(
-                            f"Checksum validated: {sha256[i][0]}  {sha256[i][1]}"
+                            f"Checksum validated: {
+                                sha256[i][0]}  {
+                                sha256[i][1]}"
                         )
 
             if validated:

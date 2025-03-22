@@ -155,14 +155,17 @@ def show_tree(
 
         if total_files > 0:
             shown_info = ", ".join(
-                f"{shown_counts.get(ext, 0)}/{total_counts[ext]} {ext.upper() if ext else 'NO EXT'}"
+                f"{shown_counts.get(ext,
+                                    0)}/{total_counts[ext]} {ext.upper() if ext else 'NO EXT'}"
                 for ext in sorted(total_counts)
             )
             files_info = f"### showing {files_shown}/{total_files} files with {shown_info}"
         else:
             files_info = "### showing 0/0 files"
 
-        subdir_info = f"### showing {subdir_counts['shown']}/{subdir_counts['total']} subdirs"
+        subdir_info = f"### showing {
+            subdir_counts['shown']}/{
+            subdir_counts['total']} subdirs"
         return indent + files_info + "\n" + indent + subdir_info + "\n"
 
     if not directory.is_dir():

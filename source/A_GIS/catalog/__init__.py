@@ -61,14 +61,17 @@ def catalog(
         ).lstrip()
 
         if unit.function_definition != [""]:
-            # Get just the signature part (everything after 'def function_name')
+            # Get just the signature part (everything after 'def
+            # function_name')
             signature = "\n".join(unit.function_definition).strip()
-            func_name = name.split(".")[-1]  # Get the function name from the full path
+            # Get the function name from the full path
+            func_name = name.split(".")[-1]
 
             # Find where the actual signature starts (after the function name)
             sig_start = signature.find(func_name) + len(func_name)
             if sig_start > 0:
-                signature = signature[sig_start:]  # Get just the signature part
+                # Get just the signature part
+                signature = signature[sig_start:]
 
             if not include_args:
                 header = name

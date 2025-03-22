@@ -10,7 +10,7 @@ def plot_halflife(
     target_halflife=120.0,
     projections_after_label="Last actual",
     start_date=None,
-    end_date=None
+    end_date=None,
 ):
     """Calculate and return a plot object for the half-life of enhancements over time.
 
@@ -40,8 +40,11 @@ def plot_halflife(
         projections_after = closed_dates[-1]
 
     dates, half_lives, all_issues = A_GIS.Dev.Metrics.calculate_halflife(
-        data=data, label=label, projections_after=projections_after, 
-        start_date=start_date, end_date=end_date
+        data=data,
+        label=label,
+        projections_after=projections_after,
+        start_date=start_date,
+        end_date=end_date,
     )
 
     # Create a plot for the half-life data

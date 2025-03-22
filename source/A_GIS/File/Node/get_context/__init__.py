@@ -85,7 +85,8 @@ def get_context(*, dirname: str, _root: str = None):
             if target_file.exists():
                 if level <= 3:
                     raise ValueError(
-                        f"Problem with leaf directory {dir}. A leaf cannot be above a {names[level]} node."
+                        f"Problem with leaf directory {dir}. A leaf cannot be above a {
+                            names[level]} node."
                     )
                 level = 3
                 leaf_dir = str(dir.relative_to(root_dir))
@@ -96,7 +97,8 @@ def get_context(*, dirname: str, _root: str = None):
             if target_file.exists():
                 if level <= 2:
                     raise ValueError(
-                        f"Problem with branch directory {dir}. A branch cannot be above a {names[level]} node."
+                        f"Problem with branch directory {dir}. A branch cannot be above a {
+                            names[level]} node."
                     )
                 level = 2
                 branch_dir = str(dir.relative_to(root_dir))

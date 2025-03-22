@@ -2,7 +2,7 @@ def list(
     *,
     package_name="A_GIS",
     ignore=["_", "tests"],
-    functions_only: bool = False
+    functions_only: bool = False,
 ):
     """List all modules and functions in a package.
 
@@ -74,5 +74,5 @@ def list(
         functions=sorted(functions),
         sources=sources,
         _package_name=package_name,
-        _ignore=ignore
+        _ignore=ignore,
     )

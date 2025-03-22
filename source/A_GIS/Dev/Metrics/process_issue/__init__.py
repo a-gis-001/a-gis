@@ -39,7 +39,7 @@ def process_issue(
         "closed_at": A_GIS.Time.convert_to_string(time=issue.closed_at),
         "started_at": A_GIS.Dev.Metrics._get_started_at(issue),
         "labels": issue.labels,
-        "milestone": issue.milestone['title'] if issue.milestone else None,
+        "milestone": issue.milestone["title"] if issue.milestone else None,
         "events": A_GIS.Dev.Metrics._label_times(labelevents),
         "scl": A_GIS.Dev.Metrics._extract_scl(issue.description),
         "sdl": A_GIS.Dev.Metrics._extract_sdl(issue.description),

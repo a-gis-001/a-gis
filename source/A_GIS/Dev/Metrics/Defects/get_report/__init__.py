@@ -105,7 +105,7 @@ def get_report(
 </div>
 
 <script>
-{A_GIS.Dev.Metrics.Defects.get_report_script(products=products,severity_definitions=severity_definitions)}
+{A_GIS.Dev.Metrics.Defects.get_report_script(products=products, severity_definitions=severity_definitions)}
 </script>
 
 </body>

@@ -1,9 +1,17 @@
 def glob(
     *,
     paths: "typing.Union[str, pathlib.Path, typing.List[typing.Union[str, pathlib.Path]]]",
-    patterns: "typing.Union[str, typing.List[str]]" = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.tiff", "*.webp"],
+    patterns: "typing.Union[str, typing.List[str]]" = [
+        "*.jpg",
+        "*.jpeg",
+        "*.png",
+        "*.gif",
+        "*.bmp",
+        "*.tiff",
+        "*.webp",
+    ],
     recursive: bool = True,
-    ignore_patterns: "typing.Optional[typing.List[str]]" = None
+    ignore_patterns: "typing.Optional[typing.List[str]]" = None,
 ):
     """Recursively glob images into one flat list.
 
@@ -38,7 +46,7 @@ def glob(
         paths=paths,
         patterns=patterns,
         recursive=recursive,
-        ignore_patterns=ignore_patterns
+        ignore_patterns=ignore_patterns,
     )
 
     # Open all images
@@ -48,5 +56,7 @@ def glob(
         images=images,
         files=file_result.files,
         _patterns=patterns,
-        _ignore_patterns=ignore_patterns if ignore_patterns is not None else []
+        _ignore_patterns=(
+            ignore_patterns if ignore_patterns is not None else []
+        ),
     )

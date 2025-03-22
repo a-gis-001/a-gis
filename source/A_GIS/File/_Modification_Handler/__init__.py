@@ -65,7 +65,9 @@ class _Modification_Handler(watchdog.events.FileSystemEventHandler):
             if updates["bytes"] < self.min_bytes:
                 if self.logger:
                     self.logger.info(
-                        f"File too small {updates['bytes']}<{self.min_bytes} (bytes): {file_path}"
+                        f"File too small {
+                            updates['bytes']}<{
+                            self.min_bytes} (bytes): {file_path}"
                     )
                 return
 

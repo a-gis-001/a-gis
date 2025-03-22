@@ -39,7 +39,8 @@ def sample(
     n = len(marginals)
     if n != correlation.size:
         raise ValueError(
-            f"Incorrect size of correlation matrix {correlation.size} for the number of marginal distributions {n}."
+            f"Incorrect size of correlation matrix {
+                correlation.size} for the number of marginal distributions {n}."
         )
 
     # Create the full correlation correlation

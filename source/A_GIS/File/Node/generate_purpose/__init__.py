@@ -243,7 +243,8 @@ Please assign a purpose to the '{str(top_dir)}' directory.
             break
         else:
             # If there are requests, then we update the prompt.
-            message = f"Iteration {iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
+            message = f"Iteration {
+                iteration+1}/{max_iterations}. Here are the replies to your requests:\n\n{requests}\n\n{reminder}"
 
     # Extract the final purpose statement and reformat to be pretty.
     purpose = extract_purpose(response["message"]["content"])

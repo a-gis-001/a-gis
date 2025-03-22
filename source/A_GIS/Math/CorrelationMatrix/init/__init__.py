@@ -38,7 +38,8 @@ def init(*, size: int = 1, values: typing.Optional[typing.List[float]] = []):
             nc = self.size * (self.size - 1) / 2
             if nv != nc:
                 raise ValueError(
-                    f"Invalid number of values {nv} for the correlation coefficients for the matrix size={self.size}. Should be {nc}."
+                    f"Invalid number of values {nv} for the correlation coefficients for the matrix size={
+                        self.size}. Should be {nc}."
                 )
 
             corr = A_GIS.Math.CorrelationMatrix.to_numpy(upper_tri=self)

@@ -3,7 +3,7 @@ def glob(
     paths: "typing.Union[str, pathlib.Path, typing.List[typing.Union[str, pathlib.Path]]]",
     patterns: "typing.Union[str, typing.List[str]]" = "**/*",
     recursive: bool = True,
-    ignore_patterns: "typing.Optional[typing.List[str]]" = [".*","*~"]
+    ignore_patterns: "typing.Optional[typing.List[str]]" = [".*", "*~"],
 ):
     """Recursively glob files and directories into a flat list structure.
 
@@ -58,7 +58,9 @@ def glob(
                 expanded_patterns.append(pattern)
 
         str_path = str(path)
-        return any(fnmatch.fnmatch(str_path, pattern) for pattern in expanded_patterns)
+        return any(
+            fnmatch.fnmatch(str_path, pattern) for pattern in expanded_patterns
+        )
 
     # Normalize inputs
     if isinstance(paths, (str, pathlib.Path)):
@@ -92,5 +94,7 @@ def glob(
     return A_GIS.Code.make_struct(
         files=[str(file) for file in sorted(files)],
         _patterns=patterns,
-        _ignore_patterns=ignore_patterns if ignore_patterns is not None else []
+        _ignore_patterns=(
+            ignore_patterns if ignore_patterns is not None else []
+        ),
     )

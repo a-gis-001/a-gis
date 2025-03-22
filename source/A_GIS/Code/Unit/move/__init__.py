@@ -55,7 +55,8 @@ def move(
     check = A_GIS.Code.Unit.Name.check(name=new, unit_type=unit_type)
     if not check.result:
         raise ValueError(
-            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name should be a proper {unit_type} name (fixed_name={check.fixed_name})."
+            f"For A_GIS.Code.Unit.move(old={old},new={new}) the {new} name should be a proper {unit_type} name (fixed_name={
+                check.fixed_name})."
         )
 
     # Replace in original old file.

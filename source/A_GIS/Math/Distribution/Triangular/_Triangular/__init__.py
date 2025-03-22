@@ -9,11 +9,15 @@ class _Triangular:
     def __post_init__(self):
         if self.low > self.mode:
             raise ValueError(
-                f"Minimum value low={self.low} cannot be greater than mode={self.mode}!"
+                f"Minimum value low={
+                    self.low} cannot be greater than mode={
+                    self.mode}!"
             )
         if self.high < self.mode:
             raise ValueError(
-                f"Maximum value high={self.high} cannot be less than mode={self.mode}!"
+                f"Maximum value high={
+                    self.high} cannot be less than mode={
+                    self.mode}!"
             )
         self.c = (self.mode - self.low) / (self.high - self.low)
 

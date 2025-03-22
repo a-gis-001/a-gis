@@ -12,7 +12,8 @@ def init_from_path(*, path: type["pathlib.Path"], check: bool = False):
         check = A_GIS.Code.Unit.Name.check(name=name, unit_type=unit_type)
         if not check.result:
             raise ValueError(
-                f"Name {name} derived from {path} does not correspond to A_GIS {unit_type} unit (fixed_name={check.fixed_name})!"
+                f"Name {name} derived from {path} does not correspond to A_GIS {unit_type} unit (fixed_name={
+                    check.fixed_name})!"
             )
 
     return name
