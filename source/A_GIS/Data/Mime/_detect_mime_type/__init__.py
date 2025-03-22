@@ -1,6 +1,6 @@
 def _detect_mime_type(*, data: bytes) -> str:
     """
-    Detects the MIME type of binary data.
+    Detects the MIME type of binary data using libmagic.
 
     Args:
         data: Binary data to analyze.

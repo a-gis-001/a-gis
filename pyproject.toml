@@ -40,3 +40,35 @@ include = ["A_GIS", "A_GIS.*"]
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["source/A_GIS"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "--cov=A_GIS --cov-report=term-missing --cov-report=html"
+
+[tool.coverage.run]
+source = ["source/A_GIS"]
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/setup.py",
+    "*/conftest.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "pass",
+    "raise ImportError",
+]
+ignore_errors = true
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/setup.py",
+    "*/conftest.py",
+]

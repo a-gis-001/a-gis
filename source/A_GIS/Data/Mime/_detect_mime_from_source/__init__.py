@@ -9,40 +9,23 @@ def _detect_mime_from_source(*, source, sniff_bytes: int = 2048) -> str:
     Returns:
         A MIME type string (e.g., 'application/pdf'), or None if detection fails.
     """
-    import mimetypes
     import urllib.parse
-    import pathlib
-    import typing
-    import A_GIS.Data.Mime._detect_mime_type
+    import A_GIS.Data.Mime._detect_mime_from_filelike
+    import A_GIS.Data.Mime._detect_mime_from_url
+    import A_GIS.Data.Mime._detect_mime_from_path
 
     # Handle file-like objects
     if hasattr(source, "read"):
-        pos = (
-            source.tell()
-            if hasattr(source, "seek") and source.seekable()
-            else None
+        return A_GIS.Data.Mime._detect_mime_from_filelike._detect_mime_from_filelike(
+            source=source, sniff_bytes=sniff_bytes
         )
-        head = source.read(sniff_bytes)
-        if pos is not None:
-            source.seek(pos)
-        return A_GIS.Data.Mime._detect_mime_type(data=head)
 
     source_str = str(source)
     parsed = urllib.parse.urlparse(source_str)
 
-    # URL case — use file extension only
+    # URL case
     if parsed.scheme in ("http", "https", "ftp", "file"):
-        return mimetypes.guess_type(parsed.path)[0]
+        return A_GIS.Data.Mime._detect_mime_from_url._detect_mime_from_url(url=source_str)
 
     # File path
-    path = pathlib.Path(source_str)
-    if path.is_file():
-        try:
-            import magic
-
-            return magic.from_file(str(path), mime=True)
-        except Exception:
-            return mimetypes.guess_type(path.name)[0]
-
-    # Fallback
-    return mimetypes.guess_type(path.name)[0]
+    return A_GIS.Data.Mime._detect_mime_from_path._detect_mime_from_path(path=source_str)

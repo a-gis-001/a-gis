@@ -451,3 +451,6 @@ xmltodict==0.13.0
 yarg==0.1.9
 yarl==1.9.4
 zipp==3.17.0
+pytest>=7.0.0
+pytest-cov>=4.0.0
+coverage>=7.0.0
