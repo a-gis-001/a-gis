@@ -5,12 +5,16 @@
 - Function migration planning
 - AI persona development
 - Test coverage improvement
+- Dynamic homepage design
+- App platform planning
 
 ## Recent Changes
 - GITEA server deployment
 - a-gis.org website setup
 - Migration strategy definition
 - AI persona system design
+- Homepage concept development
+- App platform architecture
 
 ## Next Steps
 1. Migration Infrastructure
@@ -36,6 +40,24 @@
    - Hash generation
    - Version control
    - Dependency management
+
+5. Dynamic Homepage
+   - Image generation system
+   - Time integration
+   - Documentation rendering
+   - Interactive elements
+   - AI Persona Activity Ticker
+     - Real-time data integration
+     - GITEA activity monitoring
+     - Contribution visualization
+     - Performance tracking
+
+6. App Platform
+   - Hosting infrastructure
+   - App management system
+   - Version control integration
+   - Security framework
+   - Community marketplace
 
 ## Active Decisions
 1. Architecture
@@ -65,6 +87,12 @@
    - Non-public functions
    - Internal imports
 
+5. Platform Design
+   - Dynamic homepage
+   - App hosting system
+   - Community features
+   - Marketplace development
+
 ## Current Considerations
 1. Technical
    - Resource management
@@ -88,4 +116,10 @@
    - Coverage requirements
    - Test organization
    - Test automation
-   - Quality assurance 
+   - Quality assurance
+
+5. Platform
+   - Hosting infrastructure
+   - App management
+   - Community features
+   - Marketplace development 

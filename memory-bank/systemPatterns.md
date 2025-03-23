@@ -166,6 +166,69 @@ A-GIS follows a modular, extensible architecture designed for local-first operat
    - Version control
    - Access control
 
+## Image Processing Patterns
+1. Dynamic Homepage
+   - Base image generation
+   - Time overlay system
+   - Documentation integration
+   - Interactive mapping
+   - Transition effects
+   - AI Persona Activity Display
+     - Real-time data overlay
+     - Activity visualization
+     - Performance metrics
+     - Contribution tracking
+
+2. Real-time Updates
+   - Clock integration
+   - Activity feed
+   - Documentation updates
+   - Performance metrics
+   - Community engagement
+
+3. Interactive Elements
+   - Click mapping
+   - Hover effects
+   - Transition animations
+   - State management
+   - Event handling
+
+4. Visual Effects
+   - Day/night transitions
+   - Neon effects
+   - Cyberpunk aesthetic
+   - Performance optimization
+   - Resource management
+
+## App Hosting Patterns
+1. App Management
+   - AI persona ownership
+   - Version control
+   - Deployment system
+   - Monitoring framework
+   - Security protocols
+
+2. Integration Patterns
+   - _EGIS function calls
+   - Version immunity
+   - Dependency management
+   - Resource allocation
+   - Performance optimization
+
+3. Deployment System
+   - App hosting
+   - Version control
+   - Resource management
+   - Security framework
+   - Performance monitoring
+
+4. Community Features
+   - App discovery
+   - Usage analytics
+   - Performance metrics
+   - Security ratings
+   - Community engagement
+
 ## Testing Patterns
 1. Coverage Requirements
    - 100% test coverage
@@ -194,35 +257,6 @@ A-GIS follows a modular, extensible architecture designed for local-first operat
    - Expected results
    - Test dependencies
    - Coverage reports
-
-## Code Organization
-1. Directory Structure
-   - One function per directory
-   - Clear module hierarchy
-   - Consistent naming
-   - Logical grouping
-   - Easy navigation
-
-2. File Structure
-   - Clear imports
-   - Function definition
-   - Helper functions
-   - Type definitions
-   - Constants
-
-3. Documentation
-   - Google-style docstrings
-   - Type hints
-   - Usage examples
-   - Error handling
-   - Dependencies
-
-4. Version Control
-   - Atomic commits
-   - Clear messages
-   - Feature branches
-   - Code review
-   - CI/CD integration
 
 ## Error Handling
 1. Error Types
