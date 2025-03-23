@@ -1,6 +1,7 @@
 """Manage and manipulate images.
 """
 # Functions
+from .compare import compare
 from .create_binary import create_binary
 from .find_lines import find_lines
 from .get_character_scale import get_character_scale

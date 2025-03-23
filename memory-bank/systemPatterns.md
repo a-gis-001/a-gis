@@ -1,288 +1,125 @@
-# System Patterns
+# A_GIS Framework Rules
 
-## Architecture Overview
-A-GIS follows a modular, extensible architecture designed for local-first operation and privacy-focused functionality.
+1. **Use full import names** - Always use complete import paths when importing modules.
+   - Use explicit imports: `import A_GIS.Module1.Module2.function`
+   - Never use `from` imports: ❌ `from A_GIS.Module1.Module2 import function`
+   - Never use relative imports: ❌ `from .Module2 import function`
+   - This ensures all dependencies are explicit and traceable
 
-### Core Layers
-1. Core Services Layer
-   - File management
-   - Document processing
-   - Task scheduling
+2. **Functions should be short** - Functions should be concise and rely on other functions within the A_GIS framework.
 
-2. AI Integration Layer
-   - LLM integration
-   - Computer vision
-   - Natural language processing
+3. **Google style docstrings** - All functions must have proper Google style documentation.
+   - Only one docstring per function file (in the function)
+   - No module-level docstrings in function files
+   - Test files can have module-level docstrings
 
-3. User Interface Layer
-   - Command-line interface
-   - API endpoints
-   - Plugin system
+4. **Function names start with verbs** - All function names should begin with an action verb.
 
-## Key Patterns
-1. Plugin Architecture
-   - Modular components
-   - Extensible interfaces
-   - Dynamic loading
+5. **Local imports** - Imports should occur inside the deepest function where they're needed to reduce dependencies.
+   - Exception: Test files can have all imports at the top level
+   - Exception: Test helper functions can have imports at the top level
 
-2. Event-Driven Processing
-   - Asynchronous operations
-   - Event bus
-   - Message queues
+6. **One function per file** - Each function gets its own directory and file.
 
-3. Data Flow
-   - Stream processing
-   - Pipeline architecture
-   - State management
+7. **Keyword-based arguments** - Function argument lists should start with `*` and use named parameters.
 
-## Component Relationships
-1. Core Services
-   - File System → Document Processor → Indexer
-   - Task Scheduler → Executor → Monitor
-   - Cache Manager → Storage → Backup
+8. **Function call format** - Functions should be called as:
+   ```python
+   import A_GIS.Module1.Module2.do_function
+   A_GIS.Module1.Module2.do_function(...)
+   ```
+   NOT as:
+   ```python
+   A_GIS.Module1.Module2.do_function.do_function(...)
+   ```
 
-2. AI Services
-   - LLM Manager → Model Loader → Inference Engine
-   - Vision Processor → Image Analyzer → Feature Extractor
-   - NLP Engine → Text Processor → Context Manager
+9. **Tests location** - Tests should be in the directory:
+   ```
+   source/A_GIS/Module1/Module2/do_function/tests/__init__.py
+   ```
 
-3. User Interface
-   - CLI → Command Parser → Executor
-   - API → Request Handler → Service Router
-   - Plugin Manager → Loader → Interface Adapter
+10. **Module names are nouns** - Modules should always be nouns (e.g., "Visual") rather than verbs (e.g., "Visualize").
 
-## Design Decisions
-1. Privacy-First
-   - Local processing
-   - Data encryption
-   - Access control
+11. **Directory structure** - Each function gets its own directory, with the function defined in the `__init__.py` file of that directory.
 
-2. Modularity
-   - Component isolation
-   - Interface abstraction
-   - Dependency injection
+Based on my analysis of the codebase and best practices, I would suggest adding these additional rules to the A_GIS Framework:
 
-3. Performance
-   - Caching strategy
-   - Resource pooling
-   - Load balancing
+12. **Explicit Return Types** - All functions should have explicit return type hints in their docstrings and function signatures.
 
-## Implementation Guidelines
-1. Code Organization
-   - Feature-based structure
-   - Clear separation of concerns
-   - Consistent naming conventions
+13. **Error Handling** - Functions should handle errors gracefully and return `None` or raise appropriate exceptions with descriptive messages.
 
-2. Error Handling
-   - Graceful degradation
-   - Error recovery
-   - Logging strategy
+14. **Test Coverage** - Each function should have comprehensive tests covering:
+    - Happy path (expected inputs)
+    - Edge cases (empty inputs, boundary conditions)
+    - Error cases (invalid inputs, exceptions)
 
-3. Testing
-   - Unit testing
-   - Integration testing
-   - Performance testing
+15. **Module Documentation** - Each module's `__init__.py` should have a module-level docstring explaining its purpose and usage.
 
-## Function Design Patterns
-1. Function Structure
-   - One function per file
-   - Keyword-only arguments
-   - Type hints
-   - Google-style docstrings
-   - Internal imports
-   - Helper function separation
+16. **Private Functions** - Internal/helper functions should be prefixed with underscore and placed in their own directories under the main function's directory.
 
-2. Return Types
-   - A_GIS.Code.make_struct
-   - Input echoing with underscore prefix
-   - Standardized output format
-   - Type-safe returns
-   - Consistent structure
+17. **Dependency Management** - External dependencies should be:
+    - Listed in `requirements.txt`
+    - Imported only when needed (lazy imports)
+    - Have version constraints specified
 
-3. Helper Functions
-   - Non-public naming (_function)
-   - Internal to module
-   - Minimal scope
-   - Clear purpose
-   - Tested independently
+18. **Code Style** - Follow PEP 8 guidelines with these specific rules:
+    - Maximum line length of 88 characters (Black formatter default)
+    - Use double quotes for strings
+    - Use type hints for all function parameters and return values
 
-4. Import Management
-   - Internal-only imports
-   - Lazy loading
-   - Function-level imports
-   - Dependency isolation
-   - Performance optimization
+19. **API Design** - Public functions should:
+    - Have clear, descriptive names
+    - Accept the most generic input type possible
+    - Return consistent types
+    - Be documented with examples
 
-## Migration Patterns
-1. Function Migration
-   - Single function per commit
-   - Complete test coverage
-   - Perfect integration
-   - Automated verification
+20. **Version Control** - Each function should:
+    - Be in its own commit
+    - Have a clear commit message following conventional commits format
+    - Include tests in the same commit
 
-2. Repository Structure
-   - One function per directory
-   - Clear module hierarchy
-   - Consistent naming
-   - Logical grouping
-   - Easy navigation
+21. **Image Processing**
+    - Use numpy for efficient image operations
+    - Support both PIL Image and numpy array inputs
+    - Handle different image modes (RGB, RGBA)
+    - Implement proper error handling for image operations
+    - Use scikit-image for advanced image processing
 
-3. Version Control
-   - Atomic commits
-   - Clear messages
-   - Feature branches
-   - Code review
-   - CI/CD integration
+22. **Image Comparison**
+    - Implement MSE for basic comparison
+    - Use SSIM for structural similarity
+    - Set appropriate similarity thresholds
+    - Handle different image sizes and modes
+    - Return comparison results with metrics
 
-4. Documentation
-   - Migration guides
-   - Process documentation
-   - Verification steps
-   - Rollback procedures
-   - Status tracking
+23. **Test Images**
+    - Store test images in a dedicated directory
+    - Use consistent image formats
+    - Document expected image properties
+    - Version control test images
+    - Include image generation scripts
 
-## AI Persona Patterns
-1. Persona Structure
-   - Function ownership
-   - Module management
-   - Contribution tracking
-   - Usage analytics
+## Image Comparison Patterns
 
-2. Learning System
-   - Usage patterns
-   - Contribution history
-   - Performance metrics
-   - Knowledge sharing
+The system uses a dual-metric approach for image comparison:
 
-3. Integration
-   - Communication protocols
-   - Collaboration patterns
-   - Decision making
-   - Conflict resolution
+1. Mean Squared Error (MSE)
+   - Lower values indicate more similar images
+   - Used as a primary metric for small images (< 7x7 pixels)
+   - Threshold of 100 for considering images different
 
-4. Management
-   - State tracking
-   - Update mechanisms
-   - Version control
-   - Access control
+2. Structural Similarity Index (SSIM)
+   - Higher values indicate more similar images (max 1.0)
+   - Requires minimum window size of 7x7 pixels
+   - Default tolerance of 0.95 for considering images similar
+   - Handles different image modes:
+     - RGB: Compares all channels together
+     - RGBA: Compares RGB and alpha channels separately
+     - Grayscale: Direct comparison
 
-## Image Processing Patterns
-1. Dynamic Homepage
-   - Base image generation
-   - Time overlay system
-   - Documentation integration
-   - Interactive mapping
-   - Transition effects
-   - AI Persona Activity Display
-     - Real-time data overlay
-     - Activity visualization
-     - Performance metrics
-     - Contribution tracking
+3. Special Case Handling
+   - Empty images: Returns perfect similarity (SSIM=1.0, MSE=0.0)
+   - Small images (< 7x7): Uses MSE only with strict threshold
+   - Different dimensions: Raises ValueError
+   - Invalid input types: Raises TypeError
 
-2. Real-time Updates
-   - Clock integration
-   - Activity feed
-   - Documentation updates
-   - Performance metrics
-   - Community engagement
-
-3. Interactive Elements
-   - Click mapping
-   - Hover effects
-   - Transition animations
-   - State management
-   - Event handling
-
-4. Visual Effects
-   - Day/night transitions
-   - Neon effects
-   - Cyberpunk aesthetic
-   - Performance optimization
-   - Resource management
-
-## App Hosting Patterns
-1. App Management
-   - AI persona ownership
-   - Version control
-   - Deployment system
-   - Monitoring framework
-   - Security protocols
-
-2. Integration Patterns
-   - _EGIS function calls
-   - Version immunity
-   - Dependency management
-   - Resource allocation
-   - Performance optimization
-
-3. Deployment System
-   - App hosting
-   - Version control
-   - Resource management
-   - Security framework
-   - Performance monitoring
-
-4. Community Features
-   - App discovery
-   - Usage analytics
-   - Performance metrics
-   - Security ratings
-   - Community engagement
-
-## Testing Patterns
-1. Coverage Requirements
-   - 100% test coverage
-   - Automated testing
-   - Continuous integration
-   - Quality gates
-   - Test documentation
-
-2. Test Organization
-   - One test file per function
-   - Clear test names
-   - Comprehensive test cases
-   - Edge case coverage
-   - Error case testing
-
-3. Test Structure
-   - Setup and teardown
-   - Mocking patterns
-   - Fixture usage
-   - Parameterized tests
-   - Test isolation
-
-4. Test Documentation
-   - Test purpose
-   - Test scenarios
-   - Expected results
-   - Test dependencies
-   - Coverage reports
-
-## Error Handling
-1. Error Types
-   - Custom exceptions
-   - Error hierarchies
-   - Error messages
-   - Error codes
-   - Error context
-
-2. Error Recovery
-   - Graceful degradation
-   - Retry mechanisms
-   - Fallback options
-   - State recovery
-   - User feedback
-
-3. Error Logging
-   - Structured logs
-   - Error tracking
-   - Debug information
-   - Performance metrics
-   - Audit trails
-
-4. Error Prevention
-   - Input validation
-   - Type checking
-   - State verification
-   - Resource cleanup
-   - Safety checks 

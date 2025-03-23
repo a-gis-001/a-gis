@@ -166,4 +166,39 @@
    - Version control
    - Security framework
    - Performance monitoring
-   - Resource management 
+   - Resource management
+
+## Image Comparison Dependencies
+
+The image comparison functionality relies on several key libraries:
+
+1. PIL (Python Imaging Library)
+   - Used for image loading and basic operations
+   - Supports multiple image modes (RGB, RGBA, Grayscale)
+
+2. NumPy
+   - Handles array operations for image data
+   - Used for MSE calculations
+   - Provides efficient array manipulation
+
+3. scikit-image
+   - Provides SSIM implementation
+   - Handles structural similarity calculations
+   - Supports different image modes and window sizes
+
+### Technical Requirements
+
+1. Image Size Requirements
+   - Minimum size: 7x7 pixels for SSIM calculations
+   - No maximum size limit
+   - Must have same dimensions for comparison
+
+2. Supported Image Modes
+   - RGB (3 channels)
+   - RGBA (4 channels)
+   - Grayscale (1 channel)
+
+3. Performance Considerations
+   - SSIM calculations scale with image size
+   - Large images may require significant memory
+   - MSE calculations are more efficient 
