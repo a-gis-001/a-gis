@@ -24,33 +24,46 @@ def _draw_hands(*, ax: 'matplotlib.axes.Axes', hour_angle: float, minute_angle: 
     
     Returns:
         None
+        
+    Raises:
+        ValueError: If any of the lengths or widths are negative.
     """
     import matplotlib.pyplot
     import numpy
 
-    # Draw hour hand
-    ax.plot(
+    # Validate inputs
+    if any(x < 0 for x in [hour_length, minute_length, second_length]):
+        raise ValueError("Hand lengths must be non-negative")
+    if any(x < 0 for x in [hour_width, minute_width, second_width]):
+        raise ValueError("Hand widths must be non-negative")
+
+    # Draw hour hand (bottom layer)
+    hour_line = ax.plot(
         [0, hour_length * numpy.cos(hour_angle)],
         [0, hour_length * numpy.sin(hour_angle)],
         lw=hour_width,
         color=hour_color,
-    )
+        zorder=1
+    )[0]
     
-    # Draw minute hand
-    ax.plot(
+    # Draw minute hand (middle layer)
+    minute_line = ax.plot(
         [0, minute_length * numpy.cos(minute_angle)],
         [0, minute_length * numpy.sin(minute_angle)],
         lw=minute_width,
         color=minute_color,
-    )
+        zorder=2
+    )[0]
     
-    # Draw seconds hand
-    ax.plot(
+    # Draw seconds hand (top layer)
+    second_line = ax.plot(
         [0, second_length * numpy.cos(seconds_angle)],
         [0, second_length * numpy.sin(seconds_angle)],
         lw=second_width,
         color=second_color,
-    )
+        zorder=3
+    )[0]
 
-    # Center circle
-    ax.add_patch(matplotlib.pyplot.Circle((0, 0), center_size, color=center_color)) 
+    # Center circle (bottom layer)
+    center_circle = matplotlib.pyplot.Circle((0, 0), center_size, color=center_color, zorder=0)
+    ax.add_patch(center_circle) 
