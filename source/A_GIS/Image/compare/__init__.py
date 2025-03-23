@@ -20,16 +20,13 @@ def compare(
             - mse: Mean Squared Error between images
             - ssim: Structural Similarity Index
             - are_similar: Boolean indicating if SSIM >= tolerance
+            - error: Error message if validation fails, empty string otherwise
             - _image1: First input image
             - _image2: Second input image
             - _tolerance: Input tolerance value
 
-    Raises:
-        ValueError: If images have different dimensions or if tolerance is not between 0 and 1
-        TypeError: If inputs are not PIL.Image or numpy array
-
     Examples:
-        >>> import A_GIS.Image
+        >>> import A_GIS.Image.compare
         >>> import A_GIS.Image.new
         >>> # Create two identical images
         >>> img1 = A_GIS.Image.new(size=(100, 100), mode='RGB', color=(255, 0, 0))
@@ -42,13 +39,31 @@ def compare(
     import PIL.Image
     import skimage
     import A_GIS.Code.make_struct
-    import typing
 
+    error = ""
     if not isinstance(image1, (PIL.Image.Image, numpy.ndarray)) or not isinstance(image2, (PIL.Image.Image, numpy.ndarray)):
-        raise TypeError("Images must be PIL.Image or numpy array")
+        error = "Images must be PIL.Image or numpy array"
+        return A_GIS.Code.make_struct(
+            mse=0.0,
+            ssim=0.0,
+            are_similar=False,
+            error=error,
+            _image1=image1,
+            _image2=image2,
+            _tolerance=tolerance,
+        )
     
     if not 0 <= tolerance <= 1:
-        raise ValueError("Tolerance must be between 0 and 1")
+        error = "Tolerance must be between 0 and 1"
+        return A_GIS.Code.make_struct(
+            mse=0.0,
+            ssim=0.0,
+            are_similar=False,
+            error=error,
+            _image1=image1,
+            _image2=image2,
+            _tolerance=tolerance,
+        )
 
     # Convert PIL Images to numpy arrays if needed
     if isinstance(image1, PIL.Image.Image):
@@ -58,8 +73,15 @@ def compare(
 
     # Ensure images have same dimensions and channels
     if image1.shape != image2.shape:
-        raise ValueError(
-            f"Images must have same dimensions. Got {image1.shape} vs {image2.shape}"
+        error = f"Images must have same dimensions. Got {image1.shape} vs {image2.shape}"
+        return A_GIS.Code.make_struct(
+            mse=0.0,
+            ssim=0.0,
+            are_similar=False,
+            error=error,
+            _image1=image1,
+            _image2=image2,
+            _tolerance=tolerance,
         )
 
     # Handle special cases for small images
@@ -68,6 +90,7 @@ def compare(
             mse=0.0,
             ssim=1.0,
             are_similar=True,
+            error=error,
             _image1=image1,
             _image2=image2,
             _tolerance=tolerance,
@@ -81,6 +104,7 @@ def compare(
             mse=float(mse),
             ssim=1.0 if are_similar else 0.0,  # Use binary SSIM for small images
             are_similar=are_similar,
+            error=error,
             _image1=image1,
             _image2=image2,
             _tolerance=tolerance,
@@ -121,6 +145,7 @@ def compare(
         mse=float(mse),
         ssim=float(ssim),
         are_similar=ssim >= tolerance,
+        error=error,
         _image1=image1,
         _image2=image2,
         _tolerance=tolerance,

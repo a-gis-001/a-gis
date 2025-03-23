@@ -46,7 +46,14 @@ Based on my analysis of the codebase and best practices, I would suggest adding 
 
 12. **Explicit Return Types** - All functions should have explicit return type hints in their docstrings and function signatures.
 
-13. **Error Handling** - Functions should handle errors gracefully and return `None` or raise appropriate exceptions with descriptive messages.
+13. **Error Handling** - Functions should handle errors gracefully:
+    - For functions returning structs:
+      - Include an `error` field in the return struct
+      - Return validation errors as strings in the `error` field instead of raising exceptions
+      - Set `error` to empty string ("") when no errors occur
+      - Set other fields to appropriate default values when an error occurs
+    - For other functions:
+      - Return `None` or raise appropriate exceptions with descriptive messages
 
 14. **Test Coverage** - Each function should have comprehensive tests covering:
     - Happy path (expected inputs)
@@ -98,6 +105,31 @@ Based on my analysis of the codebase and best practices, I would suggest adding 
     - Document expected image properties
     - Version control test images
     - Include image generation scripts
+
+24. **Error Handling for Struct-Returning Functions**
+    - All functions returning structs must include an `error` field
+    - Validation errors should be returned as strings in the `error` field
+    - The `error` field should be empty ("") when no errors occur
+    - When an error occurs:
+      - Set `error` to a descriptive error message
+      - Set other fields to appropriate default values
+      - Return a valid struct with all fields populated
+    - Example:
+      ```python
+      def my_function(*, arg1: str, arg2: int) -> "type['A_GIS.Code.make_struct']":
+          error = ""
+          if not isinstance(arg1, str):
+              error = "arg1 must be a string"
+          if not isinstance(arg2, int):
+              error = "arg2 must be an integer"
+          
+          return A_GIS.Code.make_struct(
+              result=some_value if not error else None,
+              error=error,
+              _arg1=arg1,
+              _arg2=arg2
+          )
+      ```
 
 ## Image Comparison Patterns
 
