@@ -1,0 +1,76 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# A_GIS Framework Rules
+
+1. **Use full import names** - Always use complete import paths when importing modules.
+
+2. **Functions should be short** - Functions should be concise and rely on other functions within the A_GIS framework.
+
+3. **Google style docstrings** - All functions must have proper Google style documentation.
+
+4. **Function names start with verbs** - All function names should begin with an action verb.
+
+5. **Local imports** - Imports should occur inside the deepest function where they're needed to reduce dependencies.
+
+6. **One function per file** - Each function gets its own directory and file.
+
+7. **Keyword-based arguments** - Function argument lists should start with `*` and use named parameters.
+
+8. **Function call format** - Functions should be called as:
+   ```python
+   import A_GIS.Module1.Module2.do_function
+   A_GIS.Module1.Module2.do_function(...)
+   ```
+   NOT as:
+   ```python
+   A_GIS.Module1.Module2.do_function.do_function(...)
+   ```
+
+9. **Tests location** - Tests should be in the directory:
+   ```
+   source/A_GIS/Module1/Module2/do_function/tests/__init__.py
+   ```
+
+10. **Module names are nouns** - Modules should always be nouns (e.g., "Visual") rather than verbs (e.g., "Visualize").
+
+11. **Directory structure** - Each function gets its own directory, with the function defined in the `__init__.py` file of that directory.
+
+Based on my analysis of the codebase and best practices, I would suggest adding these additional rules to the A_GIS Framework:
+
+12. **Explicit Return Types** - All functions should have explicit return type hints in their docstrings and function signatures.
+
+13. **Error Handling** - Functions should handle errors gracefully and return `None` or raise appropriate exceptions with descriptive messages.
+
+14. **Test Coverage** - Each function should have comprehensive tests covering:
+    - Happy path (expected inputs)
+    - Edge cases (empty inputs, boundary conditions)
+    - Error cases (invalid inputs, exceptions)
+
+15. **Module Documentation** - Each module's `__init__.py` should have a module-level docstring explaining its purpose and usage.
+
+16. **Private Functions** - Internal/helper functions should be prefixed with underscore and placed in their own directories under the main function's directory.
+
+17. **Dependency Management** - External dependencies should be:
+    - Listed in `requirements.txt`
+    - Imported only when needed (lazy imports)
+    - Have version constraints specified
+
+18. **Code Style** - Follow PEP 8 guidelines with these specific rules:
+    - Maximum line length of 88 characters (Black formatter default)
+    - Use double quotes for strings
+    - Use type hints for all function parameters and return values
+
+19. **API Design** - Public functions should:
+    - Have clear, descriptive names
+    - Accept the most generic input type possible
+    - Return consistent types
+    - Be documented with examples
+
+20. **Version Control** - Each function should:
+    - Be in its own commit
+    - Have a clear commit message following conventional commits format
+    - Include tests in the same commit
+
