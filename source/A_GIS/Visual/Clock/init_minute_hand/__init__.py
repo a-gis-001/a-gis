@@ -4,7 +4,7 @@ def init_minute_hand(
     *,
     color: str = "black",
     width: float = 3,
-    length: float = 0.8,
+    length: float = 0.32,  # 0.4 * 0.8
 ) -> "A_GIS.Visual.Clock._Hand":
     """Initialize minute hand parameters for clock rendering.
 

@@ -4,7 +4,7 @@ def init_second_hand(
     *,
     color: str = "red",
     width: float = 1,
-    length: float = 0.9,
+    length: float = 0.36,  # 0.4 * 0.9
 ) -> "A_GIS.Visual.Clock._Hand":
     """Initialize second hand parameters for clock rendering.
 
