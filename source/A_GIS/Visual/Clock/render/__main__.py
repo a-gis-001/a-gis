@@ -1,11 +1,27 @@
 import argparse
 import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
+import matplotlib.pyplot
+# Only use Agg backend if not displaying interactively
+import sys
+import platform
+
+if '--no-display' in sys.argv:
+    matplotlib.use('Agg')
+else:
+    # Use macosx backend on macOS, fallback to Qt5Agg on other platforms
+    if platform.system() == 'Darwin':
+        matplotlib.use('macosx')
+    else:
+        try:
+            matplotlib.use('Qt5Agg')
+        except ImportError:
+            print("Warning: Interactive display not available. Using non-interactive mode.")
+            matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.animation
 import A_GIS.Visual.Clock.render
 from datetime import datetime, timedelta
-import sys
 import os
 from tqdm import tqdm
 import time
@@ -37,14 +53,15 @@ def resize_to_even_dimensions(image):
 
 def save_raw_frame(frame, output_file):
     """Save a frame as raw RGB data."""
-    # Convert to RGB if needed
     if frame.shape[-1] == 4:  # RGBA
         frame = frame[..., :3]
-    # Ensure correct byte order and shape
-    frame = (frame * 255).astype(np.uint8)
-    # Resize to even dimensions for H.264 compatibility
+    if frame.dtype == np.float32 or frame.max() <= 1.0:
+        frame = (frame * 255).astype(np.uint8)
+    else:
+        frame = frame.astype(np.uint8)
     frame = resize_to_even_dimensions(frame)
     frame.tofile(output_file)
+
 
 
 def main():
@@ -54,6 +71,8 @@ def main():
         parser.add_argument("--duration", type=int, default=3600, help="Duration in seconds (default: 3600)")
         parser.add_argument("--speed", type=float, default=1.0, help="Speed factor (seconds per animation second) (default: 1.0)")
         parser.add_argument("--output", type=str, default="clock_animation.mp4", help="Output file path for the animation (default: clock_animation.mp4)")
+        parser.add_argument("--no-display", action="store_true", default=True,help="Don't display frames while generating")
+        parser.add_argument("--step", action="store_true", help="Step through frames with spacebar")
 
         args = parser.parse_args()
         
@@ -108,6 +127,24 @@ def main():
             frame_time = time.time() - frame_start
             frames.append(result.image)
             frame_times.append(frame_time)
+            
+            # Display frame if not in no-display mode
+            if not args.no_display:
+                plt.clf()  # Clear the current figure
+                plt.imshow(result.image)
+                plt.title(f"{hour:02d}:{minute:02d}:{second:02d}")
+                plt.draw()
+                plt.pause(0.001)  # Small pause to allow display to update
+                if args.step:
+                    print("Press spacebar to continue, 'q' to quit...")
+                    while True:
+                        key = plt.waitforbuttonpress()
+                        if key:
+                            if plt.get_current_fig_manager().canvas.key_press_handler_id == 'q':
+                                print("\nQuitting...")
+                                sys.exit(0)
+                            break
+            
             pbar.update(1)
         
         generation_time = time.time() - generation_start
