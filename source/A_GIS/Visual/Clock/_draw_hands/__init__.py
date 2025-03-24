@@ -1,69 +1,50 @@
-def _draw_hands(*, ax: 'matplotlib.axes.Axes', hour_angle: float, minute_angle: float, seconds_angle: float, 
-               hour_color: str = "black", hour_width: float = 6, hour_length: float = 0.5,
-               minute_color: str = "black", minute_width: float = 3, minute_length: float = 0.8,
-               second_color: str = "red", second_width: float = 1, second_length: float = 0.9,
-               center_color: str = "black", center_size: float = 0.02) -> None:
-    """Draw the clock hands with customization options.
-    
+"""Draw the clock hands."""
+
+def _draw_hands(
+    *,
+    ax: "matplotlib.axes.Axes",
+    hour_angle: float,
+    minute_angle: float,
+    seconds_angle: float,
+    hour_hand: "A_GIS.Visual.Clock._Hand",
+    minute_hand: "A_GIS.Visual.Clock._Hand",
+    second_hand: "A_GIS.Visual.Clock._Hand",
+    center: "A_GIS.Visual.Clock._Center",
+) -> None:
+    """Draw the clock hands.
+
     Args:
-        ax (matplotlib.axes.Axes): The axes to draw on.
-        hour_angle (float): Angle for hour hand in radians.
-        minute_angle (float): Angle for minute hand in radians.
-        seconds_angle (float): Angle for seconds hand in radians.
-        hour_color (str): Color of the hour hand.
-        hour_width (float): Width of the hour hand.
-        hour_length (float): Length of the hour hand (0-1 scale).
-        minute_color (str): Color of the minute hand.
-        minute_width (float): Width of the minute hand.
-        minute_length (float): Length of the minute hand (0-1 scale).
-        second_color (str): Color of the second hand.
-        second_width (float): Width of the second hand.
-        second_length (float): Length of the second hand (0-1 scale).
-        center_color (str): Color of the center circle.
-        center_size (float): Size of the center circle.
-    
-    Returns:
-        None
-        
-    Raises:
-        ValueError: If any of the lengths or widths are negative.
+        ax: The axes to draw on.
+        hour_angle: Angle for hour hand in radians.
+        minute_angle: Angle for minute hand in radians.
+        seconds_angle: Angle for second hand in radians.
+        hour_hand: Hour hand parameters from _Hand class.
+        minute_hand: Minute hand parameters from _Hand class.
+        second_hand: Second hand parameters from _Hand class.
+        center: Center parameters from _Center class.
     """
-    import matplotlib.pyplot
-    import numpy
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-    # Validate inputs
-    if any(x < 0 for x in [hour_length, minute_length, second_length]):
-        raise ValueError("Hand lengths must be non-negative")
-    if any(x < 0 for x in [hour_width, minute_width, second_width]):
-        raise ValueError("Hand widths must be non-negative")
+    # Draw hands
+    ax.plot(
+        [0, hour_hand.length * np.cos(hour_angle)],
+        [0, hour_hand.length * np.sin(hour_angle)],
+        lw=hour_hand.width,
+        color=hour_hand.color,
+    )
+    ax.plot(
+        [0, minute_hand.length * np.cos(minute_angle)],
+        [0, minute_hand.length * np.sin(minute_angle)],
+        lw=minute_hand.width,
+        color=minute_hand.color,
+    )
+    ax.plot(
+        [0, second_hand.length * np.cos(seconds_angle)],
+        [0, second_hand.length * np.sin(seconds_angle)],
+        lw=second_hand.width,
+        color=second_hand.color,
+    )
 
-    # Draw hour hand (bottom layer)
-    hour_line = ax.plot(
-        [0, hour_length * numpy.cos(hour_angle)],
-        [0, hour_length * numpy.sin(hour_angle)],
-        lw=hour_width,
-        color=hour_color,
-        zorder=1
-    )[0]
-    
-    # Draw minute hand (middle layer)
-    minute_line = ax.plot(
-        [0, minute_length * numpy.cos(minute_angle)],
-        [0, minute_length * numpy.sin(minute_angle)],
-        lw=minute_width,
-        color=minute_color,
-        zorder=2
-    )[0]
-    
-    # Draw seconds hand (top layer)
-    second_line = ax.plot(
-        [0, second_length * numpy.cos(seconds_angle)],
-        [0, second_length * numpy.sin(seconds_angle)],
-        lw=second_width,
-        color=second_color,
-        zorder=3
-    )[0]
-
-    # Center circle (bottom layer)
-    center_circle = matplotlib.pyplot.Circle((0, 0), center_size, color=center_color, zorder=0)
-    ax.add_patch(center_circle) 
+    # Center circle
+    ax.add_patch(plt.Circle((0, 0), center.size, color=center.color))

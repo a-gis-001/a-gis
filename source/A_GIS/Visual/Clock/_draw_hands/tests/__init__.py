@@ -1,3 +1,32 @@
+"""Test suite for the clock hand drawing functionality.
+
+This module contains tests for the _draw_hands function which is responsible for drawing
+the hour, minute, and second hands of a clock face. The tests cover:
+
+1. Basic Functionality
+   - Drawing hands at 12:00:00 position
+   - Verifying hand properties (length, width, color)
+   - Verifying center circle properties
+
+2. Hand Positions
+   - Testing various clock positions (3:00, 6:00, 9:00, 12:00)
+   - Testing intermediate positions (1:30, 10:30)
+   - Verifying correct hand angles and coordinates
+
+3. Edge Cases
+   - Negative angles
+   - Different aspect ratios
+   - Hand overlap scenarios
+
+4. Input Validation
+   - Invalid colors
+   - Negative lengths
+   - Negative widths
+
+The tests use matplotlib for visualization and numpy for numerical comparisons.
+Each test saves its output as a PNG file for visual inspection.
+"""
+
 import pytest
 import matplotlib.pyplot
 import numpy

@@ -155,3 +155,55 @@ The system uses a dual-metric approach for image comparison:
    - Different dimensions: Raises ValueError
    - Invalid input types: Raises TypeError
 
+# System Patterns
+
+## Clock Rendering System Architecture
+
+### Component Structure
+1. Core Components
+   - `render`: Main rendering function
+   - `_calculate_hand_angles`: Calculate angles for clock hands
+   - `_draw_clock_face`: Draw the clock face and ticks
+   - `_draw_hands`: Draw the clock hands
+   - `_save_to_array`: Convert figure to numpy array
+   - `_make_result`: Create result struct
+
+2. Parameter Structures
+   - `_Hand`: Dataclass for hand parameters (color, width, length)
+   - `_Face`: Dataclass for face parameters (color, edge_color, edge_width, tick_color, tick_width)
+   - `_Center`: Dataclass for center parameters (color, size)
+
+3. Initialization Functions
+   - `init_hour_hand`: Initialize hour hand parameters
+   - `init_minute_hand`: Initialize minute hand parameters
+   - `init_second_hand`: Initialize second hand parameters
+   - `init_face`: Initialize face parameters
+   - `init_center`: Initialize center parameters
+
+### Design Patterns
+1. Dataclass Pattern
+   - Used for structured parameter groups
+   - Provides type hints and documentation
+   - Enables easy parameter validation
+
+2. Factory Pattern
+   - Initialization functions act as factories
+   - Provide default values and parameter validation
+   - Allow for easy customization
+
+3. Command Pattern
+   - Command-line interface for easy testing
+   - Clear separation of interface and implementation
+   - Enables future extension
+
+### Error Handling
+1. Input Validation
+   - Type checking for parameters
+   - Range validation for time values
+   - Default value handling
+
+2. Result Structure
+   - Consistent error reporting
+   - All parameters included in result
+   - Clear success/failure indication
+

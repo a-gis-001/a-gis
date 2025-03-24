@@ -10,10 +10,12 @@ def test_draw_clock_face():
     # Create a reference clock face image
     fig, ax = matplotlib.pyplot.subplots(figsize=(6, 6))
     ax.set_aspect('equal')
+    ax.set_xlim(-0.5, 0.5)
+    ax.set_ylim(-0.5, 0.5)
     matplotlib.pyplot.axis('off')
     
     # Draw the outer circle
-    circle = matplotlib.pyplot.Circle((0.5, 0.5), 0.4, fill=False, color='black')
+    circle = matplotlib.pyplot.Circle((0, 0), 0.4, fill=False, color='black')
     ax.add_patch(circle)
     
     # Draw hour markers
@@ -25,10 +27,10 @@ def test_draw_clock_face():
         outer_r = 0.4
         inner_r = outer_r - marker_length
         
-        x1 = 0.5 + outer_r * numpy.cos(angle)
-        y1 = 0.5 + outer_r * numpy.sin(angle)
-        x2 = 0.5 + inner_r * numpy.cos(angle)
-        y2 = 0.5 + inner_r * numpy.sin(angle)
+        x1 = outer_r * numpy.cos(angle)
+        y1 = outer_r * numpy.sin(angle)
+        x2 = inner_r * numpy.cos(angle)
+        y2 = inner_r * numpy.sin(angle)
         
         # Draw the hour marker
         ax.plot([x1, x2], [y1, y2], color='black', linewidth=2)
@@ -43,6 +45,8 @@ def test_draw_clock_face():
     # Generate test image using _draw_clock_face
     test_fig, test_ax = matplotlib.pyplot.subplots(figsize=(6, 6))
     test_ax.set_aspect('equal')
+    test_ax.set_xlim(-0.5, 0.5)
+    test_ax.set_ylim(-0.5, 0.5)
     matplotlib.pyplot.axis('off')
     
     A_GIS.Visual.Clock._draw_clock_face(ax=test_ax)
@@ -68,12 +72,14 @@ def test_draw_clock_face():
     # Test with custom parameters
     fig, ax = matplotlib.pyplot.subplots(figsize=(6, 6))
     ax.set_aspect("equal")
+    ax.set_xlim(-0.5, 0.5)
+    ax.set_ylim(-0.5, 0.5)
     matplotlib.pyplot.axis("off")
     
     A_GIS.Visual.Clock._draw_clock_face(
         ax=ax,
         radius=0.3,
-        center=(0.4, 0.6),
+        center=(0, 0),
         marker_length=0.1,
         color='red',
         linewidth=3

@@ -41,7 +41,9 @@ def compare(
     import A_GIS.Code.make_struct
 
     error = ""
-    if not isinstance(image1, (PIL.Image.Image, numpy.ndarray)) or not isinstance(image2, (PIL.Image.Image, numpy.ndarray)):
+    if not isinstance(
+        image1, (PIL.Image.Image, numpy.ndarray)
+    ) or not isinstance(image2, (PIL.Image.Image, numpy.ndarray)):
         error = "Images must be PIL.Image or numpy array"
         return A_GIS.Code.make_struct(
             mse=0.0,
@@ -52,7 +54,7 @@ def compare(
             _image2=image2,
             _tolerance=tolerance,
         )
-    
+
     if not 0 <= tolerance <= 1:
         error = "Tolerance must be between 0 and 1"
         return A_GIS.Code.make_struct(
@@ -73,7 +75,9 @@ def compare(
 
     # Ensure images have same dimensions and channels
     if image1.shape != image2.shape:
-        error = f"Images must have same dimensions. Got {image1.shape} vs {image2.shape}"
+        error = f"Images must have same dimensions. Got {
+            image1.shape} vs {
+            image2.shape}"
         return A_GIS.Code.make_struct(
             mse=0.0,
             ssim=0.0,
@@ -95,14 +99,16 @@ def compare(
             _image2=image2,
             _tolerance=tolerance,
         )
-    
+
     if image1.shape[0] < 7 or image1.shape[1] < 7:  # Images smaller than 7x7
         # For small images, only use MSE and a stricter threshold
         mse = numpy.mean((image1 - image2) ** 2)
         are_similar = mse < 1.0  # Very small threshold for small images
         return A_GIS.Code.make_struct(
             mse=float(mse),
-            ssim=1.0 if are_similar else 0.0,  # Use binary SSIM for small images
+            ssim=(
+                1.0 if are_similar else 0.0
+            ),  # Use binary SSIM for small images
             are_similar=are_similar,
             error=error,
             _image1=image1,
@@ -139,7 +145,9 @@ def compare(
                 image1, image2, channel_axis=2, win_size=7
             )
     else:  # Grayscale
-        ssim = skimage.metrics.structural_similarity(image1, image2, win_size=7)
+        ssim = skimage.metrics.structural_similarity(
+            image1, image2, win_size=7
+        )
 
     return A_GIS.Code.make_struct(
         mse=float(mse),
