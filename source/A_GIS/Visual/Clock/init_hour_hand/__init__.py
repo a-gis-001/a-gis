@@ -1,10 +1,8 @@
-"""Initialize hour hand parameters for clock rendering."""
-
 def init_hour_hand(
     *,
     color: str = "black",
     width: float = 6,
-    length: float = 0.2,  # 0.4 * 0.5
+    length: float = 0.5,
 ) -> "A_GIS.Visual.Clock._Hand":
     """Initialize hour hand parameters for clock rendering.
 

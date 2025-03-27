@@ -1,34 +1,53 @@
 import argparse
 import matplotlib
-import matplotlib.pyplot
-# Only use Agg backend if not displaying interactively
+import matplotlib.pyplot as plt
+import A_GIS.Visual.Clock.render
+from datetime import datetime, timedelta
 import sys
 import platform
+import numpy as np
+import io
+import cairosvg
+from PIL import Image
+import time
 
-if '--no-display' in sys.argv:
-    matplotlib.use('Agg')
-else:
-    # Use macosx backend on macOS, fallback to Qt5Agg on other platforms
-    if platform.system() == 'Darwin':
+# Use macosx backend on macOS, fallback to Qt5Agg on other platforms
+if platform.system() == 'Darwin':
+    try:
         matplotlib.use('macosx')
-    else:
+    except ImportError:
+        print("Warning: macosx backend not available, trying Qt5Agg...")
         try:
             matplotlib.use('Qt5Agg')
         except ImportError:
-            print("Warning: Interactive display not available. Using non-interactive mode.")
+            print("Warning: Qt5Agg backend not available, using Agg...")
             matplotlib.use('Agg')
+else:
+    try:
+        matplotlib.use('Qt5Agg')
+    except ImportError:
+        print("Warning: Qt5Agg backend not available, using Agg...")
+        matplotlib.use('Agg')
 
-import matplotlib.pyplot as plt
-import matplotlib.animation
-import A_GIS.Visual.Clock.render
-from datetime import datetime, timedelta
-import os
-from tqdm import tqdm
-import time
-import subprocess
-import tempfile
-import numpy as np
-
+def svg_to_array(svg_data):
+    """Convert SVG data to numpy array."""
+    try:
+        print("Converting SVG to array...")
+        # Convert SVG to PNG using cairosvg
+        png_data = cairosvg.svg2png(bytestring=svg_data)
+        print("SVG converted to PNG")
+        
+        # Convert PNG data to PIL Image
+        image = Image.open(io.BytesIO(png_data))
+        print(f"PNG loaded as PIL Image: {image.size}")
+        
+        # Convert to numpy array
+        array = np.array(image)
+        print(f"Converted to numpy array: {array.shape}")
+        return array
+    except Exception as e:
+        print(f"Error converting SVG to array: {e}")
+        return None
 
 def parse_time(time_str):
     """Parse HH:MM:SS format into hour, minute, second components."""
@@ -40,195 +59,152 @@ def parse_time(time_str):
     except ValueError as e:
         raise argparse.ArgumentTypeError(f"Invalid time format. Use HH:MM:SS. Error: {str(e)}")
 
+def show_static_clock(hour, minute, second):
+    """Show a static clock face."""
+    print(f"Showing static clock at {hour:02d}:{minute:02d}:{second:02d}")
+    
+    # Create figure
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111)
+    ax.axis('off')
+    
+    # Render clock face
+    print("Rendering clock face...")
+    result = A_GIS.Visual.Clock.render(
+        hour=hour,
+        minute=minute,
+        second=second,
+    )
+    
+    if result.error:
+        print(f"Error: {result.error}")
+        return
+    
+    # Convert SVG to array and display
+    image_array = svg_to_array(result.svg)
+    if image_array is not None:
+        print("Displaying clock face...")
+        ax.imshow(image_array)
+        time_str = f"{hour:02d}:{minute:02d}:{second:02d}"
+        ax.set_title(f"Time: {time_str}")
+        
+        plt.show(block=True)
+        plt.close('all')
 
-def resize_to_even_dimensions(image):
-    """Resize image to even dimensions."""
-    height, width = image.shape[:2]
-    new_height = height + (height % 2)
-    new_width = width + (width % 2)
-    if new_height != height or new_width != width:
-        return np.resize(image, (new_height, new_width, *image.shape[2:]))
-    return image
-
-
-def save_raw_frame(frame, output_file):
-    """Save a frame as raw RGB data."""
-    if frame.shape[-1] == 4:  # RGBA
-        frame = frame[..., :3]
-    if frame.dtype == np.float32 or frame.max() <= 1.0:
-        frame = (frame * 255).astype(np.uint8)
-    else:
-        frame = frame.astype(np.uint8)
-    frame = resize_to_even_dimensions(frame)
-    frame.tofile(output_file)
-
-
+def show_animated_clock(hour, minute, second, duration, speedup=1.0):
+    """Show an animated clock face.
+    
+    Args:
+        hour: Starting hour
+        minute: Starting minute
+        second: Starting second
+        duration: Duration in seconds
+        speedup: Speed multiplier (1.0 = real time, >1 = faster, <1 = slower)
+    """
+    print(f"Starting animation from {hour:02d}:{minute:02d}:{second:02d}")
+    print(f"Duration: {duration} seconds")
+    print(f"Speedup: {speedup}x")
+    
+    # Calculate target frame interval
+    target_interval = 1.0 / speedup
+    print(f"Target frame interval: {target_interval:.3f} seconds")
+    
+    # Create figure
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111)
+    ax.axis('off')
+    
+    # Set start time
+    start_time = datetime(2000, 1, 1, hour, minute, second)
+    start_wall_time = time.time()
+    
+    try:
+        while True:
+            try:
+                # Calculate how much time has passed in wall clock time
+                wall_time_elapsed = time.time() - start_wall_time
+                
+                # Calculate target time based on wall time and speedup
+                target_seconds = int(wall_time_elapsed * speedup)
+                target_time = start_time + timedelta(seconds=target_seconds)
+                
+                # Get current time components
+                hour = target_time.hour
+                minute = target_time.minute
+                second = target_time.second
+                
+                print(f"\nRendering frame at {hour:02d}:{minute:02d}:{second:02d}")
+                
+                # Clear previous frame
+                ax.clear()
+                ax.axis('off')
+                
+                # Render new frame
+                result = A_GIS.Visual.Clock.render(
+                    hour=hour,
+                    minute=minute,
+                    second=second,
+                )
+                
+                if result.error:
+                    print(f"Error: {result.error}")
+                    continue
+                
+                # Convert SVG to array and display
+                image_array = svg_to_array(result.svg)
+                if image_array is not None:
+                    print("Displaying clock face...")
+                    ax.imshow(image_array)
+                    time_str = target_time.strftime("%H:%M:%S")
+                    ax.set_title(f"Time: {time_str} (Speed: {speedup}x)")
+                    
+                    # Update display
+                    plt.draw()
+                    
+                    # Sleep for the target interval
+                    plt.pause(target_interval)
+                
+                # Check if we've reached the duration
+                if target_seconds >= duration:
+                    break
+                
+            except Exception as e:
+                print(f"Error updating frame: {e}")
+                time.sleep(target_interval)  # Wait a bit before retrying
+                
+    except KeyboardInterrupt:
+        print("\nAnimation stopped by user")
+    finally:
+        plt.close('all')
 
 def main():
     try:
-        parser = argparse.ArgumentParser(description="Render a clock face with time-lapse animation")
+        parser = argparse.ArgumentParser(description="Render a clock face")
         parser.add_argument("start_time", type=str, help="Start time in HH:MM:SS format")
-        parser.add_argument("--duration", type=int, default=3600, help="Duration in seconds (default: 3600)")
-        parser.add_argument("--speed", type=float, default=1.0, help="Speed factor (seconds per animation second) (default: 1.0)")
-        parser.add_argument("--output", type=str, default="clock_animation.mp4", help="Output file path for the animation (default: clock_animation.mp4)")
-        parser.add_argument("--no-display", action="store_true", default=True,help="Don't display frames while generating")
-        parser.add_argument("--step", action="store_true", help="Step through frames with spacebar")
-
+        parser.add_argument("--duration", type=int, default=0, help="Duration in seconds (0 for static, default: 0)")
+        parser.add_argument("--speedup", type=float, default=1.0, help="Speed multiplier (1.0 = real time, >1 = faster, <1 = slower)")
+        
         args = parser.parse_args()
         
-        # Ensure output file has .mp4 extension
-        if not args.output.endswith('.mp4'):
-            args.output = os.path.splitext(args.output)[0] + '.mp4'
+        # Validate speedup
+        if args.speedup <= 0:
+            print("Error: Speedup must be positive", file=sys.stderr)
+            sys.exit(1)
         
         # Parse start time
         hour, minute, second = parse_time(args.start_time)
-        start_time = datetime(2000, 1, 1, hour, minute, second)  # Using arbitrary date
         
-        print(f"Starting animation from {args.start_time}")
-        print(f"Duration: {args.duration} seconds")
-        print(f"Speed factor: {args.speed}x")
-        print(f"Output file: {args.output}")
-
-        # Calculate number of frames needed (one per second)
-        total_frames = args.duration  # One frame per second, regardless of speed
-        
-        # Create figure and axis
-        fig = plt.figure(figsize=(8, 8))
-        ax = fig.add_subplot(111)
-        ax.axis('off')
-        
-        # Create progress bar
-        pbar = tqdm(total=total_frames, desc="Generating frames", unit="frame")
-        
-        # Generate frames sequentially
-        frame_times = []
-        frames = []
-        generation_start = time.time()
-        
-        for frame_num in range(total_frames):
-            frame_start = time.time()
-            
-            # Calculate time for this frame (one second per frame)
-            current_time = start_time + timedelta(seconds=frame_num)
-            hour = current_time.hour
-            minute = current_time.minute
-            second = current_time.second
-
-            result = A_GIS.Visual.Clock.render(
-                hour=hour,
-                minute=minute,
-                second=second,
-            )
-
-            if result.error:
-                print(f"Error: {result.error}")
-                continue
-
-            frame_time = time.time() - frame_start
-            frames.append(result.image)
-            frame_times.append(frame_time)
-            
-            # Display frame if not in no-display mode
-            if not args.no_display:
-                plt.clf()  # Clear the current figure
-                plt.imshow(result.image)
-                plt.title(f"{hour:02d}:{minute:02d}:{second:02d}")
-                plt.draw()
-                plt.pause(0.001)  # Small pause to allow display to update
-                if args.step:
-                    print("Press spacebar to continue, 'q' to quit...")
-                    while True:
-                        key = plt.waitforbuttonpress()
-                        if key:
-                            if plt.get_current_fig_manager().canvas.key_press_handler_id == 'q':
-                                print("\nQuitting...")
-                                sys.exit(0)
-                            break
-            
-            pbar.update(1)
-        
-        generation_time = time.time() - generation_start
-        avg_frame_time = sum(frame_times) / len(frame_times) if frame_times else 0
-        
-        # Create animation
-        print("\nCreating animation...")
-        animation_start = time.time()
-        anim = matplotlib.animation.ArtistAnimation(
-            fig,
-            [[plt.imshow(frame)] for frame in frames],
-            interval=1000,  # Update every 1000ms (1 second)
-            blit=True,
-            repeat=False
-        )
-        animation_time = time.time() - animation_start
-        
-        # Save frames as raw video
-        print("Saving frames...")
-        save_start = time.time()
-        
-        # Create temporary directory for frames
-        with tempfile.TemporaryDirectory() as temp_dir:
-            raw_file = os.path.join(temp_dir, "raw_frames.raw")
-            frame_save_start = time.time()
-            
-            # Save all frames to a single raw file
-            with open(raw_file, 'wb') as f:
-                for frame in frames:
-                    save_raw_frame(frame, f)
-            frame_save_time = time.time() - frame_save_start
-            
-            # Get frame dimensions
-            height, width = frames[0].shape[:2]
-            
-            # Convert raw video to MP4 using FFmpeg with high quality settings
-            print("Converting to MP4...")
-            convert_start = time.time()
-            cmd = [
-                'ffmpeg', '-y',
-                '-f', 'rawvideo',
-                '-vcodec', 'rawvideo',
-                '-s', f'{width}x{height}',
-                '-pix_fmt', 'rgb24',
-                '-r', str(args.speed),  # Playback speed (e.g. speed=10 means 10 fps = 10x faster)
-                '-i', raw_file,
-                '-c:v', 'libx264',
-                '-preset', 'medium',  # Better quality than ultrafast
-                '-crf', '17',  # Lower CRF = higher quality (range 0-51, lower is better)
-                '-pix_fmt', 'yuv420p',  # Required for compatibility
-                '-movflags', '+faststart',  # Enable fast start for web playback
-                args.output
-            ]
-            
-            # Run FFmpeg with error output
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            if result.returncode != 0:
-                print("FFmpeg error output:", result.stderr, file=sys.stderr)
-                raise subprocess.CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
-                
-            convert_time = time.time() - convert_start
-            
-            save_time = time.time() - save_start
-            
-            # Print timing statistics
-            print("\nTiming Statistics:")
-            print(f"Total frames generated: {len(frames)}")
-            print(f"Frame generation time: {generation_time:.2f} seconds")
-            print(f"Average time per frame: {avg_frame_time*1000:.2f} ms")
-            print(f"Animation creation time: {animation_time:.2f} seconds")
-            print(f"Frame save time: {frame_save_time:.2f} seconds")
-            print(f"Video conversion time: {convert_time:.2f} seconds")
-            print(f"Total save time: {save_time:.2f} seconds")
-            print(f"Total processing time: {(generation_time + animation_time + save_time):.2f} seconds")
+        # Show static or animated clock
+        if args.duration == 0:
+            show_static_clock(hour, minute, second)
+        else:
+            show_animated_clock(hour, minute, second, args.duration, args.speedup)
         
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
     finally:
-        # Clean up matplotlib resources
         plt.close('all')
-        if 'pbar' in locals():
-            pbar.close()
-
 
 if __name__ == "__main__":
     main()

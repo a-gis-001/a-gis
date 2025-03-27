@@ -31,6 +31,10 @@ import pytest
 import matplotlib.pyplot
 import numpy
 import A_GIS.Visual.Clock._draw_hands
+import A_GIS.Visual.Clock.init_hour_hand
+import A_GIS.Visual.Clock.init_minute_hand
+import A_GIS.Visual.Clock.init_second_hand
+import A_GIS.Visual.Clock.init_center
 import A_GIS.Image
 import os
 
@@ -69,17 +73,10 @@ def test_draw_hands_basic():
         hour_angle=numpy.pi/2,
         minute_angle=numpy.pi/2,
         seconds_angle=numpy.pi/2,
-        hour_color="blue",
-        minute_color="green",
-        second_color="red",
-        hour_width=4,
-        minute_width=3,
-        second_width=1,
-        hour_length=0.5,
-        minute_length=0.7,
-        second_length=0.9,
-        center_color="black",
-        center_size=0.02
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(color="blue", width=4, length=0.5),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(color="green", width=3, length=0.7),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(color="red", width=1, length=0.9),
+        center=A_GIS.Visual.Clock.init_center(color="black", size=0.02)
     )
     
     # Get the drawn elements
@@ -122,9 +119,10 @@ def test_draw_hands_positions():
             hour_angle=angle,
             minute_angle=angle,
             seconds_angle=angle,
-            hour_length=0.5,
-            minute_length=0.7,
-            second_length=0.9
+            hour_hand=A_GIS.Visual.Clock.init_hour_hand(length=0.5),
+            minute_hand=A_GIS.Visual.Clock.init_minute_hand(length=0.7),
+            second_hand=A_GIS.Visual.Clock.init_second_hand(length=0.9),
+        center=A_GIS.Visual.Clock.init_center()
         )
         
         # Verify hour hand position
@@ -145,9 +143,10 @@ def test_draw_hands_edge_cases():
         hour_angle=-numpy.pi/2,
         minute_angle=-numpy.pi/2,
         seconds_angle=-numpy.pi/2,
-        hour_length=0.5,
-        minute_length=0.7,
-        second_length=0.9
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(length=0.5),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(length=0.7),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(length=0.9),
+        center=A_GIS.Visual.Clock.init_center()
     )
     
     # Verify hands point down (6:00 position)
@@ -171,9 +170,10 @@ def test_draw_hands_aspect_ratio():
         hour_angle=numpy.pi/2,
         minute_angle=numpy.pi/2,
         seconds_angle=numpy.pi/2,
-        hour_length=0.5,
-        minute_length=0.7,
-        second_length=0.9
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(length=0.5),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(length=0.7),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(length=0.9),
+        center=A_GIS.Visual.Clock.init_center()
     )
     
     # Verify hands still point up despite different aspect ratio
@@ -194,9 +194,10 @@ def test_draw_hands_hand_overlap():
         hour_angle=numpy.pi/2,
         minute_angle=numpy.pi/2,
         seconds_angle=numpy.pi/2,
-        hour_length=0.5,
-        minute_length=0.7,
-        second_length=0.9
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(length=0.5),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(length=0.7),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(length=0.9),
+        center=A_GIS.Visual.Clock.init_center()
     )
     
     # Verify hands are drawn in correct order (second on top)
@@ -211,33 +212,42 @@ def test_draw_hands_invalid_inputs():
     fig, ax = setup_axes()
     
     # Test with invalid colors
-    with pytest.raises(ValueError):
-        A_GIS.Visual.Clock._draw_hands(
-            ax=ax,
-            hour_angle=0,
-            minute_angle=0,
-            seconds_angle=0,
-            hour_color="invalid_color"
-        )
+    error = A_GIS.Visual.Clock._draw_hands(
+        ax=ax,
+        hour_angle=0,
+        minute_angle=0,
+        seconds_angle=0,
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(color="invalid_color"),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(),
+        center=A_GIS.Visual.Clock.init_center()
+    )
+    assert "not a valid value for color" in error.lower(), "Should return error for invalid color"
     
     # Test with negative lengths
-    with pytest.raises(ValueError):
-        A_GIS.Visual.Clock._draw_hands(
-            ax=ax,
-            hour_angle=0,
-            minute_angle=0,
-            seconds_angle=0,
-            hour_length=-0.5
-        )
+    error = A_GIS.Visual.Clock._draw_hands(
+        ax=ax,
+        hour_angle=0,
+        minute_angle=0,
+        seconds_angle=0,
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(length=-0.5),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(),
+        center=A_GIS.Visual.Clock.init_center()
+    )
+    assert "length" in error.lower(), "Should return error for negative length"
     
     # Test with negative widths
-    with pytest.raises(ValueError):
-        A_GIS.Visual.Clock._draw_hands(
-            ax=ax,
-            hour_angle=0,
-            minute_angle=0,
-            seconds_angle=0,
-            hour_width=-1
-        )
+    error = A_GIS.Visual.Clock._draw_hands(
+        ax=ax,
+        hour_angle=0,
+        minute_angle=0,
+        seconds_angle=0,
+        hour_hand=A_GIS.Visual.Clock.init_hour_hand(width=-1),
+        minute_hand=A_GIS.Visual.Clock.init_minute_hand(),
+        second_hand=A_GIS.Visual.Clock.init_second_hand(),
+        center=A_GIS.Visual.Clock.init_center()
+    )
+    assert "width" in error.lower(), "Should return error for negative width"
     
     matplotlib.pyplot.close() 

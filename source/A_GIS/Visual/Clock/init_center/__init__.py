@@ -1,5 +1,3 @@
-"""Initialize center parameters for clock rendering."""
-
 def init_center(
     *,
     color: str = "black",

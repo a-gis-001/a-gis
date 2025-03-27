@@ -25,7 +25,7 @@ def render(
 
     Returns:
         A_GIS.Code.make_struct: A structure containing:
-            - image: The rendered clock face as a numpy array
+            - svg: The rendered clock face as SVG code
             - error: Error message if any
             - _hour: The hour value
             - _minute: The minute value
@@ -38,12 +38,12 @@ def render(
             - _figure_size: The figure size used
     """
     import matplotlib.pyplot
+    import io
     import A_GIS.Code.make_struct
     import A_GIS.Visual.Clock._calculate_hand_angles
     import A_GIS.Visual.Clock._draw_clock_face
     import A_GIS.Visual.Clock._draw_hands
     import A_GIS.Visual.Clock._make_result
-    import A_GIS.Visual.Clock._save_to_array
     import A_GIS.Visual.Clock.init_face
     import A_GIS.Visual.Clock.init_hour_hand
     import A_GIS.Visual.Clock.init_minute_hand
@@ -87,8 +87,8 @@ def render(
     }
 
     if error:
-        return A_GIS.Visual.Clock._make_result._make_result(
-            image=None, error=error, **common_params
+        return A_GIS.Visual.Clock._make_result(
+            svg=None, error=error, **common_params
         )
 
     try:
@@ -127,15 +127,19 @@ def render(
             center=center,
         )
 
-        # Convert to array and clean up
-        img_array = A_GIS.Visual.Clock._save_to_array(fig=fig)
+        # Save the figure as SVG
+        svg_buf = io.BytesIO()
+        fig.savefig(svg_buf, format='svg', bbox_inches='tight')
+        svg_buf.seek(0)
+        svg_code = svg_buf.getvalue().decode('utf-8')
+
         matplotlib.pyplot.close(fig)
 
         return A_GIS.Visual.Clock._make_result(
-            image=img_array, error=error, **common_params
+            svg=svg_code, error=error, **common_params
         )
 
     except Exception as e:
         return A_GIS.Visual.Clock._make_result(
-            image=None, error=str(e), **common_params
+            svg=None, error=str(e), **common_params
         )

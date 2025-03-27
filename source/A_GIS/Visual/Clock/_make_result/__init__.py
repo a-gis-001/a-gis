@@ -1,6 +1,6 @@
 def _make_result(
     *,
-    image,
+    svg,
     error: str,
     hour: int,
     minute: int,
@@ -15,7 +15,7 @@ def _make_result(
     """Create the result struct with all parameters.
 
     Args:
-        image: The rendered clock face as a numpy array or None
+        svg: The rendered clock face as SVG code or None
         error: Error message if any
         hour: Hour value (0-23)
         minute: Minute value (0-59)
@@ -33,7 +33,7 @@ def _make_result(
     import A_GIS.Code.make_struct
 
     return A_GIS.Code.make_struct(
-        image=image,
+        svg=svg,
         error=error,
         _hour=hour,
         _minute=minute,
